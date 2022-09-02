@@ -15,3 +15,11 @@ jobs:
         run: chmod +x gradlew
       - name: Build with Gradle
         run: ./gradlew build
+  deploy:
+    needs: build
+    name: Deploy
+    runs-on: [ self-hosted, label-developer ]
+    steps:
+      - name: deploy run
+        run: |
+          sudo sh /home/ec2-user/run.sh #ec2-user
