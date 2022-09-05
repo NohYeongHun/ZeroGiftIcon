@@ -22,5 +22,4 @@ jobs:
     steps:
       - name: deploy run
         run: |
-          sudo sh /home/ec2-user/actions-runner/run.sh
           sudo sh /home/ec2-user/success.sh #ec2-user
