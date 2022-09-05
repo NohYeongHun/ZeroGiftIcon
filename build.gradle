@@ -94,3 +94,9 @@ configurations {
 	}
 	querydsl.extendsFrom compileClasspath
 }
+
+bootWar{
+	archivesBaseName = 'ROOT'
+	archiveFileName  = 'ROOT.war'
+	archiveVersion = "0.0.0"
+}
