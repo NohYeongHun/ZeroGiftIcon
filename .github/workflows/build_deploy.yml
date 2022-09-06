@@ -3,8 +3,6 @@ on:
   push:
     branches : [ main ]
     
-env:
-  RESOURCE_PATH: ./src/main/resources/application.yaml
 jobs:
   build:
     runs-on: ubuntu-latest # 운영체제 지정
@@ -14,28 +12,12 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
-      - name: Set Yaml
-        uses: microsoft/variable-substitution@v1
-        with:
-          files : ${{ env.RESOURCE_PATH }}
+      - name: Copy Secret
         env:
-          spring.jpa.defer-defer-datasource-initialization: true
-          spring.jpa.generate-ddl: true
-          spring.jpa.hibernate.ddl-auto: update
-          spring.jpa.open-in-view: false
-          spring.jpa.properties.hibernate.format_sql: true
-          spring.jpa.properties.hibernate.show_sql: true
-          spring.jpa.properties.hibernate.jdbc.batch_size: 100
-          spring.jwt.access-secret: ${{ secrets.ACCESS_SECRET }}
-          spring.jwt.refresh-secret: ${{ secrets.REFRESH_SECRET }}
-          spring.jwt.access-expire-min: 30
-          spring.jwt.refresh-expire-min: 30
-          spring.mvc.pathmatch.matching-strategy: ant_path_matcher
-          spring.datasource.url: jdbc:h2:mem:zero
-          spring.datasource.username: zero
-          spring.datasource.driver-class-name: org.h2.Driver
-          spring.h2.console.enabled: true
-          
+          OCCUPY_SECRET: ${{ secrets.OCCUPY_SECRET }}
+          OCCUPY_SECRET_DIR: src/main/resources
+          OCCUPY_SECRET_DIR_FILE_NAME: application.yml
+        run: echo $OCCUPY_SECRET | base64 --decode > $OCCUPY_SECRET_DIR/$OCCUPY_SECRET_DIR_FILE_NAME       
           
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
