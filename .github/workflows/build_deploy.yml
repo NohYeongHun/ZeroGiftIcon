@@ -2,6 +2,9 @@ name: githubActionTest
 on:
   push:
     branches : [ main ]
+    
+env:
+  RESOURCE_PATH: ./src/main/resources/application.yaml
 jobs:
   build:
     runs-on: ubuntu-latest # 운영체제 지정
@@ -14,7 +17,7 @@ jobs:
       - name: Set Yaml
         uses: microsoft/variable-substitution@v1
         with:
-          files : ${{ secrets.RESOURCE_PATH }}
+          files : ${{ env.RESOURCE_PATH }}
         env:
           spring.jpa.defer-defer-datasource-initialization: true
           spring.jpa.generate-ddl: true
