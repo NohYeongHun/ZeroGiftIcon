@@ -1,11 +1,11 @@
 package com.example.demo.security.service;
 
+import com.example.demo.common.exception.JwtInvalidException;
 import com.example.demo.member.dto.LoginInfo;
 import com.example.demo.member.dto.MemberInfo;
-import com.example.demo.security.dto.Tokens;
-import com.example.demo.common.exception.JwtInvalidException;
 import com.example.demo.common.exception.code.JwtErrorCode;
 import com.example.demo.common.entity.RefreshToken;
+import com.example.demo.security.dto.TokenDto;
 import com.example.demo.security.repository.RefreshTokenRepository;
 import com.example.demo.member.entity.Member;
 import com.example.demo.member.repository.MemberRepository;
@@ -33,8 +33,8 @@ public class TokenService {
 
     private final JwtInfo jwtInfo;
 
-    public Tokens issueAllToken(LoginInfo loginInfo) {
-        return Tokens.builder()
+    public TokenDto issueAllToken(LoginInfo loginInfo) {
+        return TokenDto.builder()
                 .accessToken(issueAccessToken(loginInfo))
                 .refreshToken(issueRefreshToken(loginInfo))
                 .refreshTokenExpiredMin(jwtInfo.getRefreshTokenExpiredMin())
@@ -123,7 +123,7 @@ public class TokenService {
         return claims;
     }
 
-    public Tokens refresh(String refreshToken) {
+    public TokenDto refresh(String refreshToken) {
         Claims claims = parseRefreshToken(refreshToken);
 
         String email = claims.get(JwtInfo.KEY_EMAIL, String.class);
