@@ -1,8 +1,8 @@
-package com.example.demo.persist.member;
+package com.example.demo.member.entity;
 
-import com.example.demo.persist.common.BaseTimeEntity;
-import com.example.demo.persist.member.type.MemberStatus;
-import com.example.demo.persist.member.type.Role;
+import com.example.demo.common.entity.BaseTimeEntity;
+import com.example.demo.member.type.MemberStatus;
+import com.example.demo.security.type.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

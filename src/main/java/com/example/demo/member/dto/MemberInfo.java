@@ -1,4 +1,4 @@
-package com.example.demo.dto.common;
+package com.example.demo.member.dto;
 
 import static com.example.demo.security.jwt.JwtInfo.KEY_EMAIL;
 import static com.example.demo.security.jwt.JwtInfo.KEY_ID;
@@ -6,7 +6,7 @@ import static com.example.demo.security.jwt.JwtInfo.KEY_NICKNAME;
 import static com.example.demo.security.jwt.JwtInfo.KEY_ROLES;
 import static com.example.demo.security.jwt.JwtInfo.KEY_STATUS;
 
-import com.example.demo.persist.member.Member;
+import com.example.demo.member.entity.Member;
 import com.example.demo.security.jwt.JwtInfo;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Data
-public class MemberInfo implements LoginInfo{
+public class MemberInfo implements LoginInfo {
 
     private Long id;
     private String role;

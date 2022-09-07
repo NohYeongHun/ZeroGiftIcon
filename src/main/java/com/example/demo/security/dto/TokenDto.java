@@ -1,4 +1,4 @@
-package com.example.demo.security.jwt;
+package com.example.demo.security.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class Tokens{
+public class TokenDto{
     private String accessToken;
     private String refreshToken;
     private int refreshTokenExpiredMin;

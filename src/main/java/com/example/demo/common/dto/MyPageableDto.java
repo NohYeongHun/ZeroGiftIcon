@@ -1,4 +1,4 @@
-package com.example.demo.dto.common;
+package com.example.demo.common.dto;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @ApiModel
-public class MyPageable {
+public class MyPageableDto {
 
     @ApiModelProperty(value = "페이지 번호(0~N), default = 0")
     private int page;

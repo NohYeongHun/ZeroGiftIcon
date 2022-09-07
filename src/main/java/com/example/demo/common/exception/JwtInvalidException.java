@@ -1,6 +1,6 @@
-package com.example.demo.exception.common;
+package com.example.demo.common.exception;
 
-import com.example.demo.exception.common.code.JwtErrorCode;
+import com.example.demo.common.exception.code.JwtErrorCode;
 import lombok.Getter;
 import org.springframework.security.core.AuthenticationException;
 

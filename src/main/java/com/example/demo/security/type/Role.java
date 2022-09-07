@@ -1,4 +1,4 @@
-package com.example.demo.persist.member.type;
+package com.example.demo.security.type;
 
 public enum Role {
     ROLE_ADMIN,

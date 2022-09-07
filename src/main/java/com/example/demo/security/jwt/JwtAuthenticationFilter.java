@@ -1,7 +1,7 @@
 package com.example.demo.security.jwt;
 
-import com.example.demo.dto.common.ErrorResult;
-import com.example.demo.exception.common.JwtInvalidException;
+import com.example.demo.common.dto.ErrorResultDto;
+import com.example.demo.common.exception.JwtInvalidException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -49,7 +49,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 				JwtInvalidException jwtInvalidException = (JwtInvalidException) e;
 
-				ErrorResult error = ErrorResult.builder()
+				ErrorResultDto error = ErrorResultDto.builder()
 					.errorCode(jwtInvalidException.getErrorCode().name())
 					.errorDescription(jwtInvalidException.getErrorMessage())
 					.build();
