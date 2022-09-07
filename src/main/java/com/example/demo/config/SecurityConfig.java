@@ -30,9 +30,14 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .anyRequest()
-                .permitAll();
+        http
+                .authorizeRequests()
+                .antMatchers("/api/v1/auth/**","/",
+                        "/v2/api-docs", "/swagger-resources/**", "/swagger-ui/index.html", "/swagger-ui.html","/webjars/**", "/swagger/**",   // swagger
+                        "/h2-console/**",
+                        "/favicon.ico").permitAll()
+                .anyRequest().authenticated();
+
 
         http.headers().frameOptions().disable();
 
