@@ -1,13 +1,15 @@
-package com.example.demo.security.jwt;
+package com.example.demo.security.service;
 
-import com.example.demo.dto.common.LoginInfo;
-import com.example.demo.dto.common.MemberInfo;
-import com.example.demo.exception.common.JwtInvalidException;
-import com.example.demo.exception.common.code.JwtErrorCode;
-import com.example.demo.persist.common.RefreshToken;
-import com.example.demo.persist.common.repository.RefreshTokenRepository;
-import com.example.demo.persist.member.Member;
-import com.example.demo.persist.member.repository.MemberRepository;
+import com.example.demo.member.dto.LoginInfo;
+import com.example.demo.member.dto.MemberInfo;
+import com.example.demo.security.dto.Tokens;
+import com.example.demo.common.exception.JwtInvalidException;
+import com.example.demo.common.exception.code.JwtErrorCode;
+import com.example.demo.common.entity.RefreshToken;
+import com.example.demo.security.repository.RefreshTokenRepository;
+import com.example.demo.member.entity.Member;
+import com.example.demo.member.repository.MemberRepository;
+import com.example.demo.security.jwt.JwtInfo;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;

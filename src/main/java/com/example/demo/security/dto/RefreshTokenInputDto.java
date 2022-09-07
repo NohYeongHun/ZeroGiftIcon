@@ -1,6 +1,6 @@
-package com.example.demo.dto.common;
+package com.example.demo.security.dto;
 
-import com.example.demo.persist.member.Member;
+import com.example.demo.member.entity.Member;
 import lombok.*;
 
 import java.time.Duration;

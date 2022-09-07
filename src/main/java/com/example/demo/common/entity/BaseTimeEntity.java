@@ -1,4 +1,4 @@
-package com.example.demo.persist.common;
+package com.example.demo.common.entity;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;

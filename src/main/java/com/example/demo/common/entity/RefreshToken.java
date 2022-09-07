@@ -1,11 +1,11 @@
-package com.example.demo.persist.common;
+package com.example.demo.common.entity;
 
-import com.example.demo.persist.member.Member;
+import com.example.demo.common.entity.BaseTimeEntity;
+import com.example.demo.member.entity.Member;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.Duration;
-import java.time.Instant;
 
 @Getter
 @Setter
@@ -13,7 +13,7 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "refresh")
-public class RefreshToken extends BaseTimeEntity{
+public class RefreshToken extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

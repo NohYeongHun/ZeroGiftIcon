@@ -1,4 +1,4 @@
-package com.example.demo.exception.common.code;
+package com.example.demo.common.exception.code;
 
 
 import lombok.AllArgsConstructor;

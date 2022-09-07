@@ -1,4 +1,4 @@
-package com.example.demo.dto.common;
+package com.example.demo.common.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 @Builder
-public class ErrorResult {
+public class ErrorResultDto {
     private String errorCode;
     private String errorDescription;
 }
