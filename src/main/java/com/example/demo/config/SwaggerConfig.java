@@ -1,6 +1,6 @@
 package com.example.demo.config;
 
-import com.example.demo.dto.common.MyPageable;
+import com.example.demo.common.dto.MyPageableDto;
 import com.fasterxml.classmate.TypeResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,7 +25,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.OAS_30)
                 .alternateTypeRules(
                         AlternateTypeRules.newRule(typeResolver.resolve(Pageable.class),
-                                typeResolver.resolve(MyPageable.class))
+                                typeResolver.resolve(MyPageableDto.class))
                 )
                 .useDefaultResponseMessages(true)
                 .securitySchemes(Collections.singletonList(apiKey()))

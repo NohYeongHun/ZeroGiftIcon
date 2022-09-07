@@ -1,6 +1,6 @@
-package com.example.demo.persist.member.repository;
+package com.example.demo.member.repository;
 
-import com.example.demo.persist.member.Member;
+import com.example.demo.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

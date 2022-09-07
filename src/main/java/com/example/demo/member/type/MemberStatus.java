@@ -1,4 +1,4 @@
-package com.example.demo.persist.member.type;
+package com.example.demo.member.type;
 
 public enum MemberStatus {
     WAIT,

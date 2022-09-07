@@ -1,9 +1,10 @@
 package com.example.demo.security.jwt;
 
 
-import com.example.demo.dto.common.MemberInfo;
-import com.example.demo.exception.common.JwtInvalidException;
-import com.example.demo.exception.common.code.JwtErrorCode;
+import com.example.demo.member.dto.MemberInfo;
+import com.example.demo.common.exception.JwtInvalidException;
+import com.example.demo.common.exception.code.JwtErrorCode;
+import com.example.demo.security.service.TokenService;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

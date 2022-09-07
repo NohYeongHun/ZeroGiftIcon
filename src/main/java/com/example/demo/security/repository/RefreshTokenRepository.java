@@ -1,7 +1,7 @@
-package com.example.demo.persist.common.repository;
+package com.example.demo.security.repository;
 
-import com.example.demo.persist.common.RefreshToken;
-import com.example.demo.persist.member.Member;
+import com.example.demo.common.entity.RefreshToken;
+import com.example.demo.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
