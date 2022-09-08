@@ -1,13 +1,13 @@
-package com.example.demo.member.dto;
+package com.example.demo.security.dto;
 
-import static com.example.demo.security.jwt.JwtInfo.KEY_EMAIL;
-import static com.example.demo.security.jwt.JwtInfo.KEY_ID;
-import static com.example.demo.security.jwt.JwtInfo.KEY_NICKNAME;
-import static com.example.demo.security.jwt.JwtInfo.KEY_ROLES;
-import static com.example.demo.security.jwt.JwtInfo.KEY_STATUS;
+import static com.example.demo.security.utils.JwtInfo.KEY_EMAIL;
+import static com.example.demo.security.utils.JwtInfo.KEY_ID;
+import static com.example.demo.security.utils.JwtInfo.KEY_NICKNAME;
+import static com.example.demo.security.utils.JwtInfo.KEY_ROLES;
+import static com.example.demo.security.utils.JwtInfo.KEY_STATUS;
 
 import com.example.demo.member.entity.Member;
-import com.example.demo.security.jwt.JwtInfo;
+import com.example.demo.security.utils.JwtInfo;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.AllArgsConstructor;
