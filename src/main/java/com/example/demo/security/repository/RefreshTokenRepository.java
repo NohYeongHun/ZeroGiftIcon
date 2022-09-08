@@ -1,17 +1,47 @@
 package com.example.demo.security.repository;
 
-import com.example.demo.common.entity.RefreshToken;
 import com.example.demo.member.entity.Member;
+import com.nimbusds.oauth2.sdk.token.RefreshToken;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
+import java.time.Duration;
 import java.util.Optional;
 
-public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long> {
-    @Override
-    Optional<RefreshToken> findById(Long id);
-    Optional<RefreshToken> findByToken(String token);
+@Repository
+@RequiredArgsConstructor
+public class RefreshTokenRepository {
+    private final RedisTemplate<String, String> redisTemplate;
 
-    boolean existsByToken(String token);
+    private static final String KEY_PREFIX = "refreshToken::";
 
-    void deleteByMember(Member member);
+    public void save(String username, String refreshToken, Duration duration) {
+        ValueOperations<String, String> values = redisTemplate.opsForValue();
+        values.set(KEY_PREFIX + username, refreshToken, duration);
+    }
+
+    public boolean existsByUsername(String username) {
+        ValueOperations<String, String> values = redisTemplate.opsForValue();
+        String refreshToken = values.get(KEY_PREFIX + username);
+
+        if (!StringUtils.hasText(refreshToken)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public Optional<String> findByUsername(String username) {
+        ValueOperations<String, String> values = redisTemplate.opsForValue();
+
+        return Optional.ofNullable(values.get(KEY_PREFIX + username));
+    }
+
+    public void deleteByUsername(String username) {
+        redisTemplate.delete(KEY_PREFIX + username);
+    }
 }
