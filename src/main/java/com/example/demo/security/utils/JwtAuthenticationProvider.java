@@ -1,7 +1,8 @@
-package com.example.demo.security.jwt;
+package com.example.demo.security.utils;
 
 
-import com.example.demo.member.dto.MemberInfo;
+import com.example.demo.security.dto.AdminInfo;
+import com.example.demo.security.dto.MemberInfo;
 import com.example.demo.common.exception.JwtInvalidException;
 import com.example.demo.common.exception.code.JwtErrorCode;
 import com.example.demo.security.service.TokenService;
@@ -14,7 +15,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
+import java.util.Arrays;
 
 
 @Slf4j
@@ -31,6 +32,14 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 		Claims claims =
 				tokenService.parseAccessToken(((JwtAuthenticationToken) authentication).getJwt());
 
+		if (claims.get(JwtInfo.KEY_ROLES,String.class).equals("ROLE_ADMIN")) {
+
+			AdminInfo info = AdminInfo.of(claims);
+
+			return new JwtAuthenticationToken(AdminInfo.of(claims), "",
+					Arrays.asList(new SimpleGrantedAuthority(info.getRole())));
+		}
+
 		MemberInfo info = MemberInfo.of(claims);
 
 		switch (info.getStatus()) {
@@ -42,7 +51,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 				throw new JwtInvalidException(JwtErrorCode.MEMBER_STATUS_WAIT);
 			default:
 				return new JwtAuthenticationToken(info, "",
-						Collections.singletonList(new SimpleGrantedAuthority(info.getRole())));
+						Arrays.asList(new SimpleGrantedAuthority(info.getRole())));
 		}
 
 	}
