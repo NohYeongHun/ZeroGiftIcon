@@ -1,6 +1,7 @@
 package com.example.demo.member.entity;
 
 import com.example.demo.common.entity.BaseTimeEntity;
+import com.example.demo.common.type.AuthType;
 import com.example.demo.member.type.MemberStatus;
 import com.example.demo.security.type.Role;
 import lombok.AllArgsConstructor;
@@ -24,10 +25,13 @@ public class Member extends BaseTimeEntity {
     @Column(unique = true)
     private String email;
 
+    private String nickname;
+
     @Enumerated(EnumType.STRING)
     private MemberStatus status;
 
-    private String nickname;
+    @Enumerated(EnumType.STRING)
+    private AuthType authType;
 
     @Enumerated(EnumType.STRING)
     private Role role;
