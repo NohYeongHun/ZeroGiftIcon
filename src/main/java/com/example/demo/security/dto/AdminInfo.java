@@ -7,20 +7,23 @@ import static com.example.demo.security.utils.JwtInfo.KEY_ROLES;
 import com.example.demo.security.utils.JwtInfo;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-@Data
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class AdminInfo implements LoginInfo{
 
     private Long id;
     private String email;
     private String role;
+
+    @Builder
+    public AdminInfo(Long id, String email, String role)
+    {
+        this.id = id;
+        this.email = email;
+        this.role = role;
+    }
 
     @Override
     public Claims toClaims() {
