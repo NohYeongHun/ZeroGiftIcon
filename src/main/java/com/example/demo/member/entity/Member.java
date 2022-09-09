@@ -4,17 +4,12 @@ import com.example.demo.common.entity.BaseTimeEntity;
 import com.example.demo.common.type.AuthType;
 import com.example.demo.member.type.MemberStatus;
 import com.example.demo.security.type.Role;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Entity
 public class Member extends BaseTimeEntity {
 
@@ -35,4 +30,19 @@ public class Member extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @Builder
+    public Member(
+            String email,
+            String nickname,
+            MemberStatus status,
+            AuthType authType,
+            Role role
+    ){
+        this.email = email;
+        this.nickname = nickname;
+        this.authType = authType;
+        this.status = status;
+        this.role = role;
+    }
 }

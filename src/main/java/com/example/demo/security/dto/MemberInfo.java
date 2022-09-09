@@ -10,15 +10,10 @@ import com.example.demo.member.entity.Member;
 import com.example.demo.security.utils.JwtInfo;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-@Data
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class MemberInfo implements LoginInfo {
 
     private Long id;
@@ -27,6 +22,21 @@ public class MemberInfo implements LoginInfo {
     private String nickname;
     private String status;
     private String email;
+
+    @Builder
+    public MemberInfo(
+            Long id,
+            String role,
+            String nickname,
+            String status,
+            String email
+    ){
+        this.id = id;
+        this.role = role;
+        this.nickname = nickname;
+        this.status = status;
+        this.email = email;
+    }
 
     @Override
     public Claims toClaims() {
