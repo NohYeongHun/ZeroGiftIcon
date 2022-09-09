@@ -6,8 +6,8 @@ import lombok.Getter;
 @Getter
 public class OAuthException extends RuntimeException {
 
-    private OAuthErrorCode errorCode;
-    private String errorMessage;
+    private final OAuthErrorCode errorCode;
+    private final String errorMessage;
 
     public OAuthException(OAuthErrorCode errorCode) {
         super(errorCode.getDescription());

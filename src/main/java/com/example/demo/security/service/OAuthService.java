@@ -114,10 +114,7 @@ public class OAuthService {
 
     private void validateRequestAuthTypeAndMemberAuthType(AuthType authType, Member member) {
         if (!authType.equals(member.getAuthType())) {
-            throw new OAuthException(OAuthErrorCode.EMAIL_ALREADY_SIGNED_UP
-                    .setDescription("해당 이메일은 "
-                            + member.getAuthType().getKorName() + "으로 가입되어있습니다. "
-                            + member.getAuthType().getKorName() + "으로 다시 로그인 해주세요"));
+            throw new OAuthException(OAuthErrorCode.EMAIL_ALREADY_SIGNED_UP);
         }
     }
 
