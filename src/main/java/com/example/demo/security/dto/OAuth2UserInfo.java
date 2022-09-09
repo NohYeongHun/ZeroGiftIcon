@@ -24,4 +24,8 @@ public abstract class OAuth2UserInfo {
 
 	public abstract AuthType getAuthType();
 
+	public abstract String getAuthId();
+
+	public abstract String getProfileImageUrl();
+
 }
