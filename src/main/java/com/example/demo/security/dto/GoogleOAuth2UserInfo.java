@@ -11,6 +11,9 @@ public class GoogleOAuth2UserInfo extends OAuth2UserInfo{
 	private final String name;
 	private final String email;
 	private final AuthType authType;
+	private String authId;
+	private String profileImageUrl;
+
 
 
 	public GoogleOAuth2UserInfo(Map<String, Object> attributes) {

@@ -127,6 +127,8 @@ public class OAuthService {
                 .role(Role.ROLE_MEMBER)
                 .status(MemberStatus.PERMITTED)
                 .authType(oAuth2UserInfo.getAuthType())
+                .authId(oAuth2UserInfo.getAuthId())
+                .profileImageUrl(oAuth2UserInfo.getProfileImageUrl())
                 .build();
 
         return memberRepository.save(member);
