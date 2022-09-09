@@ -7,7 +7,6 @@ import lombok.Setter;
 import java.util.Map;
 
 @Getter
-@Setter
 public abstract class OAuth2UserInfo {
 	protected Map<String, Object> attributes;
 
