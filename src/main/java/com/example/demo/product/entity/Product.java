@@ -45,6 +45,7 @@ public class Product {
     private LocalDateTime createdAt;
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+    private String mainImageUrl;
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;

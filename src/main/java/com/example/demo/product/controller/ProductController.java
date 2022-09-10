@@ -1,5 +1,7 @@
 package com.example.demo.product.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
@@ -31,47 +33,29 @@ public class ProductController {
     // @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Result<?>> addProduct(@RequestBody @Valid NewProductRequest request) {
         String email = getEmail();
-        if (email == null) {
-            return ResponseEntity.badRequest().body(
-                Result.builder()
-                        .status(403)
-                        .success(false)
-                        .data(ProductErrorCode.INSUFFICIENT_AUTHORITY)
-                        .build()
-            );
-        }
+        if (email == null) return badRequest(403, ProductErrorCode.INSUFFICIENT_AUTHORITY);
         return ResponseEntity.ok().body(
-                Result.builder()
-                        .status(200)
-                        .success(true)
-                        .data(productService.addProduct(request, email))
-                        .build()
-        );
+                Result.builder().data(productService.addProduct(request, email)).build());
     }
 
     @GetMapping("product/list")
     public ResponseEntity<Result<?>> listProduct(
-            @RequestParam Category category,
+            @RequestParam List<Category> categories,
             @RequestParam Integer idx,
             @RequestParam Integer size) {
         return ResponseEntity.ok().body(
-            Result.builder()
-                  .status(200)
-                  .success(true)
-                  .data(productService.listProduct(category, idx, size))
-                  .build()
-        );
+            Result.builder().data(productService.listProduct(categories, idx, size)).build());
     }
 
     @GetMapping("product/detail/{productId}")
     public ResponseEntity<Result<?>> getDetail(@PathVariable Long productId) {
         return ResponseEntity.ok().body(
-            Result.builder()
-                  .status(200)
-                  .success(true)
-                  .data(productService.getDetail(productId))
-                  .build()
-        );
+            Result.builder().data(productService.getDetail(productId)).build());
+    }
+
+    private ResponseEntity<Result<?>> badRequest(int status, ProductErrorCode errorCode) {
+        return ResponseEntity.badRequest().body(
+                Result.builder().status(status).success(false).data(errorCode).build());
     }
 
     private String getEmail() {

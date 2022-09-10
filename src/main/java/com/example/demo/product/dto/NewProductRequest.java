@@ -1,5 +1,7 @@
 package com.example.demo.product.dto;
 
+import java.util.List;
+
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
@@ -20,4 +22,5 @@ public class NewProductRequest {
     private Integer price;
     @Enumerated(EnumType.STRING)
     private Category category;
+    private List<Long> productImageIds;
 }
