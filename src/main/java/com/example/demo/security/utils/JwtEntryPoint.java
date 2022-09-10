@@ -1,4 +1,4 @@
-package com.example.demo.security.jwt;
+package com.example.demo.security.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;

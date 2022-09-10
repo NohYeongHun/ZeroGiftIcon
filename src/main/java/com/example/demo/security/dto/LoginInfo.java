@@ -1,4 +1,4 @@
-package com.example.demo.member.dto;
+package com.example.demo.security.dto;
 
 import io.jsonwebtoken.Claims;
 
