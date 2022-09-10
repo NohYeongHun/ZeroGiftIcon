@@ -6,11 +6,11 @@ import lombok.*;
 import java.time.Duration;
 
 @NoArgsConstructor
-@Data
+@Getter
 public class RefreshTokenInputDto {
 
     @Builder
-    @Data
+    @Getter
     public static class Info{
         private Member member;
         private String token;

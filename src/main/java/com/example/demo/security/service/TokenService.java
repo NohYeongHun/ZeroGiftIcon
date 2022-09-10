@@ -1,22 +1,20 @@
 package com.example.demo.security.service;
 
+import com.example.demo.security.dto.AdminInfo;
 import com.example.demo.common.exception.JwtInvalidException;
-import com.example.demo.member.dto.LoginInfo;
-import com.example.demo.member.dto.MemberInfo;
+import com.example.demo.security.dto.LoginInfo;
+import com.example.demo.security.dto.MemberInfo;
 import com.example.demo.common.exception.code.JwtErrorCode;
-import com.example.demo.common.entity.RefreshToken;
 import com.example.demo.security.dto.TokenDto;
 import com.example.demo.security.repository.RefreshTokenRepository;
-import com.example.demo.member.entity.Member;
-import com.example.demo.member.repository.MemberRepository;
-import com.example.demo.security.jwt.JwtInfo;
+import com.example.demo.security.utils.JwtInfo;
+import com.example.demo.security.type.Role;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.util.Date;
@@ -29,7 +27,6 @@ import static javax.management.timer.Timer.ONE_MINUTE;
 public class TokenService {
 
     private final RefreshTokenRepository refreshTokenRepository;
-    private final MemberRepository memberRepository;
 
     private final JwtInfo jwtInfo;
 
@@ -46,21 +43,12 @@ public class TokenService {
                 jwtInfo.getAccessTokenExpiredMin());
     }
 
-    @Transactional
     private String issueRefreshToken(LoginInfo loginInfo) {
         String refreshToken = createToken(loginInfo, jwtInfo.getEncodedRefreshKey(),
                 jwtInfo.getRefreshTokenExpiredMin());
 
-        Member member = memberRepository.findById(loginInfo.getId())
-                .orElseThrow(() -> new RuntimeException("사용자 없음"));
-
-        refreshTokenRepository.save(
-                RefreshToken.builder()
-                        .token(refreshToken)
-                        .expiryDate(Duration.ofMinutes(jwtInfo.getRefreshTokenExpiredMin()))
-                        .member(member)
-                        .build()
-        );
+        refreshTokenRepository.save(loginInfo.getEmail(), refreshToken, Duration.ofMinutes(
+                jwtInfo.getRefreshTokenExpiredMin()));
 
         return refreshToken;
     }
@@ -78,17 +66,14 @@ public class TokenService {
                 .compact();
     }
 
-    public boolean existsRefreshToken(String token) {
-        return refreshTokenRepository.existsByToken(token);
+    public boolean existsRefreshToken(String username) {
+        return refreshTokenRepository.existsByUsername(username);
+    }
+    public void deleteRefreshToken(String username) {
+        refreshTokenRepository.deleteByUsername(username);
     }
 
-    @Transactional
-    public void deleteRefreshToken(String email) {
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("사용자 없음."));
 
-        refreshTokenRepository.deleteByMember(member);
-    }
 
     public Claims parseAccessToken(String token) {
         return parseToken(token, jwtInfo.getEncodedAccessKey());
@@ -128,10 +113,20 @@ public class TokenService {
 
         String email = claims.get(JwtInfo.KEY_EMAIL, String.class);
 
-        if (!memberRepository.existsByEmail(email)) {
+        if (!refreshTokenRepository.existsByUsername(email)) {
             throw new JwtInvalidException(JwtErrorCode.EXPIRED_JWT);
         }
 
-        return issueAllToken(MemberInfo.of(claims));
+        String roles = claims.get(JwtInfo.KEY_ROLES, String.class);
+
+        LoginInfo loginInfo;
+
+        if (Role.ROLE_ADMIN.name().equals(roles)) {
+            loginInfo = AdminInfo.of(claims);
+        } else {
+            loginInfo = MemberInfo.of(claims);
+        }
+
+        return issueAllToken(loginInfo);
     }
 }

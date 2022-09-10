@@ -1,4 +1,4 @@
-package com.example.demo.security.jwt;
+package com.example.demo.security.utils;
 
 import com.example.demo.common.dto.ErrorResultDto;
 import com.example.demo.common.exception.JwtInvalidException;
@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.example.demo.security.jwt.JwtInfo.BEARER_PREFIX;
+import static com.example.demo.security.utils.JwtInfo.BEARER_PREFIX;
 
 @Slf4j
 @RequiredArgsConstructor

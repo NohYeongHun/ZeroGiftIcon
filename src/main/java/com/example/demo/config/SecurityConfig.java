@@ -1,9 +1,9 @@
 package com.example.demo.config;
 
-import com.example.demo.security.jwt.JwtAccessDeniedHandler;
-import com.example.demo.security.jwt.JwtAuthenticationFilter;
-import com.example.demo.security.jwt.JwtAuthenticationProvider;
-import com.example.demo.security.jwt.JwtEntryPoint;
+import com.example.demo.security.utils.JwtAccessDeniedHandler;
+import com.example.demo.security.utils.JwtAuthenticationFilter;
+import com.example.demo.security.utils.JwtAuthenticationProvider;
+import com.example.demo.security.utils.JwtEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -36,7 +36,7 @@ public class SecurityConfig {
                         "/v3/api-docs", "/swagger-resources/**", "/swagger-ui/index.html", "/swagger-ui.html","/webjars/**", "/swagger*/**",   // swagger
                         "/h2-console/**", "/css/**", "/js/**",
                         "/favicon.ico").permitAll()
-                .anyRequest().authenticated();
+                .anyRequest().permitAll();
 
 
         http.headers().frameOptions().disable();
