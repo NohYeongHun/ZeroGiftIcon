@@ -52,16 +52,21 @@ public class ProductService {
                 .member(member)
                 .build();
         productRepository.save(product);
+        for (Long id : request.getProductImageIds()) {
+            ProductImage image = productImageRepository.findById(id).get();
+            image.setProduct(product);
+            if (image.getIsMainImage()) product.setMainImageUrl(image.getUrl());
+            productImageRepository.save(image);
+        }
         return NewProductResponse.builder()
                                  .productId(product.getId())
                                  .build();
     }
 
-    public List<ProductDto> listProduct(Category category, Integer idx, Integer size) {
+    public List<ProductDto> listProduct(List<Category> categories, Integer idx, Integer size) {
         Pageable pageable = PageRequest.of(idx, size, Sort.by("updatedAt").descending());
-        Page<Product> page = productRepository.findByCategory(category, pageable);
+        Page<Product> page = productRepository.findByStatusAndCategoryIn(Status.PUBLIC, categories, pageable);
         return page.getContent().stream()
-                   .filter(product -> product.getStatus().equals(Status.PUBLIC))
                    .map(product -> ProductDto.builder()
                            .id(product.getId())
                            .name(product.getName())
