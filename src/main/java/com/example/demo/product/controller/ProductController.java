@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,6 +40,18 @@ public class ProductController {
     public ResponseEntity<Result<?>> addProductTemp(@RequestBody @Valid NewProductRequest request) {
         return ResponseEntity.ok().body(
                 Result.builder().data(productService.addProduct(request, "temp@temp")).build());
+    }
+
+    @DeleteMapping("admin/product")
+    public ResponseEntity<Result<?>> removeProduct(@RequestParam Long productId) {
+        String email = TokenUtil.getAdminEmail();
+        if (email == null) return badRequest(403, ProductErrorCode.INSUFFICIENT_AUTHORITY);
+        return productService.removeProduct(productId, email);
+    }
+
+    @DeleteMapping("temp/product")
+    public ResponseEntity<Result<?>> removeProductTemp(@RequestParam Long productId) {
+        return productService.removeProduct(productId, "temp@temp");
     }
 
     @GetMapping("product/list")
