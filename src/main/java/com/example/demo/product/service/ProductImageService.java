@@ -8,7 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.product.dto.ImageUploadResponse;
@@ -56,6 +60,19 @@ public class ProductImageService {
                                            .build());
         };
         return results;
+    }
+
+    public ResponseEntity<byte[]> display(String url) {
+        ResponseEntity<byte[]> response = null;
+        File file = new File(UPLOAD_PATH + url);
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Content-type", Files.probeContentType(file.toPath()));
+            response = new ResponseEntity<>(FileCopyUtils.copyToByteArray(file), headers, HttpStatus.OK);
+        } catch (IOException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return response;
     }
 
     private void createDirIfNotExist() {

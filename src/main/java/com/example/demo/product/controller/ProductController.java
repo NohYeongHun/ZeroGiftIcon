@@ -38,6 +38,12 @@ public class ProductController {
                 Result.builder().data(productService.addProduct(request, email)).build());
     }
 
+    @PostMapping("temp/product")
+    public ResponseEntity<Result<?>> addProductTemp(@RequestBody @Valid NewProductRequest request) {
+        return ResponseEntity.ok().body(
+                Result.builder().data(productService.addProduct(request, "temp@temp")).build());
+    }
+
     @GetMapping("product/list")
     public ResponseEntity<Result<?>> listProduct(
             @RequestParam List<Category> categories,
