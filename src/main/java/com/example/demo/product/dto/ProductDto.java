@@ -1,6 +1,5 @@
 package com.example.demo.product.dto;
 
-import com.example.demo.product.entity.ProductImage;
 import com.example.demo.product.type.Category;
 
 import lombok.AllArgsConstructor;
