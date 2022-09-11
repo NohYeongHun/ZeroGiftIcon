@@ -1,6 +1,9 @@
 package com.example.demo.product.service;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -9,8 +12,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.common.dto.Result;
 import com.example.demo.common.exception.MemberException;
 import com.example.demo.common.exception.ProductException;
 import com.example.demo.common.exception.code.MemberErrorCode;
@@ -37,6 +42,8 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ProductImageRepository productImageRepository;
     private final MemberRepository memberRepository;
+
+    private static final String UPLOAD_PATH = "/opt/zerogift/upload/";
 
     @Transactional
     public NewProductResponse addProduct(NewProductRequest request, String email) {
@@ -66,6 +73,29 @@ public class ProductService {
         return NewProductResponse.builder()
                                  .productId(product.getId())
                                  .build();
+    }
+
+    @Transactional
+    public ResponseEntity<Result<?>> removeProduct(Long productId, String email) {
+        Optional<Member> optionalMember = memberRepository.findByEmail(email);
+        Optional<Product> optionalProduct = productRepository.findById(productId);
+        if (optionalMember.isEmpty()) return badRequest(403, MemberErrorCode.MEMBER_NOT_FOUND);
+        if (optionalProduct.isEmpty()) return badRequest(404, ProductErrorCode.PRODUCT_NOT_FOUND);
+        Member member = optionalMember.get();
+        Product product = optionalProduct.get();
+        if (!product.getMember().equals(member)) return badRequest(403, ProductErrorCode.OWNED_BY_SOMEONE_ELSE);
+        for (ProductImage image : productImageRepository.findAllByProduct(product)) {
+            String url = image.getUrl();
+            if (productImageRepository.countByUrl(url) == 1) {
+                try {
+                    File file = new File(UPLOAD_PATH + url);
+                    file.delete();
+                } catch (IOException e) { }
+            }
+            productImageRepository.delete(image);
+        }
+        productRepository.delete(product);
+        return ResponseEntity.ok().body(Result.builder().data("successfully deleted").build());
     }
 
     public List<ProductDto> listProduct(List<Category> categories, Integer idx, Integer size) {
@@ -105,5 +135,10 @@ public class ProductService {
                                                         .build())
                                              .collect(Collectors.toList()))
                                .build();
+    }
+
+    private ResponseEntity<Result<?>> badRequest(int status, Object errorCode) {
+        return ResponseEntity.badRequest().body(
+                Result.builder().status(status).success(false).data(errorCode).build());
     }
 }

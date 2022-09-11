@@ -9,4 +9,5 @@ import com.example.demo.product.entity.ProductImage;
 
 public interface ProductImageRepository extends JpaRepository<ProductImage, Long> {
     List<ProductImage> findAllByProduct(Product product);
+    Long countByUrl(String url);
 }
