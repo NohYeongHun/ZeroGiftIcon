@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import com.example.demo.product.type.Category;
 
@@ -17,8 +19,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class NewProductRequest {
+    @NotEmpty
     private String name;
     private String description;
+    @NotNull
     private Integer price;
     @Enumerated(EnumType.STRING)
     private Category category;
