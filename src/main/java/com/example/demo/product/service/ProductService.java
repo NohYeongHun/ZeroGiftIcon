@@ -79,6 +79,7 @@ public class ProductService {
                            .price(product.getPrice())
                            .category(product.getCategory())
                            .viewCount(product.getViewCount())
+                           .mainImageUrl(product.getMainImageUrl())
                            .build())
                    .collect(Collectors.toList());
     }
