@@ -52,10 +52,15 @@ public class ProductService {
                 .member(member)
                 .build();
         productRepository.save(product);
+        boolean first = true;
         for (Long id : request.getProductImageIds()) {
             ProductImage image = productImageRepository.findById(id).get();
             image.setProduct(product);
-            if (image.getIsMainImage()) product.setMainImageUrl(image.getUrl());
+            if (first) {
+                product.setMainImageUrl(image.getUrl());
+                image.setIsMainImage(true);
+                first = false;
+            }
             productImageRepository.save(image);
         }
         return NewProductResponse.builder()

@@ -27,7 +27,8 @@ public class ProductImage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String url;
-    private Boolean isMainImage;
+    @Builder.Default
+    private Boolean isMainImage = false;
     @CreationTimestamp
     private LocalDateTime createdAt;
     @UpdateTimestamp

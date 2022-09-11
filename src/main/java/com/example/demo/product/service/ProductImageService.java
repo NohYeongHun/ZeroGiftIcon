@@ -31,7 +31,6 @@ public class ProductImageService {
     public List<ImageUploadResponse> upload(MultipartFile[] request) {
         createDirIfNotExist();
         List<ImageUploadResponse> results = new ArrayList<>();
-        int successCount = 0;
         for (MultipartFile file : request) {
             String originalFileName = null, uuid = null, ext = null;
             byte[] bytes = null;
@@ -48,10 +47,7 @@ public class ProductImageService {
                                                .build());
                 continue;
             }
-            ProductImage productImage = ProductImage.builder()
-                                                    .url(uuid + "." + ext)
-                                                    .isMainImage(successCount++ > 0 ? false : true)
-                                                    .build();
+            ProductImage productImage = ProductImage.builder().url(uuid + "." + ext).build();
             productImageRepository.save(productImage);
             results.add(ImageUploadResponse.builder()
                                            .productImageId(productImage.getId())
