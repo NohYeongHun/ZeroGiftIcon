@@ -1,7 +1,6 @@
 package com.example.demo.product.service;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -87,10 +86,8 @@ public class ProductService {
         for (ProductImage image : productImageRepository.findAllByProduct(product)) {
             String url = image.getUrl();
             if (productImageRepository.countByUrl(url) == 1) {
-                try {
-                    File file = new File(UPLOAD_PATH + url);
-                    file.delete();
-                } catch (IOException e) { }
+                File file = new File(UPLOAD_PATH + url);
+                file.delete();
             }
             productImageRepository.delete(image);
         }
