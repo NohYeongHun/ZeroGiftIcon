@@ -1,15 +1,15 @@
 package com.example.demo.common.exception;
 
-import com.example.demo.common.exception.code.MemberErrorCode;
+import com.example.demo.common.exception.code.ProductErrorCode;
 
 import lombok.Getter;
 
 @Getter
-public class MemberException extends RuntimeException {
-    private final MemberErrorCode errorCode;
+public class ProductException extends RuntimeException {
+    private final ProductErrorCode errorCode;
     private final String errorMessage;
 
-    public MemberException(MemberErrorCode errorCode) {
+    public ProductException(ProductErrorCode errorCode) {
         super(errorCode.getDescription());
         this.errorCode = errorCode;
         this.errorMessage = errorCode.getDescription();
