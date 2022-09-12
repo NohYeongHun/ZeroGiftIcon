@@ -10,8 +10,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @Builder
 public class Result<T> {
-    private Integer status;
-    private boolean success;
+    @Builder.Default
+    private Integer status = 200;
+    @Builder.Default
+    private Boolean success = true;
     private T data;
-
 }
