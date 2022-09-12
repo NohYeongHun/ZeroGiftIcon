@@ -1,6 +1,7 @@
 package com.example.demo.product.entity;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -9,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -46,6 +48,9 @@ public class Product {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
     private String mainImageUrl;
+    @Lob
+    @Builder.Default
+    private HashSet<Long> liked = new HashSet<>();
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;

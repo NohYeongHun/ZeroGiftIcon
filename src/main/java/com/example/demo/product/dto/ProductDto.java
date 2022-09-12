@@ -18,5 +18,7 @@ public class ProductDto {
     private Integer price;
     private Category category;
     private Long viewCount;
+    private Integer likeCount;
+    private Boolean liked;
     private String mainImageUrl;
 }
