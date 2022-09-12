@@ -21,7 +21,7 @@ public class Gift extends BaseTimeEntity {
     private Long id;
 
     @Column(nullable = false)
-    private Boolean use;
+    private Boolean isUse;
 
     @Column(nullable = false)
     private String code; // 사용 코드
