@@ -1,6 +1,7 @@
 package com.example.demo.product.service;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,6 +33,7 @@ import com.example.demo.product.repository.ProductImageRepository;
 import com.example.demo.product.repository.ProductRepository;
 import com.example.demo.product.type.Category;
 import com.example.demo.product.type.Status;
+import com.example.demo.util.TokenUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -95,7 +97,25 @@ public class ProductService {
         return ResponseEntity.ok().body(Result.builder().data("successfully deleted").build());
     }
 
+    @Transactional
+    public ResponseEntity<Result<?>> likeProduct(Long productId, String email) {
+        Optional<Member> optionalMember = memberRepository.findByEmail(email);
+        Optional<Product> optionalProduct = productRepository.findById(productId);
+        if (optionalMember.isEmpty()) return badRequest(403, ProductErrorCode.VOTE_NOT_ALLOWED_FOR_NON_MEMBER);
+        if (optionalProduct.isEmpty()) return badRequest(404, ProductErrorCode.PRODUCT_NOT_FOUND);
+        Member member = optionalMember.get();
+        Product product = optionalProduct.get();
+        if (product.getMember().equals(member)) return badRequest(403, ProductErrorCode.SELF_VOTE_FORBIDDEN);
+        if (product.getLiked().contains(member.getId())) return badRequest(403, ProductErrorCode.DUPLICATE_VOTING_FORBIDDEN);
+        product.getLiked().add(member.getId());
+        productRepository.save(product);
+        return ResponseEntity.ok().body(Result.builder().data("successfully liked").build());
+    }
+
     public List<ProductDto> listProduct(List<Category> categories, Integer idx, Integer size) {
+        String email = TokenUtil.getAdminEmail();
+        if (email == null) email = TokenUtil.getMemberEmail();
+        Long memberId = email != null ? memberRepository.findByEmail(email).get().getId() : null;
         Pageable pageable = PageRequest.of(idx, size, Sort.by("updatedAt").descending());
         Page<Product> page = productRepository.findByStatusAndCategoryIn(Status.PUBLIC, categories, pageable);
         return page.getContent().stream()
@@ -106,6 +126,8 @@ public class ProductService {
                            .price(product.getPrice())
                            .category(product.getCategory())
                            .viewCount(product.getViewCount())
+                           .likeCount(product.getLiked().size())
+                           .liked(memberId == null ? false : product.getLiked().contains(memberId))
                            .mainImageUrl(product.getMainImageUrl())
                            .build())
                    .collect(Collectors.toList());
