@@ -38,3 +38,7 @@ out/
 
 ### VS Code ###
 .vscode/
+
+## application.yml
+backend/src/main/resources/application.yml
+batch/src/main/resources/application.ym
