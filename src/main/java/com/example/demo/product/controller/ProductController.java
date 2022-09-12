@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -52,6 +53,18 @@ public class ProductController {
     @DeleteMapping("temp/product")
     public ResponseEntity<Result<?>> removeProductTemp(@RequestParam Long productId) {
         return productService.removeProduct(productId, "temp@temp");
+    }
+
+    @PatchMapping("member/product/like")
+    public ResponseEntity<Result<?>> likeProduct(@RequestParam Long productId) {
+        String email = TokenUtil.getAdminEmail();
+        if (email == null) email = TokenUtil.getMemberEmail();
+        return productService.likeProduct(productId, email);
+    }
+
+    @PatchMapping("temp/product/like")
+    public ResponseEntity<Result<?>> likeProductTemp(@RequestParam Long productId) {
+        return productService.likeProduct(productId, "temp@temp");
     }
 
     @GetMapping("product/list")
