@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${title}">정상 내역</title>
+  <style>
+    .main_wrapper {
+      width: 80%;
+      height: 80%;
+      margin: 0 auto;
+      background-color: #cccccc;
+      border-radius: 30px;;
+      padding-top: 20px;
+      padding-left: 20px;
+    }
+
+    .main_table {
+      width: 100%;
+      margin: 20px auto;
+    }
+
+    tbody> tr {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="main_wrapper">
+    <h1>Zero-gift</h1>
+    <p>안녕하세요, <span th:text="${title}"></span> 관련하여 정산내역 보내드립니다.</p>
+
+    <table class="main_table">
+      <thead>
+        <tr>
+          <th style="width: 20%;">상품이름</th>
+          <th style="width: 40%;">상품 대표이미지</th>
+          <th style="width: 20%;">갯수</th>
+          <th style="width: 20%;">가격</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="mailInfo : ${mailList}">
+          <td th:text="${mailInfo.productName}">상품이름</td>
+          <td><img th:src="${mailInfo.thumbnail}" src="" alt="썸네일" /></td>
+          <td th:text="${mailInfo.count}">갯수</td>
+          <td th:text="${mailInfo.price}">가격</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="4">총 합계 : <span th:text="${monthSum}"></span></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+</body>
+</html>
