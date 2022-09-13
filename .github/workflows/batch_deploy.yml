@@ -5,20 +5,21 @@ on:
     branches:
       - main
       - develop
+      - develop/*
     paths: 'batch/**'
   pull_request:
     branches:
       - main
       - develop
-    path: 'batch/**'
+      - develop/*
+    paths: 'batch/**'
 
 defaults:
   run:
-    working-directory: batch
+    working-directory: ./batch
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -27,6 +28,14 @@ jobs:
         with:
           java-version: '11'
           distribution: 'temurin'
+      
+      - name: git secret 저장된 값을 가져옵니다.
+        env:
+          OCCUPY_SECRET: ${{ secrets.OCCUPY_SECRET }}
+          OCCUPY_SECRET_DIR: batch/src/main/resources
+          OCCUPY_SECRET_DIR_FILE_NAME: application.yml
+        run: echo $OCCUPY_SECRET | base64 --decode > $OCCUPY_SECRET_DIR/$OCCUPY_SECRET_DIR_FILE_NAME  
+      
 
       - name: TimeZone을 Asia/Seoul로 설정합니다
         uses: zcong1993/setup-timezone@master
