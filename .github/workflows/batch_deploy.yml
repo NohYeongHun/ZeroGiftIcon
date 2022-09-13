@@ -10,10 +10,10 @@ on:
       - develop-feat/**
     paths: 'batch/**'
 
-defaults:
-  run:
-    shell: bash
-    working-directory: batch
+# defaults:
+#  run:
+#    shell: bash
+#    working-directory: batch
 
 jobs:
   build:
