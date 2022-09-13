@@ -3,10 +3,12 @@ name: 스프링 배치 테스트 자동화
 on:
   push:
     branches:
+      - develop
       - develop-feat/**
     paths: 'batch/**'
   pull_request:
     branches:
+      - develop
       - develop-feat/**
     paths: 'batch/**'
 
