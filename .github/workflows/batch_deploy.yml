@@ -35,8 +35,7 @@ jobs:
           timezone: Asia/Seoul
 
       - name: Gradle 명령 실행을 위한 권한을 부여합니다
-      #  run: chmod +x gradlew
-        run: find -name batch
+        run: chmod +x gradlew
 
       - name: Gradle build를 수행합니다
         run: ./gradlew build
