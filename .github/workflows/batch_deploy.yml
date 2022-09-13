@@ -10,6 +10,9 @@ on:
       - develop-feat/**
     paths: 'batch/**'
 
+permissions:
+  contents: read
+
 defaults:
   run:
     working-directory: batch
