@@ -14,9 +14,9 @@ on:
       - develop-feat/**
     paths: 'batch/**'
 
-defaults:
-  run:
-    working-directory: tree/develop-feat/batch
+## defaults:
+##  run:
+##    working-directory: tree/develop-feat/batch
 
 jobs:
   build:
@@ -35,7 +35,8 @@ jobs:
           timezone: Asia/Seoul
 
       - name: Gradle 명령 실행을 위한 권한을 부여합니다
-        run: chmod +x gradlew
+      #  run: chmod +x gradlew
+        run: ls -al
 
       - name: Gradle build를 수행합니다
         run: ./gradlew build
