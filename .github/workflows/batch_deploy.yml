@@ -12,7 +12,7 @@ on:
 
 defaults:
   run:
-    working-directory: batch
+    working-directory: "./batch"
 
 jobs:
   build:
