@@ -5,13 +5,13 @@ on:
     branches:
       - main
       - develop
-      - develop/*
+      - develop-feat/*
     paths: 'batch/**'
   pull_request:
     branches:
       - main
       - develop
-      - develop/*
+      - develop-feat/*
     paths: 'batch/**'
 
 defaults:
