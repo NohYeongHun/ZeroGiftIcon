@@ -1,5 +1,20 @@
 package com.zerogift.backend.product.service;
 
+import java.io.File;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.transaction.Transactional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
 import com.zerogift.backend.common.dto.Result;
 import com.zerogift.backend.common.exception.MemberException;
 import com.zerogift.backend.common.exception.ProductException;
@@ -19,19 +34,6 @@ import com.zerogift.backend.product.repository.ProductRepository;
 import com.zerogift.backend.product.type.Category;
 import com.zerogift.backend.product.type.Status;
 import com.zerogift.backend.util.TokenUtil;
-import java.io.File;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.transaction.Transactional;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 

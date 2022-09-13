@@ -2,6 +2,7 @@ package com.zerogift.backend.security.dto;
 
 import com.zerogift.backend.common.type.AuthType;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Map;
 
