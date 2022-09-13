@@ -2,7 +2,11 @@ name: githubActionTest
 on:
   push:
     branches : [ develop ]
-    
+
+defaults:
+  run:
+    working-directory: backend
+
 jobs:
   build:
     runs-on: ubuntu-latest # 운영체제 지정
@@ -23,11 +27,12 @@ jobs:
         run: chmod +x gradlew
       - name: Build with Gradle
         run: ./gradlew build
-  deploy:
-    needs: build
-    name: Deploy
-    runs-on: [ self-hosted, label-developer ]
-    steps:
-      - name: deploy run
-        run: |
-          sudo sh /home/ec2-user/success.sh #ec2-user
+        
+#  deploy:
+#    needs: build
+#    name: Deploy
+#    runs-on: [ self-hosted, label-developer ]
+#    steps:
+#      - name: deploy run
+#        run: |
+#          sudo sh /home/ec2-user/success.sh #ec2-user
