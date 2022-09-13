@@ -15,10 +15,10 @@ public abstract class BaseTimeEntity {
 
     @CreatedDate
     @Column(updatable = false ,nullable = false)
-    private String createdAt;
+    private String createdDate;
 
     @LastModifiedDate
     @Column(nullable = false)
-    private String modifiedAt;
+    private String lastModifiedDate;
 
 }
