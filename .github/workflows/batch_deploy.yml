@@ -20,6 +20,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: check out
+        uses: actions/checkout@v2
+        
       - name: Open Web Client Directory
         run: |
           ls -la
