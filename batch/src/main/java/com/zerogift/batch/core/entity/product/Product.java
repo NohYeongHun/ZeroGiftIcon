@@ -2,6 +2,7 @@ package com.zerogift.batch.core.entity.product;
 
 import com.zerogift.batch.core.entity.base.BaseTimeEntity;
 import com.zerogift.batch.core.entity.member.Member;
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -15,11 +16,13 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Product extends BaseTimeEntity {
+public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,6 +47,14 @@ public class Product extends BaseTimeEntity {
     private ProductStatus status;
 
     private Integer viewCount;
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+
+    private String mainImageUrl;
 
     @ManyToOne
     @JoinColumn(name = "member_id")
