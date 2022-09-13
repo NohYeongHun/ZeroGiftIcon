@@ -1,4 +1,4 @@
-name: 스프링 배치 테스트 자동화
+# name: 스프링 배치 테스트 자동화
 
 on:
   push:
@@ -16,7 +16,7 @@ on:
 
 defaults:
   run:
-    working-directory: batch
+    working-directory: ./batch
 
 jobs:
   build:
