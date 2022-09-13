@@ -20,6 +20,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Open Web Client Directory
+        run: |
+          ls -la
+    
       - name: JDK 11을 설치합니다.
         uses: actions/setup-java@v3
         with:
