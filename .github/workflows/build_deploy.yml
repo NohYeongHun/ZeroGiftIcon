@@ -3,13 +3,13 @@ name: API 서버 gitaction build & deploy
 on:
   push:
     branches:
-      - main
       - develop
+      - develop-feat/**
     paths: 'backend/**'
   pull_request:
     branches:
-      - main
       - develop
+      - develop-feat/**
     paths: 'backend/**'
 
 defaults:
