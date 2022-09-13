@@ -1,8 +1,5 @@
 package com.zerogift.backend.product.controller;
 
-import com.zerogift.backend.common.dto.Result;
-import com.zerogift.backend.common.exception.code.ProductErrorCode;
-import com.zerogift.backend.util.TokenUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,7 +8,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.zerogift.backend.common.dto.Result;
+import com.zerogift.backend.common.exception.code.ProductErrorCode;
 import com.zerogift.backend.product.service.ProductImageService;
+import com.zerogift.backend.util.TokenUtil;
 
 import lombok.RequiredArgsConstructor;
 

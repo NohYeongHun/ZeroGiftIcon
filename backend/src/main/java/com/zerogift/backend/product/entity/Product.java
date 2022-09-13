@@ -1,6 +1,5 @@
 package com.zerogift.backend.product.entity;
 
-import com.zerogift.backend.member.entity.Member;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 
@@ -17,6 +16,7 @@ import javax.persistence.ManyToOne;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.zerogift.backend.member.entity.Member;
 import com.zerogift.backend.product.type.Category;
 import com.zerogift.backend.product.type.Status;
 
