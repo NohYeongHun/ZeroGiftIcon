@@ -16,7 +16,7 @@ on:
 
 defaults:
   run:
-    working-directory: batch
+    working-directory: tree/develop-feat/batch
 
 jobs:
   build:
