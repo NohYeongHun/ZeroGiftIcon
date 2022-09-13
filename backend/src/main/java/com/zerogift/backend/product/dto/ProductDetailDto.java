@@ -1,7 +1,8 @@
 package com.zerogift.backend.product.dto;
 
-import com.zerogift.backend.product.type.Category;
 import java.util.List;
+
+import com.zerogift.backend.product.type.Category;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

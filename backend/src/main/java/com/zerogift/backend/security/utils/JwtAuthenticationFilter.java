@@ -18,6 +18,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static com.zerogift.backend.security.utils.JwtInfo.BEARER_PREFIX;
+
 @Slf4j
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -60,8 +62,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	private String getJwtFrom(HttpServletRequest request) {
 		String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-		if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(JwtInfo.BEARER_PREFIX)) {
-			return bearerToken.substring(JwtInfo.BEARER_PREFIX.length());
+		if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
+			return bearerToken.substring(BEARER_PREFIX.length());
 		}
 
 		return null;

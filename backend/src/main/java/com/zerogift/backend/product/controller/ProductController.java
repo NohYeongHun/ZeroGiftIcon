@@ -1,10 +1,5 @@
 package com.zerogift.backend.product.controller;
 
-import com.zerogift.backend.common.dto.Result;
-import com.zerogift.backend.common.exception.code.ProductErrorCode;
-import com.zerogift.backend.product.dto.NewProductRequest;
-import com.zerogift.backend.product.type.Category;
-import com.zerogift.backend.util.TokenUtil;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -19,7 +14,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.zerogift.backend.common.dto.Result;
+import com.zerogift.backend.common.exception.code.ProductErrorCode;
+import com.zerogift.backend.product.dto.NewProductRequest;
 import com.zerogift.backend.product.service.ProductService;
+import com.zerogift.backend.product.type.Category;
+import com.zerogift.backend.util.TokenUtil;
 
 import lombok.RequiredArgsConstructor;
 
