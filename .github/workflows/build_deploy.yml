@@ -24,7 +24,7 @@ jobs:
           java-version: 11
           
       - name: Create application.yml
-        run : touch src/main/resuorecs/appliacation.yml
+        run : echo touch src/main/resuorecs/appliacation.yml
       
       - name: Copy Secret
         env:
