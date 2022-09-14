@@ -43,8 +43,6 @@ jobs:
     name: Deploy
     runs-on: [ self-hosted, label-developer ]
     steps:
-      - name : Create application.yml
-        run : touch src/main/resuorecs/appliacation.yml
       - name: Deploy run
         run: |
           sudo sh /home/ec2-user/success.sh #ec2-user
