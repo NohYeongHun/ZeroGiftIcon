@@ -6,11 +6,6 @@ on:
       - develop
       - develop-feat/**
     paths: 'backend/**'
-  pull_request:
-    branches:
-      - develop
-      - develop-feat/**
-    paths: 'backend/**'
 
 jobs:
   build:
