@@ -23,6 +23,9 @@ jobs:
         with:
           java-version: 11
           
+      - name: Create application.yml
+        run : touch src/main/resuorecs/appliacation.yml
+      
       - name: Copy Secret
         env:
           OCCUPY_SECRET: ${{ secrets.OCCUPY_SECRET }}
@@ -40,7 +43,7 @@ jobs:
     name: Deploy
     runs-on: [ self-hosted, label-developer ]
     steps:
-      - name: deploy run
+      - name: Deploy run
         run: |
           sudo sh /home/ec2-user/success.sh #ec2-user
 
