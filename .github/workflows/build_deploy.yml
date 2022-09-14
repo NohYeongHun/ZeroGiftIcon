@@ -45,6 +45,12 @@ jobs:
     name: Deploy
     runs-on: [ self-hosted, label-developer ]
     steps:
+      - name: 프로젝트 체크아웃합니다.
+        uses: actions/checkout@v2
+
+      - name: 테스트를 위해 ls
+        run: ls -al
+
       - name: deploy run
         run: |
           sudo sh /home/ec2-user/success.sh #ec2-user
