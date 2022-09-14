@@ -1,7 +1,6 @@
 package com.zerogift.backend.product.service;
 
 import java.io.File;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -44,8 +43,6 @@ public class ProductService {
     private final ProductImageRepository productImageRepository;
     private final MemberRepository memberRepository;
 
-    private static final String UPLOAD_PATH = "/opt/zerogift/upload/";
-
     @Transactional
     public NewProductResponse addProduct(NewProductRequest request, String email) {
         Member member = memberRepository.findByEmail(email).orElseThrow(
@@ -86,11 +83,6 @@ public class ProductService {
         Product product = optionalProduct.get();
         if (!product.getMember().equals(member)) return badRequest(403, ProductErrorCode.OWNED_BY_SOMEONE_ELSE);
         for (ProductImage image : productImageRepository.findAllByProduct(product)) {
-            String url = image.getUrl();
-            if (productImageRepository.countByUrl(url) == 1) {
-                File file = new File(UPLOAD_PATH + url);
-                file.delete();
-            }
             productImageRepository.delete(image);
         }
         productRepository.delete(product);
