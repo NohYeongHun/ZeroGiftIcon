@@ -25,9 +25,6 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-          
-      - name: Create application.yml
-        run : echo touch src/main/resuorecs/appliacation.yml
       
       - name: Copy Secret
         env:
