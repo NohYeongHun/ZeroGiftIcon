@@ -43,6 +43,14 @@ public class ProductController {
         return productService.listMyProduct(idx, size);
     }
 
+    @GetMapping("product/search")
+    public ResponseEntity<Result<?>> searchProduct(
+            @RequestParam String q,
+            @RequestParam Integer idx,
+            @RequestParam Integer size) {
+        return productService.searchProduct(q, idx, size);
+    }
+
     @PatchMapping("member/product/like")
     public ResponseEntity<Result<?>> likeProduct(@RequestParam Long productId) {
         return productService.likeProduct(productId);
