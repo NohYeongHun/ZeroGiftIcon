@@ -89,6 +89,27 @@ public class ProductService {
         return ResponseEntity.ok().body(Result.builder().data("successfully deleted").build());
     }
 
+    public ResponseEntity<Result<?>> listMyProduct(Integer idx, Integer size) {
+        String email = TokenUtil.getAdminEmail();
+        if (email == null) return badRequest(403, ProductErrorCode.INSUFFICIENT_AUTHORITY);
+        Member member = memberRepository.findByEmail(email).get();
+        Pageable pageable = PageRequest.of(idx, size, Sort.by("updatedAt").descending());
+        Page<Product> page = productRepository.findByMember(member, pageable);
+        return ResponseEntity.ok().body(Result.builder().data(
+                page.getContent().stream()
+                    .map(product -> ProductDto.builder()
+                            .id(product.getId())
+                            .name(product.getName())
+                            .description(product.getDescription())
+                            .price(product.getPrice())
+                            .category(product.getCategory())
+                            .viewCount(product.getViewCount())
+                            .likeCount(product.getLiked().size())
+                            .mainImageUrl(product.getMainImageUrl())
+                            .build())
+                ).build());
+    }
+
     @Transactional
     public ResponseEntity<Result<?>> likeProduct(Long productId, String email) {
         Optional<Member> optionalMember = memberRepository.findByEmail(email);
