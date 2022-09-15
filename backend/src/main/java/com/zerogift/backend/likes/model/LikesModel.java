@@ -1,5 +1,6 @@
-package com.zerogift.backend.likes.entity;
+package com.zerogift.backend.likes.model;
 
+import com.zerogift.backend.likes.entity.Likes;
 import com.zerogift.backend.member.entity.Member;
 import com.zerogift.backend.product.entity.Product;
 import lombok.*;
@@ -11,8 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Getter
-@Entity
-public class Likes {
+public class LikesModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,6 +26,10 @@ public class Likes {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    @Column
-    private LocalDateTime regDate;
+    public static LikesModel of(Likes likes) {
+        return LikesModel.builder()
+                .member(likes.getMember())
+                .product(likes.getProduct())
+                .build();
+    }
 }
