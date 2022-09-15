@@ -110,6 +110,28 @@ public class ProductService {
                 ).build());
     }
 
+    public ResponseEntity<Result<?>> searchProduct(String q, Integer idx, Integer size) {
+        String email = TokenUtil.getAdminOrMemberEmail();
+        Long memberId = email != null ? memberRepository.findByEmail(email).get().getId() : null;
+        Pageable pageable = PageRequest.of(idx, size, Sort.by("updatedAt").descending());
+        Page<Product> page = productRepository.findByStatusAndNameContainingOrDescriptionContaining(Status.PUBLIC, q, q, pageable);
+        return ResponseEntity.ok().body(Result.builder().data(
+                page.getContent().stream()
+                    .map(product -> ProductDto.builder()
+                            .id(product.getId())
+                            .name(product.getName())
+                            .description(product.getDescription())
+                            .price(product.getPrice())
+                            .category(product.getCategory())
+                            .viewCount(product.getViewCount())
+                            .likeCount(product.getLiked().size())
+                            .liked(memberId == null ? false : product.getLiked().contains(memberId))
+                            .mainImageUrl(product.getMainImageUrl())
+                            .build())
+                    .collect(Collectors.toList())
+                ).build());
+    }
+
     @Transactional
     public ResponseEntity<Result<?>> likeProduct(Long productId, String email) {
         Optional<Member> optionalMember = memberRepository.findByEmail(email);
