@@ -54,4 +54,7 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
+    @Builder.Default
+    private Long likeCount = 0L;
+
 }
