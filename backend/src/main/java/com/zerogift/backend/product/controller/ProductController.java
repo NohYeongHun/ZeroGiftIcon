@@ -19,6 +19,7 @@ import com.zerogift.backend.product.dto.NewProductRequest;
 import com.zerogift.backend.product.service.ProductService;
 import com.zerogift.backend.product.type.Category;
 
+
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -34,21 +35,6 @@ public class ProductController {
     @DeleteMapping("admin/product")
     public ResponseEntity<Result<?>> removeProduct(@RequestParam Long productId) {
         return productService.removeProduct(productId);
-    }
-
-    @GetMapping("admin/myproducts")
-    public ResponseEntity<Result<?>> listMyProduct(
-        @RequestParam Integer idx,
-        @RequestParam Integer size) {
-        return productService.listMyProduct(idx, size);
-    }
-
-    @GetMapping("product/search")
-    public ResponseEntity<Result<?>> searchProduct(
-            @RequestParam String q,
-            @RequestParam Integer idx,
-            @RequestParam Integer size) {
-        return productService.searchProduct(q, idx, size);
     }
 
     @PatchMapping("member/product/like")

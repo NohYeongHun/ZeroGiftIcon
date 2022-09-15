@@ -46,14 +46,14 @@ public class ProductService {
         if (email == null) return badRequest(403, ProductErrorCode.INSUFFICIENT_AUTHORITY);
         Member member = memberRepository.findByEmail(email).get();
         Product product = Product
-            .builder()
-            .name(request.getName())
-            .description(request.getDescription())
-            .price(request.getPrice())
-            .category(request.getCategory())
-            .status(Status.PUBLIC)
-            .member(member)
-            .build();
+                .builder()
+                .name(request.getName())
+                .description(request.getDescription())
+                .price(request.getPrice())
+                .category(request.getCategory())
+                .status(Status.PUBLIC)
+                .member(member)
+                .build();
         productRepository.save(product);
         boolean first = true;
         for (Long id : request.getProductImageIds()) {
@@ -85,49 +85,6 @@ public class ProductService {
         return ResponseEntity.ok().body(Result.builder().data("successfully deleted").build());
     }
 
-    public ResponseEntity<Result<?>> listMyProduct(Integer idx, Integer size) {
-        String email = TokenUtil.getAdminEmail();
-        if (email == null) return badRequest(403, ProductErrorCode.INSUFFICIENT_AUTHORITY);
-        Member member = memberRepository.findByEmail(email).get();
-        Pageable pageable = PageRequest.of(idx, size, Sort.by("updatedAt").descending());
-        Page<Product> page = productRepository.findByMember(member, pageable);
-        return ResponseEntity.ok().body(Result.builder().data(
-            page.getContent().stream()
-                .map(product -> ProductDto.builder()
-                    .id(product.getId())
-                    .name(product.getName())
-                    .description(product.getDescription())
-                    .price(product.getPrice())
-                    .category(product.getCategory())
-                    .viewCount(product.getViewCount())
-                    .likeCount(product.getLiked().size())
-                    .mainImageUrl(product.getMainImageUrl())
-                    .build())
-        ).build());
-    }
-
-    public ResponseEntity<Result<?>> searchProduct(String q, Integer idx, Integer size) {
-        String email = TokenUtil.getAdminOrMemberEmail();
-        Long memberId = email != null ? memberRepository.findByEmail(email).get().getId() : null;
-        Pageable pageable = PageRequest.of(idx, size, Sort.by("updatedAt").descending());
-        Page<Product> page = productRepository.findByStatusAndNameContainingOrDescriptionContaining(Status.PUBLIC, q, q, pageable);
-        return ResponseEntity.ok().body(Result.builder().data(
-            page.getContent().stream()
-                .map(product -> ProductDto.builder()
-                    .id(product.getId())
-                    .name(product.getName())
-                    .description(product.getDescription())
-                    .price(product.getPrice())
-                    .category(product.getCategory())
-                    .viewCount(product.getViewCount())
-                    .likeCount(product.getLiked().size())
-                    .liked(memberId == null ? false : product.getLiked().contains(memberId))
-                    .mainImageUrl(product.getMainImageUrl())
-                    .build())
-                .collect(Collectors.toList())
-        ).build());
-    }
-
     @Transactional
     public ResponseEntity<Result<?>> likeProduct(Long productId) {
         Optional<Member> optMember = memberRepository.findByEmail(TokenUtil.getAdminOrMemberEmail());
@@ -149,20 +106,20 @@ public class ProductService {
         Pageable pageable = PageRequest.of(idx, size, Sort.by("updatedAt").descending());
         Page<Product> page = productRepository.findByStatusAndCategoryIn(Status.PUBLIC, categories, pageable);
         return ResponseEntity.ok().body(Result.builder().data(
-            page.getContent().stream()
-                .map(product -> ProductDto.builder()
-                    .id(product.getId())
-                    .name(product.getName())
-                    .description(product.getDescription())
-                    .price(product.getPrice())
-                    .category(product.getCategory())
-                    .viewCount(product.getViewCount())
-                    .likeCount(product.getLiked().size())
-                    .liked(memberId == null ? false : product.getLiked().contains(memberId))
-                    .mainImageUrl(product.getMainImageUrl())
-                    .build())
-                .collect(Collectors.toList())
-        ).build());
+                page.getContent().stream()
+                    .map(product -> ProductDto.builder()
+                            .id(product.getId())
+                            .name(product.getName())
+                            .description(product.getDescription())
+                            .price(product.getPrice())
+                            .category(product.getCategory())
+                            .viewCount(product.getViewCount())
+                            .likeCount(product.getLiked().size())
+                            .liked(memberId == null ? false : product.getLiked().contains(memberId))
+                            .mainImageUrl(product.getMainImageUrl())
+                            .build())
+                    .collect(Collectors.toList())
+                ).build());
     }
 
     @Transactional
@@ -173,27 +130,27 @@ public class ProductService {
         product.setViewCount(product.getViewCount() + 1);
         List<ProductImage> images = productImageRepository.findAllByProduct(product);
         return ResponseEntity.ok().body(Result.builder().data(
-            ProductDetailDto.builder()
-                .id(product.getId())
-                .name(product.getName())
-                .description(product.getDescription())
-                .price(product.getPrice())
-                .category(product.getCategory())
-                .viewCount(product.getViewCount())
-                .images(images.stream()
-                    .map(i -> ProductImageDto.builder()
-                        .productImageId(i.getId())
-                        .url(i.getUrl())
-                        .isMainImage(i.getIsMainImage())
-                        .build())
-                    .collect(Collectors.toList()))
-                .build()
-        ).build());
+                ProductDetailDto.builder()
+                                .id(product.getId())
+                                .name(product.getName())
+                                .description(product.getDescription())
+                                .price(product.getPrice())
+                                .category(product.getCategory())
+                                .viewCount(product.getViewCount())
+                                .images(images.stream()
+                                              .map(i -> ProductImageDto.builder()
+                                                      .productImageId(i.getId())
+                                                      .url(i.getUrl())
+                                                      .isMainImage(i.getIsMainImage())
+                                                      .build())
+                                             .collect(Collectors.toList()))
+                               .build()
+                ).build());
     }
 
     private ResponseEntity<Result<?>> badRequest(int status, Object errorCode) {
         return ResponseEntity.badRequest().body(
-            Result.builder().status(status).success(false).data(errorCode).build());
+                Result.builder().status(status).success(false).data(errorCode).build());
     }
 
     private ResponseEntity<Result<?>> ok(Object data) {
