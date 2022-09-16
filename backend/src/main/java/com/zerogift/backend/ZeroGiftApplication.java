@@ -10,5 +10,4 @@ public class ZeroGiftApplication {
 		SpringApplication.run(ZeroGiftApplication.class, args);
 	}
 	
-
 }
