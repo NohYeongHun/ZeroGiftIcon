@@ -38,5 +38,5 @@ jobs:
     steps:
       - name: Deploy run
         run: |
-          sudo sh /home/ec2-user/success.sh #ec2-user
+          sudo sh /home/ec2-user/test_success.sh #ec2-user
 
