@@ -10,6 +10,8 @@ import static com.zerogift.backend.utils.DataMakeUtils.회원_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import com.zerogift.backend.acceptance.AcceptanceTest;
@@ -21,6 +23,7 @@ import com.zerogift.backend.pay.repository.PayHistoryRepository;
 import com.zerogift.backend.product.entity.Product;
 import com.zerogift.backend.product.repository.ProductRepository;
 import com.zerogift.backend.security.dto.MemberInfo;
+import com.zerogift.backend.security.repository.RefreshTokenRepository;
 import com.zerogift.backend.security.service.TokenService;
 import com.zerogift.backend.util.FileUtil;
 import io.restassured.response.ExtractableResponse;
@@ -59,6 +62,9 @@ class GiftBoxControllerTest extends AcceptanceTest {
     @MockBean
     private FileUtil fileUtil;
 
+    @MockBean
+    private RefreshTokenRepository refreshTokenRepository;
+
     String 토큰;
     Member 회원;
     Long 상품이미지_아이디;
@@ -69,6 +75,7 @@ class GiftBoxControllerTest extends AcceptanceTest {
     public void setUp() throws IOException {
         super.setUp();
         when(fileUtil.update((MultipartFile) any())).thenReturn("https://test.com");
+        doNothing().when(refreshTokenRepository).save(anyString(), anyString(), any());
 
         회원 = memberRepository.save(회원_생성("test@naver.com", "test"));
         MemberInfo memberInfo = MemberInfo.of(회원);
