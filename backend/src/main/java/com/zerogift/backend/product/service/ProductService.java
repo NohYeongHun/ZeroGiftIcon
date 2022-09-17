@@ -1,6 +1,5 @@
 package com.zerogift.backend.product.service;
 
-import java.io.File;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -15,8 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.zerogift.backend.common.dto.Result;
-import com.zerogift.backend.common.exception.MemberException;
-import com.zerogift.backend.common.exception.ProductException;
+import com.zerogift.backend.common.exception.member.MemberException;
+import com.zerogift.backend.common.exception.product.ProductException;
 import com.zerogift.backend.common.exception.code.MemberErrorCode;
 import com.zerogift.backend.common.exception.code.ProductErrorCode;
 import com.zerogift.backend.member.entity.Member;
