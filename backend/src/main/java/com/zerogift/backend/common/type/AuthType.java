@@ -9,7 +9,8 @@ import lombok.Getter;
 @Getter
 public enum AuthType {
     KAKAO("카카오톡"),
-    GOOGLE("구글");
+    GOOGLE("구글"),
+    GENERAL("일반");
 
     private String korName;
 
