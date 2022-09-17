@@ -1,6 +1,5 @@
 package com.zerogift.backend.product.service;
 
-import java.io.File;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -15,8 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.zerogift.backend.common.dto.Result;
-import com.zerogift.backend.common.exception.MemberException;
-import com.zerogift.backend.common.exception.ProductException;
 import com.zerogift.backend.common.exception.code.MemberErrorCode;
 import com.zerogift.backend.common.exception.code.ProductErrorCode;
 import com.zerogift.backend.member.entity.Member;
@@ -44,9 +41,10 @@ public class ProductService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public NewProductResponse addProduct(NewProductRequest request, String email) {
-        Member member = memberRepository.findByEmail(email).orElseThrow(
-                () -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
+    public ResponseEntity<Result<?>> addProduct(NewProductRequest request) {
+        String email = TokenUtil.getAdminEmail();
+        if (email == null) return badRequest(403, ProductErrorCode.INSUFFICIENT_AUTHORITY);
+        Member member = memberRepository.findByEmail(email).get();
         Product product = Product
                 .builder()
                 .name(request.getName())
@@ -68,19 +66,17 @@ public class ProductService {
             }
             productImageRepository.save(image);
         }
-        return NewProductResponse.builder()
-                                 .productId(product.getId())
-                                 .build();
+        return ok(NewProductResponse.builder().productId(product.getId()).build());
     }
 
     @Transactional
-    public ResponseEntity<Result<?>> removeProduct(Long productId, String email) {
-        Optional<Member> optionalMember = memberRepository.findByEmail(email);
-        Optional<Product> optionalProduct = productRepository.findById(productId);
-        if (optionalMember.isEmpty()) return badRequest(403, MemberErrorCode.MEMBER_NOT_FOUND);
-        if (optionalProduct.isEmpty()) return badRequest(404, ProductErrorCode.PRODUCT_NOT_FOUND);
-        Member member = optionalMember.get();
-        Product product = optionalProduct.get();
+    public ResponseEntity<Result<?>> removeProduct(Long productId) {
+        Optional<Member> optMember = memberRepository.findByEmail(TokenUtil.getAdminEmail());
+        Optional<Product> optProduct = productRepository.findById(productId);
+        if (optMember.isEmpty()) return badRequest(403, MemberErrorCode.MEMBER_NOT_FOUND);
+        if (optProduct.isEmpty()) return badRequest(404, ProductErrorCode.PRODUCT_NOT_FOUND);
+        Member member = optMember.get();
+        Product product = optProduct.get();
         if (!product.getMember().equals(member)) return badRequest(403, ProductErrorCode.OWNED_BY_SOMEONE_ELSE);
         for (ProductImage image : productImageRepository.findAllByProduct(product)) {
             productImageRepository.delete(image);
@@ -133,13 +129,13 @@ public class ProductService {
     }
 
     @Transactional
-    public ResponseEntity<Result<?>> likeProduct(Long productId, String email) {
-        Optional<Member> optionalMember = memberRepository.findByEmail(email);
-        Optional<Product> optionalProduct = productRepository.findById(productId);
-        if (optionalMember.isEmpty()) return badRequest(403, ProductErrorCode.VOTE_NOT_ALLOWED_FOR_NON_MEMBER);
-        if (optionalProduct.isEmpty()) return badRequest(404, ProductErrorCode.PRODUCT_NOT_FOUND);
-        Member member = optionalMember.get();
-        Product product = optionalProduct.get();
+    public ResponseEntity<Result<?>> likeProduct(Long productId) {
+        Optional<Member> optMember = memberRepository.findByEmail(TokenUtil.getAdminOrMemberEmail());
+        Optional<Product> optProduct = productRepository.findById(productId);
+        if (optMember.isEmpty()) return badRequest(403, ProductErrorCode.VOTE_NOT_ALLOWED_FOR_NON_MEMBER);
+        if (optProduct.isEmpty()) return badRequest(404, ProductErrorCode.PRODUCT_NOT_FOUND);
+        Member member = optMember.get();
+        Product product = optProduct.get();
         if (product.getMember().equals(member)) return badRequest(403, ProductErrorCode.SELF_VOTE_FORBIDDEN);
         if (product.getLiked().contains(member.getId())) return badRequest(403, ProductErrorCode.DUPLICATE_VOTING_FORBIDDEN);
         product.getLiked().add(member.getId());
@@ -147,52 +143,60 @@ public class ProductService {
         return ResponseEntity.ok().body(Result.builder().data("successfully liked").build());
     }
 
-    public List<ProductDto> listProduct(List<Category> categories, Integer idx, Integer size) {
-        String email = TokenUtil.getAdminEmail();
-        if (email == null) email = TokenUtil.getMemberEmail();
+    public ResponseEntity<Result<?>> listProduct(List<Category> categories, Integer idx, Integer size) {
+        String email = TokenUtil.getAdminOrMemberEmail();
         Long memberId = email != null ? memberRepository.findByEmail(email).get().getId() : null;
         Pageable pageable = PageRequest.of(idx, size, Sort.by("updatedAt").descending());
         Page<Product> page = productRepository.findByStatusAndCategoryIn(Status.PUBLIC, categories, pageable);
-        return page.getContent().stream()
-                   .map(product -> ProductDto.builder()
-                           .id(product.getId())
-                           .name(product.getName())
-                           .description(product.getDescription())
-                           .price(product.getPrice())
-                           .category(product.getCategory())
-                           .viewCount(product.getViewCount())
-                           .likeCount(product.getLiked().size())
-                           .liked(memberId == null ? false : product.getLiked().contains(memberId))
-                           .mainImageUrl(product.getMainImageUrl())
-                           .build())
-                   .collect(Collectors.toList());
+        return ResponseEntity.ok().body(Result.builder().data(
+                page.getContent().stream()
+                    .map(product -> ProductDto.builder()
+                            .id(product.getId())
+                            .name(product.getName())
+                            .description(product.getDescription())
+                            .price(product.getPrice())
+                            .category(product.getCategory())
+                            .viewCount(product.getViewCount())
+                            .likeCount(product.getLiked().size())
+                            .liked(memberId == null ? false : product.getLiked().contains(memberId))
+                            .mainImageUrl(product.getMainImageUrl())
+                            .build())
+                    .collect(Collectors.toList())
+                ).build());
     }
 
     @Transactional
-    public ProductDetailDto getDetail(Long productId) {
-        Product product = productRepository.findById(productId).orElseThrow(
-                () -> new ProductException(ProductErrorCode.PRODUCT_NOT_FOUND));
+    public ResponseEntity<Result<?>> getDetail(Long productId) {
+        Optional<Product> optProduct = productRepository.findById(productId);
+        if (optProduct.isEmpty()) return badRequest(404, ProductErrorCode.PRODUCT_NOT_FOUND);
+        Product product = optProduct.get();
         product.setViewCount(product.getViewCount() + 1);
         List<ProductImage> images = productImageRepository.findAllByProduct(product);
-        return ProductDetailDto.builder()
-                               .id(product.getId())
-                               .name(product.getName())
-                               .description(product.getDescription())
-                               .price(product.getPrice())
-                               .category(product.getCategory())
-                               .viewCount(product.getViewCount())
-                               .images(images.stream()
-                                             .map(i -> ProductImageDto.builder()
-                                                        .productImageId(i.getId())
-                                                        .url(i.getUrl())
-                                                        .isMainImage(i.getIsMainImage())
-                                                        .build())
+        return ResponseEntity.ok().body(Result.builder().data(
+                ProductDetailDto.builder()
+                                .id(product.getId())
+                                .name(product.getName())
+                                .description(product.getDescription())
+                                .price(product.getPrice())
+                                .category(product.getCategory())
+                                .viewCount(product.getViewCount())
+                                .images(images.stream()
+                                              .map(i -> ProductImageDto.builder()
+                                                      .productImageId(i.getId())
+                                                      .url(i.getUrl())
+                                                      .isMainImage(i.getIsMainImage())
+                                                      .build())
                                              .collect(Collectors.toList()))
-                               .build();
+                               .build()
+                ).build());
     }
 
     private ResponseEntity<Result<?>> badRequest(int status, Object errorCode) {
         return ResponseEntity.badRequest().body(
                 Result.builder().status(status).success(false).data(errorCode).build());
+    }
+
+    private ResponseEntity<Result<?>> ok(Object data) {
+        return ResponseEntity.ok().body(Result.builder().data(data).build());
     }
 }
