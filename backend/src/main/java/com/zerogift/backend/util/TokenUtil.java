@@ -30,4 +30,9 @@ public class TokenUtil {
         }
         return email;
     }
+
+    public static String getAdminOrMemberEmail() {
+        String email = getAdminEmail();
+        return email == null ? getMemberEmail() : email;
+    }
 }
