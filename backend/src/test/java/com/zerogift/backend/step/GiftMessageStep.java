@@ -18,11 +18,9 @@ public class GiftMessageStep {
             .extract();
     }
 
-    public static ExtractableResponse<Response> 감사메시지_보내기(String token, Long giftBoxId, Long sendMemberId, Long productId, String message) {
+    public static ExtractableResponse<Response> 감사메시지_보내기(String token, Long giftBoxId, String message) {
         Map<String, Object> params = new HashMap<>();
         params.put("giftBoxId", giftBoxId);
-        params.put("sendMemberId", sendMemberId);
-        params.put("productId", productId);
         params.put("message", message);
 
         return RestAssured

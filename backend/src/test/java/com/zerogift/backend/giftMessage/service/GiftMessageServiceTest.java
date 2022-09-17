@@ -106,8 +106,6 @@ class GiftMessageServiceTest extends AcceptanceTest {
     private GiftMessageRequest createRequest() {
         return GiftMessageRequest.builder()
             .giftBoxId(giftBox.getId())
-            .sendMemberId(member.getId())
-            .productId(product.getId())
             .message("생일 축하")
             .build();
     }

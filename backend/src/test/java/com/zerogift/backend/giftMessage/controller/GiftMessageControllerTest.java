@@ -103,7 +103,7 @@ class GiftMessageControllerTest extends AcceptanceTest {
     @DisplayName("감사 메시지 보내기 테스트")
     @Test
     void sendGiftMessageTest() {
-        ExtractableResponse<Response> response = 감사메시지_보내기(토큰, 선물함_아이디, 회원.getId(), 상품_아이디, "생일 축하");
+        ExtractableResponse<Response> response = 감사메시지_보내기(토큰, 선물함_아이디,"생일 축하");
 
         GiftMessage giftMessage = giftMessageRepository.findAll().get(0);
 
@@ -113,7 +113,7 @@ class GiftMessageControllerTest extends AcceptanceTest {
     @DisplayName("감사메시지 상세 보기 조회")
     @Test
     void getGiftMessage() {
-        감사메시지_보내기(토큰, 선물함_아이디, 회원.getId(), 상품_아이디, "생일 축하");
+        감사메시지_보내기(토큰, 선물함_아이디, "생일 축하");
 
         ExtractableResponse<Response> response = 감사메시지_상세내용_조회(토큰,  giftMessageRepository.findAll().get(0).getId());
 
