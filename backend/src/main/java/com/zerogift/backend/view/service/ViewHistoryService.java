@@ -5,9 +5,6 @@ import org.springframework.http.ResponseEntity;
 
 public interface ViewHistoryService {
 
-    // 무조건 보면 조회수 증가 (중복 o)
-    ResponseEntity<Result<?>> addViewCount(Long productId);
-
-    // 조회수 증가 (중복 x)
+    // 조회수 증가
     ResponseEntity<Result<?>> addViewHistory(String email, Long productId);
 }
