@@ -126,8 +126,8 @@ public class ProductService {
                            .price(product.getPrice())
                            .category(product.getCategory())
                            .viewCount(product.getViewCount())
-                           .likeCount(product.getLiked().size())
-                           .liked(memberId == null ? false : product.getLiked().contains(memberId))
+                           .likeCount(product.getLikeCount().intValue())
+                           .liked(memberId == product.getMember().getId() ? true : false)
                            .mainImageUrl(product.getMainImageUrl())
                            .build())
                    .collect(Collectors.toList());
