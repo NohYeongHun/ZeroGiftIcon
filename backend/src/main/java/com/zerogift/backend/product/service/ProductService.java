@@ -1,32 +1,14 @@
 package com.zerogift.backend.product.service;
 
-import java.io.File;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.transaction.Transactional;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-
 import com.zerogift.backend.common.dto.Result;
 import com.zerogift.backend.common.exception.MemberException;
 import com.zerogift.backend.common.exception.ProductException;
 import com.zerogift.backend.common.exception.code.MemberErrorCode;
 import com.zerogift.backend.common.exception.code.ProductErrorCode;
+import com.zerogift.backend.likes.repository.LikesRepository;
 import com.zerogift.backend.member.entity.Member;
 import com.zerogift.backend.member.repository.MemberRepository;
-import com.zerogift.backend.product.dto.NewProductRequest;
-import com.zerogift.backend.product.dto.NewProductResponse;
-import com.zerogift.backend.product.dto.ProductDetailDto;
-import com.zerogift.backend.product.dto.ProductDto;
-import com.zerogift.backend.product.dto.ProductImageDto;
+import com.zerogift.backend.product.dto.*;
 import com.zerogift.backend.product.entity.Product;
 import com.zerogift.backend.product.entity.ProductImage;
 import com.zerogift.backend.product.repository.ProductImageRepository;
@@ -34,8 +16,19 @@ import com.zerogift.backend.product.repository.ProductRepository;
 import com.zerogift.backend.product.type.Category;
 import com.zerogift.backend.product.type.Status;
 import com.zerogift.backend.util.TokenUtil;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
+import java.io.File;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -43,6 +36,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ProductImageRepository productImageRepository;
     private final MemberRepository memberRepository;
+    private final LikesRepository likesRepository;
 
     private static final String UPLOAD_PATH = "/opt/zerogift/upload/";
 
@@ -126,8 +120,8 @@ public class ProductService {
                            .price(product.getPrice())
                            .category(product.getCategory())
                            .viewCount(product.getViewCount())
-                           .likeCount(product.getLiked().size())
-                           .liked(memberId == null ? false : product.getLiked().contains(memberId))
+                           .likeCount(product.getLikeCount().intValue())
+                           .liked(memberId == product.getMember().getId() ? true : false)
                            .mainImageUrl(product.getMainImageUrl())
                            .build())
                    .collect(Collectors.toList());
