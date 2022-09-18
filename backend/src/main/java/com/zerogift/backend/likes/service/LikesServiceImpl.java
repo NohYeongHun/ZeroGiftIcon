@@ -70,7 +70,6 @@ public class LikesServiceImpl implements LikesService{
         long likesCount = likesRepository.countByProduct(product);
 
         EntityManager em = factory.createEntityManager();
-        System.out.println("entityManager properties : " + em.getProperties());
 
         try {
             em.getTransaction().begin();
