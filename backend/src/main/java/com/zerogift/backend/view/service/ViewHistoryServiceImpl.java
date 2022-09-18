@@ -1,6 +1,8 @@
 package com.zerogift.backend.view.service;
 
 import com.zerogift.backend.common.dto.Result;
+import com.zerogift.backend.common.exception.MemberException;
+import com.zerogift.backend.common.exception.ProductException;
 import com.zerogift.backend.common.exception.code.MemberErrorCode;
 import com.zerogift.backend.common.exception.code.ProductErrorCode;
 import com.zerogift.backend.member.entity.Member;
@@ -14,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -25,41 +28,16 @@ public class ViewHistoryServiceImpl implements ViewHistoryService {
     private final MemberRepository memberRepository;
 
     @Override
-    public ResponseEntity<Result<?>> addViewCount(Long productId) {
-        // 상품 정보 가져오기
-        Optional<Product> optionalProduct = productRepository.findById(productId);
-        if (optionalProduct.isEmpty()) {
-            return ResponseEntity.badRequest().body(
-                    Result.builder().status(404).success(false).data(ProductErrorCode.PRODUCT_NOT_FOUND).build()
-            );
-        }
-        Product product = optionalProduct.get();
-
-        // 'Product Entity' 에 조회수 +1 해서 저장
-        product.setViewCount(product.getViewCount() + 1);
-        productRepository.save(product);
-
-        return ResponseEntity.ok().body(Result.builder().data(ViewModel.of(product)).build());
-    }
-
-    @Override
+    @Transactional
     public ResponseEntity<Result<?>> addViewHistory(String email, Long productId) {
         // 회원 정보 가져오기
         Optional<Member> optionalMember = memberRepository.findByEmail(email);
-        if (optionalMember.isEmpty()) {
-            return ResponseEntity.badRequest().body(
-                    Result.builder().status(403).success(false).data(MemberErrorCode.MEMBER_NOT_FOUND).build()
-            );
-        }
+        optionalMember.orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
         Member member = optionalMember.get();
 
         // 상품 정보 가져오기
         Optional<Product> optionalProduct = productRepository.findById(productId);
-        if (optionalProduct.isEmpty()) {
-            return ResponseEntity.badRequest().body(
-                    Result.builder().status(404).success(false).data(ProductErrorCode.PRODUCT_NOT_FOUND).build()
-            );
-        }
+        optionalProduct.orElseThrow(() -> new ProductException(ProductErrorCode.PRODUCT_NOT_FOUND));
         Product product = optionalProduct.get();
 
         // 자기자신의 물건 조회해도 조회수는 오르지 않음
@@ -83,12 +61,12 @@ public class ViewHistoryServiceImpl implements ViewHistoryService {
                 .build();
         viewHistoryRepository.save(viewHistory);
 
-        // 상품의 총 조회수를 'Product Entity' 에 저장
-        long viewCount = viewHistoryRepository.countByProduct(product);
-        product.setViewCount(viewCount);
-        productRepository.save(product);
+        // 'Product Entity' viewCount 에 +1
+        product.plusViewCount();
 
-        return ResponseEntity.ok().body(Result.builder().data(ViewModel.of(product)).build());
+        // Response 할 정보 편집
+        ViewModel viewModel = ViewModel.of(viewHistory);
+        return ResponseEntity.ok().body(Result.builder().data(viewModel).build());
     }
 
 
