@@ -1,23 +1,29 @@
 package com.zerogift.backend.view.model;
 
-
-import com.zerogift.backend.product.entity.Product;
-import lombok.*;
+import com.zerogift.backend.member.model.MemberLikeResponse;
+import com.zerogift.backend.product.dto.ProductLikeResponse;
+import com.zerogift.backend.view.entity.ViewHistory;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Getter
 public class ViewModel {
-    private long id;
-    private String name;
-    private long viewCount;
 
-    public static ViewModel of(Product product) {
+    private long id;
+    private MemberLikeResponse memberLikeResponse;
+    private ProductLikeResponse productLikeResponse;
+
+
+    public static ViewModel of(ViewHistory viewHistory) {
         return ViewModel.builder()
-                .id(product.getId())
-                .name(product.getName())
-                .viewCount(product.getViewCount())
+                .id(viewHistory.getId())
+                .memberLikeResponse(MemberLikeResponse.of(viewHistory.getMember()))
+                .productLikeResponse(ProductLikeResponse.of(viewHistory.getProduct()))
                 .build();
     }
 }
