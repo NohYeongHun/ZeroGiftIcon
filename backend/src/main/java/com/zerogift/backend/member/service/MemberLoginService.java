@@ -8,6 +8,7 @@ import com.zerogift.backend.common.type.AuthType;
 import com.zerogift.backend.email.dto.EmailAuthRequest;
 import com.zerogift.backend.email.entity.EmailAuth;
 import com.zerogift.backend.email.repository.EmailAuthRepository;
+import com.zerogift.backend.email.service.EmailService;
 import com.zerogift.backend.member.dto.MemberLoginRequest;
 import com.zerogift.backend.member.dto.MemberRegisterRequest;
 import com.zerogift.backend.member.entity.Member;
@@ -28,7 +29,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -37,9 +37,9 @@ public class MemberLoginService {
     private final MemberRepository memberRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final EmailAuthRepository emailAuthRepository;
-    private final TokenService tokenService;
     private final PasswordEncoder passwordEncoder;
-    private final JavaMailSender javaMailSender;
+    private final TokenService tokenService;
+    private final EmailService emailService;
 
     @Transactional
     public TokenDto login(MemberLoginRequest request) {
@@ -62,7 +62,7 @@ public class MemberLoginService {
         }
 
         if (member.getStatus().equals(MemberStatus.WAIT)){
-            sendEmail(member.getEmail());
+            emailService.sendEmail(member.getEmail());
             throw new MemberException(MemberErrorCode.EMAIL_VERIFICATION_HAS_NOT_BEEN_COMPLETED);
         }
 
@@ -91,7 +91,7 @@ public class MemberLoginService {
 
         member.addPassword(passwordEncoder.encode(request.getPassword()));
         memberRepository.save(member);
-        sendEmail(request.getEmail());
+        emailService.sendEmail(request.getEmail());
 
         return member;
 
@@ -129,23 +129,5 @@ public class MemberLoginService {
         member.emailVerifiedSuccess();
     }
 
-    @Transactional
-    public void sendEmail(String email){
-        EmailAuth emailAuth = emailAuthRepository.save(
-                EmailAuth.builder()
-                        .email(email)
-                        .authToken(UUID.randomUUID().toString())
-                        .expired(false)
-                        .build()
-        );
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(emailAuth.getEmail());
-        message.setSubject("회원가입 이메일 인증");
-        message.setText("http://localhost:8080/member-auth/confirm-email?email="
-                + emailAuth.getEmail() + "&authToken=" + emailAuth.getAuthToken()
-        );
-
-        javaMailSender.send(message);
-    }
 }
