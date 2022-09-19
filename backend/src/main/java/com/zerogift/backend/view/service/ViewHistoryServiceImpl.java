@@ -1,22 +1,19 @@
 package com.zerogift.backend.view.service;
 
-import com.zerogift.backend.common.dto.Result;
-import com.zerogift.backend.common.exception.MemberException;
-import com.zerogift.backend.common.exception.ProductException;
 import com.zerogift.backend.common.exception.code.MemberErrorCode;
 import com.zerogift.backend.common.exception.code.ProductErrorCode;
+import com.zerogift.backend.common.exception.member.MemberException;
+import com.zerogift.backend.common.exception.product.ProductException;
 import com.zerogift.backend.member.entity.Member;
 import com.zerogift.backend.member.repository.MemberRepository;
 import com.zerogift.backend.product.entity.Product;
 import com.zerogift.backend.product.repository.ProductRepository;
+import com.zerogift.backend.security.dto.LoginInfo;
 import com.zerogift.backend.view.entity.ViewHistory;
-import com.zerogift.backend.view.model.ViewModel;
 import com.zerogift.backend.view.repository.ViewHistoryRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -28,45 +25,30 @@ public class ViewHistoryServiceImpl implements ViewHistoryService {
     private final MemberRepository memberRepository;
 
     @Override
-    @Transactional
-    public ResponseEntity<Result<?>> addViewHistory(String email, Long productId) {
+    public void addViewHistory(LoginInfo loginInfo, Long productId) {
         // 회원 정보 가져오기
-        Optional<Member> optionalMember = memberRepository.findByEmail(email);
-        optionalMember.orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
-        Member member = optionalMember.get();
+        Member member = memberRepository.findByEmail(loginInfo.getEmail())
+                .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 
         // 상품 정보 가져오기
-        Optional<Product> optionalProduct = productRepository.findById(productId);
-        optionalProduct.orElseThrow(() -> new ProductException(ProductErrorCode.PRODUCT_NOT_FOUND));
-        Product product = optionalProduct.get();
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductException(ProductErrorCode.PRODUCT_NOT_FOUND));
 
-        // 자기자신의 물건 조회해도 조회수는 오르지 않음
-        if (member.getId() == product.getMember().getId()) {
-            return ResponseEntity.badRequest().body(
-                    Result.builder().status(404).success(false).data(ProductErrorCode.SELF_VIEW_NOT_COUNT).build()
-            );
+        // 상품을 조회한 기록이 없으면 조회수 증가
+        if (!(member.getId() == product.getMember().getId())) {
+            if (!viewHistoryRepository.existsByMemberAndProduct(member, product)) {
+                // 조회 기록 저장
+                ViewHistory viewHistory = ViewHistory.builder()
+                        .product(product)
+                        .member(member)
+                        .build();
+                viewHistoryRepository.save(viewHistory);
+
+                // 'Product Entity' viewCount 에 +1
+                product.plusViewCount();
+                productRepository.save(product);
+            }
         }
-
-        // 계정 하나당 상품 조회수 증가 중복 안됨
-        if (viewHistoryRepository.countByMemberAndProduct(member, product) > 0) {
-            return ResponseEntity.badRequest().body(
-                    Result.builder().status(404).success(false).data(ProductErrorCode.ALREADY_VIEW_PRODUCT).build()
-            );
-        }
-
-        // 조회 기록 저장
-        ViewHistory viewHistory = ViewHistory.builder()
-                .product(product)
-                .member(member)
-                .build();
-        viewHistoryRepository.save(viewHistory);
-
-        // 'Product Entity' viewCount 에 +1
-        product.plusViewCount();
-
-        // Response 할 정보 편집
-        ViewModel viewModel = ViewModel.of(viewHistory);
-        return ResponseEntity.ok().body(Result.builder().data(viewModel).build());
     }
 
 
