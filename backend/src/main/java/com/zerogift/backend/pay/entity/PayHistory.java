@@ -4,6 +4,7 @@ import com.zerogift.backend.common.entity.BaseTimeEntity;
 import com.zerogift.backend.member.entity.Member;
 import com.zerogift.backend.product.entity.Product;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,8 +13,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.annotation.CreatedDate;
 
 @Entity
 @Getter
@@ -42,6 +47,10 @@ public class PayHistory extends BaseTimeEntity {
     @Column(name = "pg_tid", nullable = false)
     private String pgTid;
 
+    @Column(nullable = false)
+    private Integer usePoint;
+
+    @CreationTimestamp
     private LocalDateTime payDate;
 
     @ManyToOne
@@ -50,10 +59,26 @@ public class PayHistory extends BaseTimeEntity {
 
     @ManyToOne
     @JoinColumn(name = "member_id")
-    private Member seller;
+    private Member fromMember;
 
     @ManyToOne
     @JoinColumn(name = "to_member_id")
-    private Member Member;
+    private Member toMember;
+
+    @Builder
+    public PayHistory(String impUid, String merchantUid, String name, Integer price,
+        String pgProvider, String pgTid, Integer usePoint, Product product, Member fromMember,
+        Member toMember) {
+        this.impUid = impUid;
+        this.merchantUid = merchantUid;
+        this.name = name;
+        this.price = price;
+        this.pgProvider = pgProvider;
+        this.pgTid = pgTid;
+        this.usePoint = usePoint;
+        this.product = product;
+        this.fromMember = fromMember;
+        this.toMember = toMember;
+    }
 
 }

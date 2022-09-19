@@ -1,7 +1,7 @@
 package com.zerogift.backend.security.service;
 
 import com.zerogift.backend.security.dto.MemberInfo;
-import com.zerogift.backend.common.exception.OAuthException;
+import com.zerogift.backend.common.exception.member.OAuthException;
 import com.zerogift.backend.common.exception.code.OAuthErrorCode;
 import com.zerogift.backend.common.type.AuthType;
 import com.zerogift.backend.member.entity.Member;
