@@ -27,13 +27,6 @@ public class ProductImageController {
             Result.builder().data(productImageService.upload(request)).build());
     }
 
-    @PostMapping("temp/upload")
-    public ResponseEntity<Result<?>> uploadImagesTemp(
-            @RequestParam("files") MultipartFile[] request) {
-        return ResponseEntity.ok().body(
-            Result.builder().data(productImageService.upload(request)).build());
-    }
-
     private ResponseEntity<Result<?>> getResponse(int status, ProductErrorCode errorCode) {
         return ResponseEntity.badRequest().body(
                 Result.builder().status(status).success(false).data(errorCode).build());
