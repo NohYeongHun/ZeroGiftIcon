@@ -88,8 +88,8 @@ public class MemberLoginService {
                 .authType(AuthType.GENERAL)
                 .role(Role.ROLE_MEMBER)
                 .build();
-
-        member.addPassword(passwordEncoder.encode(request.getPassword()));
+        String test = passwordEncoder.encode(request.getPassword());
+        member.addPassword(test);
         memberRepository.save(member);
         emailService.sendEmail(request.getEmail());
 
