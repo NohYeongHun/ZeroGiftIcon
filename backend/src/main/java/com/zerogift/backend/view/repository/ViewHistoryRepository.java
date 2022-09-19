@@ -8,6 +8,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ViewHistoryRepository extends JpaRepository<ViewHistory, Long> {
-
-    long countByMemberAndProduct(Member member, Product product);
+    boolean existsByMemberAndProduct(Member member, Product product);
 }
