@@ -55,6 +55,7 @@ public class ProductService {
                 .name(request.getName())
                 .description(request.getDescription())
                 .price(request.getPrice())
+                .count(request.getCount())
                 .category(request.getCategory())
                 .status(Status.PUBLIC)
                 .member(member)
