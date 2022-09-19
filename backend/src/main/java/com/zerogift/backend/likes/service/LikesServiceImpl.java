@@ -1,10 +1,10 @@
 package com.zerogift.backend.likes.service;
 
 import com.zerogift.backend.common.dto.Result;
-import com.zerogift.backend.common.exception.MemberException;
-import com.zerogift.backend.common.exception.ProductException;
 import com.zerogift.backend.common.exception.code.MemberErrorCode;
 import com.zerogift.backend.common.exception.code.ProductErrorCode;
+import com.zerogift.backend.common.exception.member.MemberException;
+import com.zerogift.backend.common.exception.product.ProductException;
 import com.zerogift.backend.likes.entity.Likes;
 import com.zerogift.backend.likes.model.LikesModel;
 import com.zerogift.backend.likes.repository.LikesRepository;
@@ -12,17 +12,14 @@ import com.zerogift.backend.member.entity.Member;
 import com.zerogift.backend.member.repository.MemberRepository;
 import com.zerogift.backend.product.entity.Product;
 import com.zerogift.backend.product.repository.ProductRepository;
+import com.zerogift.backend.security.dto.LoginInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnit;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -35,40 +32,33 @@ public class LikesServiceImpl implements LikesService {
 
     @Override
     @Transactional
-    public ResponseEntity<Result<?>> pressLike(String email, Long productId) {
+    public ResponseEntity<Result<?>> pressLike(LoginInfo loginInfo, Long productId) {
         // 회원 정보 가져오기
-        Optional<Member> optionalMember = memberRepository.findByEmail(email);
-        optionalMember.orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
-        Member member = optionalMember.get();
+        Member member = memberRepository.findByEmail(loginInfo.getEmail())
+                .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 
         // 상품 정보 가져오기
-        Optional<Product> optionalProduct = productRepository.findById(productId);
-        optionalProduct.orElseThrow(() -> new ProductException(ProductErrorCode.PRODUCT_NOT_FOUND));
-        Product product = optionalProduct.get();
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductException(ProductErrorCode.PRODUCT_NOT_FOUND));
 
-        // 자기자신의 물건 조회해도 조회수는 오르지 않음
+        // 자기자신의 물건은 좋아요 할수 없음
         if (member.getId() == product.getMember().getId()) {
-            return ResponseEntity.badRequest().body(
-                    Result.builder().status(404).success(false).data(ProductErrorCode.SELF_VOTE_FORBIDDEN).build()
-            );
+            throw new ProductException(ProductErrorCode.SELF_VOTE_FORBIDDEN);
         }
 
-        // 이미 좋아요를 눌렀을 경우
-        if (likesRepository.countByMemberAndProduct(member, product) > 0) {
-            return ResponseEntity.badRequest().body(
-                    Result.builder().status(404).success(false).data(ProductErrorCode.DUPLICATE_VOTING_FORBIDDEN).build()
-            );
+        // 이미 좋아요를 눌렀을 경우 다시 좋아요 누를 수 없음
+        if (likesRepository.existsByMemberAndProduct(member, product)) {
+            throw new ProductException(ProductErrorCode.DUPLICATE_VOTING_FORBIDDEN);
         }
 
-        // 좋아요 기록 저장
+        // 'Likes Entity' 에 좋아요 기록 저장
         Likes likes = Likes.builder()
                 .product(product)
                 .member(member)
                 .regDate(LocalDateTime.now())
                 .build();
-        likesRepository.save(likes);
 
-        // 상품이 받은 총 좋아요 수 'Product Entity' 에 저장
+        // 'Product Entity' 에 해당 상품의 총 좋아요 수 저장
         long likesCount = likesRepository.countByProduct(product);
         product.setLikeCount(likesCount);
 
@@ -79,26 +69,24 @@ public class LikesServiceImpl implements LikesService {
 
     @Override
     @Transactional
-    public ResponseEntity<Result<?>> likeCancel(String email, Long productId) {
+    public ResponseEntity<Result<?>> likeCancel(LoginInfo loginInfo, Long productId) {
         // 회원 정보 가져오기
-        Optional<Member> optionalMember = memberRepository.findByEmail(email);
-        optionalMember.orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
-        Member member = optionalMember.get();
+        Member member = memberRepository.findByEmail(loginInfo.getEmail())
+                .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 
         // 상품 정보 가져오기
-        Optional<Product> optionalProduct = productRepository.findById(productId);
-        optionalProduct.orElseThrow(() -> new ProductException(ProductErrorCode.PRODUCT_NOT_FOUND));
-        Product product = optionalProduct.get();
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductException(ProductErrorCode.PRODUCT_NOT_FOUND));
 
         // 좋아요를 누른적이 없을 경우
-        Optional<Likes> optionalLikes = likesRepository.findByMemberAndProduct(member, product);
-        optionalLikes.orElseThrow(() -> new ProductException(ProductErrorCode.NEVER_PRESS_LIKE));
-        Likes likes = optionalLikes.get();
+        Likes likes = likesRepository.findByMemberAndProduct(member, product)
+                .orElseThrow(() -> new ProductException(ProductErrorCode.NEVER_PRESS_LIKE));
 
-        // 'Likes Entity' 에서 삭제
+
+        // 'Likes Entity' 에서 좋아요 기록 삭제
         likesRepository.delete(likes);
 
-        // 상품이 받은 총 좋아요 수 'Product Entity' 에 저장
+        // 'Product Entity' 에 해당 상품의 총 좋아요 수 저장
         long likesCount = likesRepository.countByProduct(product);
         product.setLikeCount(likesCount);
 
@@ -106,12 +94,12 @@ public class LikesServiceImpl implements LikesService {
     }
 
     @Override
-    public ResponseEntity<Result<?>> likeList(String email) {
+    public ResponseEntity<Result<?>> likeList(LoginInfo loginInfo) {
         // 회원 정보 가져오기
-        Optional<Member> optionalMember = memberRepository.findByEmail(email);
-        optionalMember.orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
-        Member member = optionalMember.get();
+        Member member = memberRepository.findByEmail(loginInfo.getEmail())
+                .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 
+        // List 형식으로 회원이 좋아요한 상품들 가져오기
         List<LikesModel> likesList = likesRepository.findByMember(member);
         return ResponseEntity.ok().body(Result.builder().data(likesList).build());
     }
