@@ -10,8 +10,9 @@ plugins {
 	id 'io.spring.dependency-management' version '1.0.13.RELEASE'
 	id 'java'
 	id 'war'
-	// queryDSL plugin
 	id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
+	id 'org.asciidoctor.jvm.convert' version "3.3.2"
+	id 'jacoco'
 }
 
 group = 'com.zeogift'
@@ -22,10 +23,12 @@ configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
+	asciidoctorExtensions
 }
 
 repositories {
 	mavenCentral()
+
 }
 
 ext {
@@ -50,6 +53,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+	implementation 'com.google.guava:guava:31.1-jre'
+	implementation 'net.sourceforge.barbecue:barbecue:1.5-beta1'
+	implementation 'com.squareup.okhttp3:okhttp:4.10.0'
 
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.h2database:h2'
@@ -58,9 +64,10 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation 'io.rest-assured:rest-assured:4.2.0'
+	testImplementation 'org.springframework.restdocs:spring-restdocs-restassured'
+	asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
 }
-
-
 
 dependencyManagement {
 	imports {
@@ -68,9 +75,58 @@ dependencyManagement {
 	}
 }
 
-tasks.named('test') {
-	useJUnitPlatform()
+ext {
+	set('snippetsDir', file("build/generated-snippets"))
 }
+
+tasks.named('test') {
+	outputs.dir snippetsDir
+	useJUnitPlatform()
+	finalizedBy 'asciidoctor'
+	finalizedBy 'jacocoTestReport'
+}
+
+// jacoco
+jacoco {
+	toolVersion = "0.8.7"
+}
+
+jacocoTestReport {
+	reports {
+		xml.enabled true
+		csv.enabled true
+		html.enabled true
+	}
+}
+
+asciidoctor.doFirst {
+	delete file('src/main/resources/static/docs')
+}
+
+asciidoctor {
+	inputs.dir snippetsDir
+	configurations 'asciidoctorExtensions'
+	dependsOn test
+}
+
+task createDocument(type: Copy) {
+	dependsOn asciidoctor
+
+	from file("build/docs/asciidoc")
+	into file("src/main/resources/static/docs")
+}
+
+task moveDocument(type: Copy) {
+	dependsOn createDocument
+
+	from file("build/docs/asciidoc")
+	into file("build/resources/main/static/docs")
+}
+
+bootJar {
+	dependsOn moveDocument
+}
+
 
 // queryDSL 사용할 경로 설정
 def querydslDir = "$buildDir/generated/querydsl"

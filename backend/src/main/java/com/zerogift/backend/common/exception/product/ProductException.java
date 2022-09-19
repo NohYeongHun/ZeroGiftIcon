@@ -1,4 +1,4 @@
-package com.zerogift.backend.common.exception;
+package com.zerogift.backend.common.exception.product;
 
 import com.zerogift.backend.common.exception.code.ProductErrorCode;
 

@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zerogift.backend.common.dto.Result;
+import com.zerogift.backend.config.authorization.AuthenticationPrincipal;
 import com.zerogift.backend.product.dto.NewProductRequest;
 import com.zerogift.backend.product.service.ProductService;
 import com.zerogift.backend.product.type.Category;
+import com.zerogift.backend.security.dto.LoginInfo;
 
 import lombok.RequiredArgsConstructor;
 
@@ -27,20 +29,25 @@ public class ProductController {
     private final ProductService productService;
     
     @PostMapping("admin/product")
-    public ResponseEntity<Result<?>> addProduct(@RequestBody @Valid NewProductRequest request) {
-        return productService.addProduct(request);
+    public ResponseEntity<Result<?>> addProduct(
+            @RequestBody @Valid NewProductRequest request,
+            @AuthenticationPrincipal LoginInfo loginInfo) {
+        return productService.addProduct(request, loginInfo);
     }
 
     @DeleteMapping("admin/product")
-    public ResponseEntity<Result<?>> removeProduct(@RequestParam Long productId) {
-        return productService.removeProduct(productId);
+    public ResponseEntity<Result<?>> removeProduct(
+            @RequestParam Long productId,
+            @AuthenticationPrincipal LoginInfo loginInfo) {
+        return productService.removeProduct(productId, loginInfo);
     }
 
     @GetMapping("admin/myproducts")
     public ResponseEntity<Result<?>> listMyProduct(
         @RequestParam Integer idx,
-        @RequestParam Integer size) {
-        return productService.listMyProduct(idx, size);
+        @RequestParam Integer size,
+        @AuthenticationPrincipal LoginInfo loginInfo) {
+        return productService.listMyProduct(idx, size, loginInfo);
     }
 
     @GetMapping("product/search")
@@ -52,8 +59,10 @@ public class ProductController {
     }
 
     @PatchMapping("member/product/like")
-    public ResponseEntity<Result<?>> likeProduct(@RequestParam Long productId) {
-        return productService.likeProduct(productId);
+    public ResponseEntity<Result<?>> likeProduct(
+            @RequestParam Long productId,
+            @AuthenticationPrincipal LoginInfo loginInfo) {
+        return productService.likeProduct(productId, loginInfo);
     }
 
     @GetMapping("product/list")

@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import com.zerogift.backend.common.dto.Result;
 import com.zerogift.backend.common.exception.code.MemberErrorCode;
 import com.zerogift.backend.common.exception.code.ProductErrorCode;
+import com.zerogift.backend.common.exception.member.MemberException;
+import com.zerogift.backend.common.exception.product.ProductException;
 import com.zerogift.backend.member.entity.Member;
 import com.zerogift.backend.member.repository.MemberRepository;
 import com.zerogift.backend.product.dto.NewProductRequest;
@@ -29,6 +31,8 @@ import com.zerogift.backend.product.repository.ProductImageRepository;
 import com.zerogift.backend.product.repository.ProductRepository;
 import com.zerogift.backend.product.type.Category;
 import com.zerogift.backend.product.type.Status;
+import com.zerogift.backend.security.dto.LoginInfo;
+import com.zerogift.backend.security.type.Role;
 import com.zerogift.backend.util.TokenUtil;
 
 import lombok.RequiredArgsConstructor;
@@ -41,10 +45,11 @@ public class ProductService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public ResponseEntity<Result<?>> addProduct(NewProductRequest request) {
-        String email = TokenUtil.getAdminEmail();
-        if (email == null) return badRequest(403, ProductErrorCode.INSUFFICIENT_AUTHORITY);
-        Member member = memberRepository.findByEmail(email).get();
+    public ResponseEntity<Result<?>> addProduct(NewProductRequest request, LoginInfo loginInfo) {
+        Member member = memberRepository.findByEmail(loginInfo.getEmail())
+                .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
+        if (!member.getRole().equals(Role.ROLE_ADMIN))
+            throw new ProductException(ProductErrorCode.INSUFFICIENT_AUTHORITY);
         Product product = Product
                 .builder()
                 .name(request.getName())
@@ -70,14 +75,15 @@ public class ProductService {
     }
 
     @Transactional
-    public ResponseEntity<Result<?>> removeProduct(Long productId) {
-        Optional<Member> optMember = memberRepository.findByEmail(TokenUtil.getAdminEmail());
-        Optional<Product> optProduct = productRepository.findById(productId);
-        if (optMember.isEmpty()) return badRequest(403, MemberErrorCode.MEMBER_NOT_FOUND);
-        if (optProduct.isEmpty()) return badRequest(404, ProductErrorCode.PRODUCT_NOT_FOUND);
-        Member member = optMember.get();
-        Product product = optProduct.get();
-        if (!product.getMember().equals(member)) return badRequest(403, ProductErrorCode.OWNED_BY_SOMEONE_ELSE);
+    public ResponseEntity<Result<?>> removeProduct(Long productId, LoginInfo loginInfo) {
+        Member member = memberRepository.findByEmail(loginInfo.getEmail())
+                .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
+        if (!member.getRole().equals(Role.ROLE_ADMIN))
+            throw new ProductException(ProductErrorCode.INSUFFICIENT_AUTHORITY);
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductException(ProductErrorCode.PRODUCT_NOT_FOUND));
+        if (!product.getMember().equals(member))
+            throw new ProductException(ProductErrorCode.OWNED_BY_SOMEONE_ELSE);
         for (ProductImage image : productImageRepository.findAllByProduct(product)) {
             productImageRepository.delete(image);
         }
@@ -85,10 +91,11 @@ public class ProductService {
         return ResponseEntity.ok().body(Result.builder().data("successfully deleted").build());
     }
 
-    public ResponseEntity<Result<?>> listMyProduct(Integer idx, Integer size) {
-        String email = TokenUtil.getAdminEmail();
-        if (email == null) return badRequest(403, ProductErrorCode.INSUFFICIENT_AUTHORITY);
-        Member member = memberRepository.findByEmail(email).get();
+    public ResponseEntity<Result<?>> listMyProduct(Integer idx, Integer size, LoginInfo loginInfo) {
+        Member member = memberRepository.findByEmail(loginInfo.getEmail())
+                .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
+        if (!member.getRole().equals(Role.ROLE_ADMIN))
+            throw new ProductException(ProductErrorCode.INSUFFICIENT_AUTHORITY);
         Pageable pageable = PageRequest.of(idx, size, Sort.by("updatedAt").descending());
         Page<Product> page = productRepository.findByMember(member, pageable);
         return ResponseEntity.ok().body(Result.builder().data(
@@ -129,15 +136,15 @@ public class ProductService {
     }
 
     @Transactional
-    public ResponseEntity<Result<?>> likeProduct(Long productId) {
-        Optional<Member> optMember = memberRepository.findByEmail(TokenUtil.getAdminOrMemberEmail());
-        Optional<Product> optProduct = productRepository.findById(productId);
-        if (optMember.isEmpty()) return badRequest(403, ProductErrorCode.VOTE_NOT_ALLOWED_FOR_NON_MEMBER);
-        if (optProduct.isEmpty()) return badRequest(404, ProductErrorCode.PRODUCT_NOT_FOUND);
-        Member member = optMember.get();
-        Product product = optProduct.get();
-        if (product.getMember().equals(member)) return badRequest(403, ProductErrorCode.SELF_VOTE_FORBIDDEN);
-        if (product.getLiked().contains(member.getId())) return badRequest(403, ProductErrorCode.DUPLICATE_VOTING_FORBIDDEN);
+    public ResponseEntity<Result<?>> likeProduct(Long productId, LoginInfo loginInfo) {
+        Member member = memberRepository.findByEmail(loginInfo.getEmail())
+                .orElseThrow(() -> new ProductException(ProductErrorCode.VOTE_NOT_ALLOWED_FOR_NON_MEMBER));
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductException(ProductErrorCode.PRODUCT_NOT_FOUND));
+        if (product.getMember().equals(member))
+            throw new ProductException(ProductErrorCode.SELF_VOTE_FORBIDDEN);
+        if (product.getLiked().contains(member.getId()))
+            throw new ProductException(ProductErrorCode.DUPLICATE_VOTING_FORBIDDEN);
         product.getLiked().add(member.getId());
         productRepository.save(product);
         return ResponseEntity.ok().body(Result.builder().data("successfully liked").build());
