@@ -1,7 +1,7 @@
 package com.zerogift.backend.security.utils;
 
 import com.zerogift.backend.common.dto.ErrorResultDto;
-import com.zerogift.backend.common.exception.JwtInvalidException;
+import com.zerogift.backend.common.exception.member.JwtInvalidException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;

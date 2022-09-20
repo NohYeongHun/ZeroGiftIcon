@@ -1,7 +1,7 @@
 package com.zerogift.backend.security.service;
 
 import com.zerogift.backend.security.dto.AdminInfo;
-import com.zerogift.backend.common.exception.JwtInvalidException;
+import com.zerogift.backend.common.exception.member.JwtInvalidException;
 import com.zerogift.backend.security.dto.LoginInfo;
 import com.zerogift.backend.security.dto.MemberInfo;
 import com.zerogift.backend.common.exception.code.JwtErrorCode;

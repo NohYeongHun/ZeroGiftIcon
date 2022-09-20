@@ -3,7 +3,7 @@ package com.zerogift.backend.security.utils;
 
 import com.zerogift.backend.security.dto.AdminInfo;
 import com.zerogift.backend.security.dto.MemberInfo;
-import com.zerogift.backend.common.exception.JwtInvalidException;
+import com.zerogift.backend.common.exception.member.JwtInvalidException;
 import com.zerogift.backend.common.exception.code.JwtErrorCode;
 import com.zerogift.backend.security.service.TokenService;
 import io.jsonwebtoken.Claims;

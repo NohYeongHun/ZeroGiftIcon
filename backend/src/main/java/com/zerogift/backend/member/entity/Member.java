@@ -29,6 +29,9 @@ public class Member extends BaseTimeEntity {
 
     private String profileImageUrl;
 
+    // 포인트 추가
+    private Integer point;
+
     @Enumerated(EnumType.STRING)
     private MemberStatus status;
 
@@ -55,6 +58,11 @@ public class Member extends BaseTimeEntity {
         this.authType = authType;
         this.status = status;
         this.role = role;
+        this.point = 0;
+    }
+
+    public void usePoint(Integer point) {
+        this.point -= point;
     }
 
     public void addPassword(String password){

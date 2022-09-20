@@ -1,6 +1,6 @@
 package com.zerogift.backend.common.type;
 
-import com.zerogift.backend.common.exception.OAuthException;
+import com.zerogift.backend.common.exception.member.OAuthException;
 import com.zerogift.backend.common.exception.code.OAuthErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
