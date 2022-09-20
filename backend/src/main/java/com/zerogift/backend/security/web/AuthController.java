@@ -20,6 +20,7 @@ import springfox.documentation.annotations.ApiIgnore;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
+@CrossOrigin
 public class AuthController {
 
     private final RefreshTokenRepository refreshTokenRepository;
