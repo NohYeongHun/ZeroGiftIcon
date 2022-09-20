@@ -20,6 +20,7 @@ public class LikesModel {
 
     public static LikesModel of(Likes likes) {
         return LikesModel.builder()
+                .id(likes.getId())
                 .memberLikeResponse(MemberLikeResponse.of(likes.getMember()))
                 .productLikeResponse(ProductLikeResponse.of(likes.getProduct()))
                 .build();

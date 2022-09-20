@@ -31,6 +31,4 @@ public class LikesController {
     public ResponseEntity<?> likeList(@AuthenticationPrincipal LoginInfo loginInfo) {
         return likesService.likeList(loginInfo);
     }
-
-
 }

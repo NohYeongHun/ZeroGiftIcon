@@ -57,6 +57,7 @@ public class LikesServiceImpl implements LikesService {
                 .member(member)
                 .regDate(LocalDateTime.now())
                 .build();
+        likesRepository.save(likes);
 
         // 'Product Entity' 에 해당 상품의 총 좋아요 수 저장
         long likesCount = likesRepository.countByProduct(product);
