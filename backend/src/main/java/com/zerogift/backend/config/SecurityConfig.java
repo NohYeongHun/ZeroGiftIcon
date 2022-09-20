@@ -6,7 +6,6 @@ import com.zerogift.backend.security.utils.JwtAuthenticationProvider;
 import com.zerogift.backend.security.utils.JwtEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -22,7 +21,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableGlobalMethodSecurity(securedEnabled = true,prePostEnabled = true)
 @RequiredArgsConstructor
 @EnableWebSecurity
-@Configuration
 public class SecurityConfig {
 
     private final JwtAuthenticationProvider jwtAuthenticationProvider;
