@@ -39,9 +39,7 @@ public class SecurityConfig {
                 .anyRequest().permitAll();
 
 
-        http.headers().frameOptions().disable();
-
-        http.cors().configurationSource(corsConfigurationSource())
+        http.headers().frameOptions().sameOrigin()
                 .and()
                 .httpBasic().disable()
                 .csrf().disable()
