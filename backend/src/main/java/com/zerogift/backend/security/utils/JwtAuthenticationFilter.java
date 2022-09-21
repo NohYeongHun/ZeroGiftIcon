@@ -63,11 +63,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	private String getJwtFrom(HttpServletRequest request) {
 		String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-		if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
-			return bearerToken.substring(BEARER_PREFIX.length());
-		}else{
+		if (StringUtils.hasText(bearerToken)) {
+			return checkBearerToken(bearerToken);
+		}
+		// 선물함의 바코드를 사용할때는 JWT가 필요없어 Null로 반환
+		return null;
+	}
+
+	private String checkBearerToken(String bearerToken) {
+		if(!bearerToken.startsWith(BEARER_PREFIX)) {
 			throw new JwtInvalidException(JwtErrorCode.JWT_FORMAT_IS_WRONG);
 		}
+		return bearerToken.substring(BEARER_PREFIX.length());
 	}
 
 
