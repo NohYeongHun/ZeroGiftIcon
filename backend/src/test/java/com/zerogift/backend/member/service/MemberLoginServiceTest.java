@@ -5,12 +5,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.doNothing;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.nimbusds.oauth2.sdk.token.Tokens;
-import com.zerogift.backend.common.exception.MemberException;
 import com.zerogift.backend.common.exception.code.MemberErrorCode;
+import com.zerogift.backend.common.exception.member.MemberException;
 import com.zerogift.backend.common.type.AuthType;
 import com.zerogift.backend.email.service.EmailService;
 import com.zerogift.backend.member.dto.MemberLoginRequest;
