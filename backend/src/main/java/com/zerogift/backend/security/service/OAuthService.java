@@ -1,5 +1,6 @@
 package com.zerogift.backend.security.service;
 
+import com.zerogift.backend.security.api.WebClientApi;
 import com.zerogift.backend.security.dto.MemberInfo;
 import com.zerogift.backend.common.exception.member.OAuthException;
 import com.zerogift.backend.common.exception.code.OAuthErrorCode;
@@ -36,14 +37,15 @@ public class OAuthService {
     private final InMemoryClientRegistrationRepository inMemoryRepository;
     private final MemberRepository memberRepository;
     private final TokenService tokenService;
+    private final WebClientApi webClientApi;
 
     public TokenDto login(String providerName, String code) {
         AuthType authType = AuthType.of(providerName);
 
         ClientRegistration provider = inMemoryRepository.findByRegistrationId(providerName);
-        OAuthTokenResponse tokenResponse = getToken(code, provider);
+        OAuthTokenResponse tokenResponse = webClientApi.getToken(code, provider);
 
-        Map<String, Object> userAttributes = getUserAttributes(tokenResponse, provider);
+        Map<String, Object> userAttributes = webClientApi.getUserAttributes(tokenResponse, provider);
 
         OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(
                 authType, userAttributes);
@@ -75,43 +77,7 @@ public class OAuthService {
         return member;
     }
 
-    private OAuthTokenResponse getToken(String code, ClientRegistration provider) {
-        return WebClient.create()
-                .post()
-                .uri(provider.getProviderDetails().getTokenUri())
-                .headers(header -> {
-                    header.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-                    header.setBasicAuth(provider.getClientId(),provider.getClientSecret());
-                    header.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-                    header.setAcceptCharset(Collections.singletonList(StandardCharsets.UTF_8));
-                })
-                .bodyValue(tokenRequest(code, provider))
-                .retrieve()
-                .bodyToMono(OAuthTokenResponse.class)
-                .block();
-    }
 
-    private MultiValueMap<String, String> tokenRequest(String code, ClientRegistration provider) {
-        LinkedMultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
-        formData.add("code", code);
-        formData.add("grant_type", "authorization_code");
-        formData.add("redirect_uri", provider.getRedirectUri());
-        formData.add("client_id", provider.getClientId());
-        formData.add("client_secret",provider.getClientSecret());
-        return formData;
-    }
-
-    private Map<String, Object> getUserAttributes(OAuthTokenResponse tokenResponse,
-                                                  ClientRegistration provider) {
-        return WebClient.create()
-                .get()
-                .uri(provider.getProviderDetails().getUserInfoEndpoint().getUri())
-                .headers(header -> header.setBearerAuth(tokenResponse.getAccess_token()))
-                .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {
-                })
-                .block();
-    }
 
     private void validateRequestAuthTypeAndMemberAuthType(AuthType authType, Member member) {
         if (!authType.equals(member.getAuthType())) {
