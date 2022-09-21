@@ -7,6 +7,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum JwtErrorCode {
+    JWT_FORMAT_IS_WRONG("JWT 형식이 잘못되었습니다."),
     INVALID_JWT_SIGNATURE("사용할 수 없는 토큰입니다."),
     EXPIRED_JWT("토큰의 유효기간이 만료되었습니다."),
     MEMBER_STATUS_BANNED("정지된 회원입니다."),

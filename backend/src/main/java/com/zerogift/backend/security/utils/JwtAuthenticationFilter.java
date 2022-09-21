@@ -1,6 +1,7 @@
 package com.zerogift.backend.security.utils;
 
 import com.zerogift.backend.common.dto.ErrorResultDto;
+import com.zerogift.backend.common.exception.code.JwtErrorCode;
 import com.zerogift.backend.common.exception.member.JwtInvalidException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +42,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 				JwtAuthenticationToken jwtAuthenticationToken = new JwtAuthenticationToken(token);
 				Authentication authentication = authenticationManager.authenticate(
 					jwtAuthenticationToken);
-
+				authentication.getPrincipal();
 				SecurityContextHolder.getContext().setAuthentication(authentication);
 
 			} catch (AuthenticationException e) {
@@ -64,9 +65,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 		if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
 			return bearerToken.substring(BEARER_PREFIX.length());
+		}else{
+			throw new JwtInvalidException(JwtErrorCode.JWT_FORMAT_IS_WRONG);
 		}
-
-		return null;
 	}
 
 
