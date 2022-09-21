@@ -20,6 +20,8 @@ public class Member extends BaseTimeEntity {
     @Column(unique = true)
     private String email;
 
+    private String password;
+
     @Column(unique = true)
     private String authId;
 
@@ -63,4 +65,11 @@ public class Member extends BaseTimeEntity {
         this.point -= point;
     }
 
+    public void addPassword(String password){
+        this.password = password;
+    }
+
+    public void emailVerifiedSuccess(){
+        this.status = MemberStatus.PERMITTED;
+    }
 }
