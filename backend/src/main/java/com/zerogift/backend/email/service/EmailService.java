@@ -16,6 +16,8 @@ public class EmailService {
 
     private final EmailAuthRepository emailAuthRepository;
     private final JavaMailSender javaMailSender;
+    private static final String ADDRESS_PREFIX = "http://localhost:8080/member-auth/confirm-email?email=";
+    private static final String TOKEN_PREFIX = "&authToken=";
 
     @Transactional
     public void sendEmail(String email){
@@ -30,9 +32,7 @@ public class EmailService {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(emailAuth.getEmail());
         message.setSubject("회원가입 이메일 인증");
-        message.setText("http://localhost:8080/member-auth/confirm-email?email="
-                + emailAuth.getEmail() + "&authToken=" + emailAuth.getAuthToken()
-        );
+        message.setText(ADDRESS_PREFIX + emailAuth.getEmail() + TOKEN_PREFIX + emailAuth.getAuthToken());
 
         javaMailSender.send(message);
     }
