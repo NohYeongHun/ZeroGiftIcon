@@ -24,6 +24,8 @@ public class NewProductRequest {
     private String description;
     @NotNull
     private Integer price;
+    @NotNull
+    private Integer count;
     @Enumerated(EnumType.STRING)
     private Category category;
     private List<Long> productImageIds;
