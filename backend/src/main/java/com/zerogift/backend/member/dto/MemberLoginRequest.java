@@ -16,8 +16,7 @@ public class MemberLoginRequest {
     @Builder
     public MemberLoginRequest(
             String email,
-            String password
-    ){
+            String password) {
         this.email = email;
         this.password =password;
     }
