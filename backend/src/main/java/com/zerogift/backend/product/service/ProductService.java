@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import com.zerogift.backend.likes.repository.LikesRepository;
+import com.zerogift.backend.view.service.ViewHistoryService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -43,6 +45,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ProductImageRepository productImageRepository;
     private final MemberRepository memberRepository;
+    private final LikesRepository likesRepository;
 
     @Transactional
     public ResponseEntity<Result<?>> addProduct(NewProductRequest request, LoginInfo loginInfo) {
@@ -100,39 +103,40 @@ public class ProductService {
         Page<Product> page = productRepository.findByMember(member, pageable);
         return ResponseEntity.ok().body(Result.builder().data(
                 page.getContent().stream()
-                    .map(product -> ProductDto.builder()
-                            .id(product.getId())
-                            .name(product.getName())
-                            .description(product.getDescription())
-                            .price(product.getPrice())
-                            .category(product.getCategory())
-                            .viewCount(product.getViewCount())
-                            .likeCount(product.getLiked().size())
-                            .mainImageUrl(product.getMainImageUrl())
-                            .build())
-                ).build());
+                        .map(product -> ProductDto.builder()
+                                .id(product.getId())
+                                .name(product.getName())
+                                .description(product.getDescription())
+                                .price(product.getPrice())
+                                .category(product.getCategory())
+                                .viewCount(product.getViewCount())
+                                .likeCount(product.getLikeCount().intValue())
+                                .mainImageUrl(product.getMainImageUrl())
+                                .build())
+        ).build());
     }
 
     public ResponseEntity<Result<?>> searchProduct(String q, Integer idx, Integer size) {
         String email = TokenUtil.getAdminOrMemberEmail();
-        Long memberId = email != null ? memberRepository.findByEmail(email).get().getId() : null;
+        Member member = memberRepository.findByEmail(email).get();
+        Long memberId = email != null ? member.getId() : null;
         Pageable pageable = PageRequest.of(idx, size, Sort.by("updatedAt").descending());
         Page<Product> page = productRepository.findByStatusAndNameContainingOrDescriptionContaining(Status.PUBLIC, q, q, pageable);
         return ResponseEntity.ok().body(Result.builder().data(
                 page.getContent().stream()
-                    .map(product -> ProductDto.builder()
-                            .id(product.getId())
-                            .name(product.getName())
-                            .description(product.getDescription())
-                            .price(product.getPrice())
-                            .category(product.getCategory())
-                            .viewCount(product.getViewCount())
-                            .likeCount(product.getLiked().size())
-                            .liked(memberId == null ? false : product.getLiked().contains(memberId))
-                            .mainImageUrl(product.getMainImageUrl())
-                            .build())
-                    .collect(Collectors.toList())
-                ).build());
+                        .map(product -> ProductDto.builder()
+                                .id(product.getId())
+                                .name(product.getName())
+                                .description(product.getDescription())
+                                .price(product.getPrice())
+                                .category(product.getCategory())
+                                .viewCount(product.getViewCount())
+                                .likeCount(product.getLikeCount().intValue())
+                                .liked(likesRepository.existsByMemberAndProduct(member, product) ? true : false)
+                                .mainImageUrl(product.getMainImageUrl())
+                                .build())
+                        .collect(Collectors.toList())
+        ).build());
     }
 
     @Transactional
@@ -152,50 +156,51 @@ public class ProductService {
 
     public ResponseEntity<Result<?>> listProduct(List<Category> categories, Integer idx, Integer size) {
         String email = TokenUtil.getAdminOrMemberEmail();
-        Long memberId = email != null ? memberRepository.findByEmail(email).get().getId() : null;
+        Member member = memberRepository.findByEmail(email).get();
+        Long memberId = email != null ? member.getId() : null;
         Pageable pageable = PageRequest.of(idx, size, Sort.by("updatedAt").descending());
         Page<Product> page = productRepository.findByStatusAndCategoryIn(Status.PUBLIC, categories, pageable);
         return ResponseEntity.ok().body(Result.builder().data(
                 page.getContent().stream()
-                    .map(product -> ProductDto.builder()
-                            .id(product.getId())
-                            .name(product.getName())
-                            .description(product.getDescription())
-                            .price(product.getPrice())
-                            .category(product.getCategory())
-                            .viewCount(product.getViewCount())
-                            .likeCount(product.getLiked().size())
-                            .liked(memberId == null ? false : product.getLiked().contains(memberId))
-                            .mainImageUrl(product.getMainImageUrl())
-                            .build())
-                    .collect(Collectors.toList())
-                ).build());
-    }
-
-    @Transactional
-    public ResponseEntity<Result<?>> getDetail(Long productId) {
-        Optional<Product> optProduct = productRepository.findById(productId);
-        if (optProduct.isEmpty()) return badRequest(404, ProductErrorCode.PRODUCT_NOT_FOUND);
-        Product product = optProduct.get();
-        product.setViewCount(product.getViewCount() + 1);
-        List<ProductImage> images = productImageRepository.findAllByProduct(product);
-        return ResponseEntity.ok().body(Result.builder().data(
-                ProductDetailDto.builder()
+                        .map(product -> ProductDto.builder()
                                 .id(product.getId())
                                 .name(product.getName())
                                 .description(product.getDescription())
                                 .price(product.getPrice())
                                 .category(product.getCategory())
                                 .viewCount(product.getViewCount())
-                                .images(images.stream()
-                                              .map(i -> ProductImageDto.builder()
-                                                      .productImageId(i.getId())
-                                                      .url(i.getUrl())
-                                                      .isMainImage(i.getIsMainImage())
-                                                      .build())
-                                             .collect(Collectors.toList()))
-                               .build()
-                ).build());
+                                .likeCount(product.getLikeCount().intValue())
+                                .liked(likesRepository.existsByMemberAndProduct(member, product) ? true : false)
+                                .mainImageUrl(product.getMainImageUrl())
+                                .build())
+                        .collect(Collectors.toList())
+        ).build());
+    }
+
+
+    @Transactional
+    public ResponseEntity<Result<?>> getDetail(Long productId) {
+        Optional<Product> optProduct = productRepository.findById(productId);
+        if (optProduct.isEmpty()) return badRequest(404, ProductErrorCode.PRODUCT_NOT_FOUND);
+        Product product = optProduct.get();
+        List<ProductImage> images = productImageRepository.findAllByProduct(product);
+        return ResponseEntity.ok().body(Result.builder().data(
+                ProductDetailDto.builder()
+                        .id(product.getId())
+                        .name(product.getName())
+                        .description(product.getDescription())
+                        .price(product.getPrice())
+                        .category(product.getCategory())
+                        .viewCount(product.getViewCount())
+                        .images(images.stream()
+                                .map(i -> ProductImageDto.builder()
+                                        .productImageId(i.getId())
+                                        .url(i.getUrl())
+                                        .isMainImage(i.getIsMainImage())
+                                        .build())
+                                .collect(Collectors.toList()))
+                        .build()
+        ).build());
     }
 
     private ResponseEntity<Result<?>> badRequest(int status, Object errorCode) {

@@ -4,15 +4,9 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import com.zerogift.backend.view.service.ViewHistoryService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.zerogift.backend.common.dto.Result;
 import com.zerogift.backend.config.authorization.AuthenticationPrincipal;
@@ -27,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductService productService;
+    private final ViewHistoryService viewHistoryService;
     
     @PostMapping("admin/product")
     public ResponseEntity<Result<?>> addProduct(
@@ -74,7 +69,9 @@ public class ProductController {
     }
 
     @GetMapping("product/detail/{productId}")
-    public ResponseEntity<Result<?>> getDetail(@PathVariable Long productId) {
+    public ResponseEntity<Result<?>> getDetail(@PathVariable Long productId,
+                                               @AuthenticationPrincipal LoginInfo loginInfo) {
+        viewHistoryService.addViewHistory(loginInfo, productId);
         return productService.getDetail(productId);
     }
 }

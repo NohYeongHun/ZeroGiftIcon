@@ -1,22 +1,20 @@
 package com.zerogift.backend.view.entity;
 
-import com.zerogift.backend.common.entity.BaseTimeEntity;
 import com.zerogift.backend.member.entity.Member;
 import com.zerogift.backend.product.entity.Product;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class ViewHistory extends BaseTimeEntity {
+public class ViewHistory{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
