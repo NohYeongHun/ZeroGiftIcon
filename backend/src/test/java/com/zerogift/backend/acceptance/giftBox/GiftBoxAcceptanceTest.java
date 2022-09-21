@@ -1,4 +1,4 @@
-package com.zerogift.backend.giftBox.controller;
+package com.zerogift.backend.acceptance.giftBox;
 
 import static com.zerogift.backend.step.GiftBoxStep.선물한_상세페이지_조회;
 import static com.zerogift.backend.step.GiftBoxStep.선물함_기프트콘_사용;
@@ -8,7 +8,6 @@ import static com.zerogift.backend.step.ProductStep.상품_생성_요청;
 import static com.zerogift.backend.step.ProductStep.상품_이미지_생성_요청;
 import static com.zerogift.backend.utils.DataMakeUtils.회원_생성;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
@@ -42,7 +41,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ExtendWith(MockitoExtension.class)
-class GiftBoxControllerTest extends AcceptanceTest {
+class GiftBoxAcceptanceTest extends AcceptanceTest {
 
     @Autowired
     private MemberRepository memberRepository;
