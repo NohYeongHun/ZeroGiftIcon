@@ -6,14 +6,13 @@ import static com.zerogift.backend.member.entity.QMember.member;
 import static com.zerogift.backend.product.entity.QProduct.product;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.zerogift.backend.giftBox.entity.GiftBox;
 import com.zerogift.backend.giftMessage.dto.GiftMessageDto;
 import com.zerogift.backend.giftMessage.dto.GiftMessageForm;
-import com.zerogift.backend.giftMessage.entity.QGiftMessage;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -30,9 +29,17 @@ public class GiftMessageRepositoryCustomImpl implements GiftMessageRepositoryCus
             .from(giftBox)
             .innerJoin(giftBox.product, product)
             .innerJoin(giftBox.sendMember, member)
-            .where(giftBox.id.eq(giftBoxId)
-                .and(member.id.eq(memberId)))
+            .where(eqGiftBoxId(giftBoxId)
+                , eqMemberId(memberId))
             .fetchOne();
+    }
+
+    private BooleanExpression eqGiftBoxId(Long giftBoxId) {
+        return giftBox.id.eq(giftBoxId);
+    }
+
+    private BooleanExpression eqMemberId(Long memberId) {
+        return member.id.eq(memberId);
     }
 
     @Override
