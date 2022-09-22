@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-@Tag(name = "MemberLogin",description = "멤버 로그인 관련 API")
+@Tag(name = "MemberLogin", description = "멤버 로그인 관련 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/member-auth")
@@ -28,13 +28,11 @@ public class MemberLoginController {
 
     @Operation(
             summary = "로그인", description = "일반 회원 로그인입니다.",
-            tags = {"Member"}
+            tags = {"MemberLogin"}
     )
-
     @PostMapping("/login")
     public ResponseEntity<Result<?>> login(
-            @RequestBody @Valid MemberLoginRequest request
-    ){
+            @RequestBody @Valid MemberLoginRequest request) {
 
         TokenDto login = memberLoginService.login(request);
 
@@ -45,6 +43,10 @@ public class MemberLoginController {
                 .build());
     }
 
+    @Operation(
+            summary = "회원 등록", description = "일반 회원 등록입니다.",
+            tags = {"MemberLogin"}
+    )
     @PostMapping("/register")
     public ResponseEntity<Result<?>> register(
             @RequestBody @Valid MemberRegisterRequest request
@@ -59,6 +61,10 @@ public class MemberLoginController {
                 .build());
     }
 
+    @Operation(
+            summary = "회원 로그아웃입니다.", description = "일반 회원 로그아웃 입니다.",
+            tags = {"MemberLogin"}
+    )
     @GetMapping("/logout")
     public ResponseEntity<Result<?>> logout(@AuthenticationPrincipal MemberInfo memberInfo){
 
@@ -73,7 +79,10 @@ public class MemberLoginController {
         );
     }
 
-    @ApiOperation(value = "이메일 인증", notes = "이메일 인증을 진행한다.")
+    @Operation(
+            summary = "일반 회원 이메일 인증입니다.", description = "일반 회원 이메일 인증입니다.",
+            tags = {"MemberLogin"}
+    )
     @GetMapping("/confirm-email")
     public ResponseEntity<Result<?>> confirmEmail(
             @RequestBody @Valid EmailAuthRequest request
