@@ -1,7 +1,6 @@
 package com.zerogift.backend.member.web;
 
 import com.zerogift.backend.common.dto.Result;
-import com.zerogift.backend.email.dto.EmailAuthRequest;
 import com.zerogift.backend.member.dto.MemberLoginRequest;
 import com.zerogift.backend.member.dto.MemberRegisterRequest;
 import com.zerogift.backend.member.entity.Member;

@@ -5,7 +5,6 @@ import com.zerogift.backend.common.exception.code.EmailAuthErrorCode;
 import com.zerogift.backend.common.exception.code.MemberErrorCode;
 import com.zerogift.backend.common.exception.member.MemberException;
 import com.zerogift.backend.common.type.AuthType;
-import com.zerogift.backend.email.dto.EmailAuthRequest;
 import com.zerogift.backend.email.entity.EmailAuth;
 import com.zerogift.backend.email.repository.EmailAuthRepository;
 import com.zerogift.backend.email.service.EmailService;
