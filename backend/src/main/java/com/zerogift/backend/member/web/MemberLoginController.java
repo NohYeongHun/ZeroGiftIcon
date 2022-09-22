@@ -1,7 +1,6 @@
 package com.zerogift.backend.member.web;
 
 import com.zerogift.backend.common.dto.Result;
-import com.zerogift.backend.email.dto.EmailAuthRequest;
 import com.zerogift.backend.member.dto.MemberLoginRequest;
 import com.zerogift.backend.member.dto.MemberRegisterRequest;
 import com.zerogift.backend.member.entity.Member;
@@ -85,10 +84,10 @@ public class MemberLoginController {
     )
     @GetMapping("/confirm-email")
     public ResponseEntity<Result<?>> confirmEmail(
-            @RequestBody @Valid EmailAuthRequest request
-    )
-    {
-        memberLoginService.confirmEmail(request);
+            @RequestParam @Valid String email,
+            @RequestParam @Valid String authToken
+    ) {
+        memberLoginService.confirmEmail(email, authToken);
         return ResponseEntity.ok().body(
                 Result.builder()
                         .status(200)

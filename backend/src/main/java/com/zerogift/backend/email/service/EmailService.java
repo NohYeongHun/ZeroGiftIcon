@@ -3,6 +3,7 @@ package com.zerogift.backend.email.service;
 import com.zerogift.backend.email.entity.EmailAuth;
 import com.zerogift.backend.email.repository.EmailAuthRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,10 @@ public class EmailService {
 
     private final EmailAuthRepository emailAuthRepository;
     private final JavaMailSender javaMailSender;
-    private static final String ADDRESS_PREFIX = "http://localhost:8080/member-auth/confirm-email?email=";
+
+    @Value("${server.url}")
+    private String ADDRESS;
+    private static final String URI_PREFIX = "member-auth/confirm-email?email=";
     private static final String TOKEN_PREFIX = "&authToken=";
 
     @Transactional
@@ -32,7 +36,7 @@ public class EmailService {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(emailAuth.getEmail());
         message.setSubject("회원가입 이메일 인증");
-        message.setText(ADDRESS_PREFIX + emailAuth.getEmail() + TOKEN_PREFIX + emailAuth.getAuthToken());
+        message.setText(ADDRESS + URI_PREFIX + emailAuth.getEmail() + TOKEN_PREFIX + emailAuth.getAuthToken());
 
         javaMailSender.send(message);
     }

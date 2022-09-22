@@ -5,7 +5,6 @@ import com.zerogift.backend.common.exception.code.EmailAuthErrorCode;
 import com.zerogift.backend.common.exception.code.MemberErrorCode;
 import com.zerogift.backend.common.exception.member.MemberException;
 import com.zerogift.backend.common.type.AuthType;
-import com.zerogift.backend.email.dto.EmailAuthRequest;
 import com.zerogift.backend.email.entity.EmailAuth;
 import com.zerogift.backend.email.repository.EmailAuthRepository;
 import com.zerogift.backend.email.service.EmailService;
@@ -116,14 +115,14 @@ public class MemberLoginService {
 
 
     @Transactional
-    public void confirmEmail(EmailAuthRequest request) {
+    public void confirmEmail(String email, String authToken) {
         EmailAuth emailAuth = emailAuthRepository.findValidAuthByEmail(
-                        request.getEmail(),
-                        request.getAuthToken(),
+                        email,
+                        authToken,
                         LocalDateTime.now()
                 )
                 .orElseThrow(() -> new EmailAuthException(EmailAuthErrorCode.AUTH_TOKEN_NOT_FOUND));
-        Member member = memberRepository.findByEmail(request.getEmail())
+        Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
         emailAuth.useToken();
         member.emailVerifiedSuccess();
