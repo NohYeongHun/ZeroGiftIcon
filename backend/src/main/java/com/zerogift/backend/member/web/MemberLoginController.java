@@ -85,10 +85,10 @@ public class MemberLoginController {
     )
     @GetMapping("/confirm-email")
     public ResponseEntity<Result<?>> confirmEmail(
-            @RequestBody @Valid EmailAuthRequest request
-    )
-    {
-        memberLoginService.confirmEmail(request);
+            @RequestParam @Valid String email,
+            @RequestParam @Valid String authToken
+    ) {
+        memberLoginService.confirmEmail(email, authToken);
         return ResponseEntity.ok().body(
                 Result.builder()
                         .status(200)

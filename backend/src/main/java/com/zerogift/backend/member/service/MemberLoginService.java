@@ -116,14 +116,14 @@ public class MemberLoginService {
 
 
     @Transactional
-    public void confirmEmail(EmailAuthRequest request) {
+    public void confirmEmail(String email, String authToken) {
         EmailAuth emailAuth = emailAuthRepository.findValidAuthByEmail(
-                        request.getEmail(),
-                        request.getAuthToken(),
+                        email,
+                        authToken,
                         LocalDateTime.now()
                 )
                 .orElseThrow(() -> new EmailAuthException(EmailAuthErrorCode.AUTH_TOKEN_NOT_FOUND));
-        Member member = memberRepository.findByEmail(request.getEmail())
+        Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
         emailAuth.useToken();
         member.emailVerifiedSuccess();
