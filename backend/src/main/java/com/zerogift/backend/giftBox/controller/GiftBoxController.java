@@ -9,8 +9,8 @@ import com.zerogift.backend.giftBox.service.GiftBoxService;
 import com.zerogift.backend.security.dto.LoginInfo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,7 +29,7 @@ public class GiftBoxController {
         tags = {"Gift Box"}
     )
     @GetMapping("/giftbox")
-    public ResponseEntity<Page<GiftBoxDto>> listGiftBox(
+    public ResponseEntity<List<GiftBoxDto>> listGiftBox(
         @AuthenticationPrincipal LoginInfo loginInfo,
         MyPageableDto myPageableDto) {
         return ResponseEntity.ok(giftBoxService.findByGiftBoxList(loginInfo, myPageableDto));
