@@ -26,6 +26,7 @@ import com.zerogift.backend.product.repository.ProductImageRepository;
 import com.zerogift.backend.product.repository.ProductRepository;
 import com.zerogift.backend.security.dto.AdminInfo;
 import java.io.IOException;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -81,7 +82,7 @@ class GiftBoxServiceTest extends AcceptanceTest {
     @DisplayName("선물함 리스트 조회")
     @Test
     void findByGiftBoxListTest() {
-        Page<GiftBoxDto> giftBoxDtoPages = giftBoxService.findByGiftBoxList(adminInfo, new MyPageableDto(0, 10));
+        List<GiftBoxDto> giftBoxDtoPages = giftBoxService.findByGiftBoxList(adminInfo, new MyPageableDto(0, 10));
 
         GiftBoxDto extract = new GiftBoxDto(giftBox.getId(), product.getName(), null, product.getDescription(), false);
 

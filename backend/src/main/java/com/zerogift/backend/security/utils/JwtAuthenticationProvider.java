@@ -1,10 +1,13 @@
 package com.zerogift.backend.security.utils;
 
 
+import com.zerogift.backend.member.entity.Member;
+import com.zerogift.backend.member.service.MemberLoginService;
 import com.zerogift.backend.security.dto.AdminInfo;
 import com.zerogift.backend.security.dto.MemberInfo;
 import com.zerogift.backend.common.exception.member.JwtInvalidException;
 import com.zerogift.backend.common.exception.code.JwtErrorCode;
+import com.zerogift.backend.security.service.GeneralService;
 import com.zerogift.backend.security.service.TokenService;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +27,7 @@ import java.util.Arrays;
 public class JwtAuthenticationProvider implements AuthenticationProvider {
 
 	private final TokenService tokenService;
+	private final GeneralService generalService;
 
 	@Override
 	public Authentication authenticate(Authentication authentication)
@@ -40,7 +44,8 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 					Arrays.asList(new SimpleGrantedAuthority(info.getRole())));
 		}
 
-		MemberInfo info = MemberInfo.of(claims);
+		Member member = generalService.findByEmail(claims.get(JwtInfo.KEY_EMAIL, String.class));
+		MemberInfo info = MemberInfo.of(member);
 
 		switch (info.getStatus()) {
 			case "BANNED":
