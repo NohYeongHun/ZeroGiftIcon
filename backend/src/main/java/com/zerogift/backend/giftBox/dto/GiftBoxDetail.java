@@ -9,12 +9,12 @@ public class GiftBoxDetail {
     private String name;
     private String imageUrl;
     private String barcodUrl;
-    private boolean isAnswer;
+    private boolean answer;
 
-    public GiftBoxDetail(String name, String imageUrl, String barcodUrl, boolean isAnswer) {
+    public GiftBoxDetail(String name, String imageUrl, String barcodUrl, boolean answer) {
         this.name = name;
         this.imageUrl = imageUrl;
         this.barcodUrl = barcodUrl;
-        this.isAnswer = isAnswer;
+        this.answer = answer;
     }
 }
