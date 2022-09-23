@@ -25,7 +25,7 @@ public class GiftBoxRepositoryCustomImpl implements GiftBoxRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<GiftBoxDto> findByIsUseEqFalse(Member member, MyPageableDto myPageableDto) {
+    public List<GiftBoxDto> findByIsUseEqFalse(Member loginMember, MyPageableDto myPageableDto) {
         return queryFactory
             .select(Projections.constructor(GiftBoxDto.class,
                 giftBox.id,
@@ -37,8 +37,7 @@ public class GiftBoxRepositoryCustomImpl implements GiftBoxRepositoryCustom {
             .from(giftBox)
             .innerJoin(giftBox.product, product)
             .where(
-                eqRecipientMember(member),
-                isFalseUse())
+                eqRecipientMember(loginMember))
             .orderBy(giftBox.createdDate.asc())
             .offset(currentOffset(myPageableDto))
             .limit(nextOffset(myPageableDto))
@@ -47,10 +46,6 @@ public class GiftBoxRepositoryCustomImpl implements GiftBoxRepositoryCustom {
 
     private BooleanExpression eqRecipientMember(Member member) {
         return giftBox.recipientMember.eq(member);
-    }
-
-    private BooleanExpression isFalseUse() {
-        return giftBox.isUse.eq(false);
     }
 
     private long currentOffset(MyPageableDto myPageableDto) {

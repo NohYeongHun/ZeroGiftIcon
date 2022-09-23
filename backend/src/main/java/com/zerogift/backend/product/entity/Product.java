@@ -62,4 +62,8 @@ public class Product {
     public void plusViewCount() {
         this.viewCount += 1;
     }
+
+    public void payProduct() {
+        this.count -= 1;
+    }
 }
