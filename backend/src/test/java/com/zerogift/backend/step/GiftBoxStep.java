@@ -35,11 +35,12 @@ public class GiftBoxStep {
     public static ExtractableResponse<Response> 선물함_기프트콘_사용(Long giftBoxId, String code) {
         Map<String, Object> params = new LinkedHashMap<>();
         params.put("code", code);
+        params.put("giftBoxId", giftBoxId);
 
         return RestAssured
             .given().log().all()
             .params(params)
-            .when().get("/giftBox/giftcon/{giftBoxId}", giftBoxId)
+            .when().get("/barcode")
             .then().log().all()
             .extract();
     }
