@@ -1,24 +1,19 @@
-package com.zerogift.backend.review;
+package com.zerogift.backend.review.entity;
 
 import com.zerogift.backend.common.entity.BaseTimeEntity;
 import com.zerogift.backend.member.entity.Member;
 import com.zerogift.backend.product.entity.Product;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Entity
-public class review extends BaseTimeEntity {
+@Builder
+public class Review extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,5 +33,17 @@ public class review extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
+
+    @Column
+    private LocalDateTime createDate;
+
+    @Column
+    private LocalDateTime updateDate;
+
+    public void modify(Integer rank, String description) {
+        this.rank = rank;
+        this.description = description;
+        this.updateDate = LocalDateTime.now();
+    }
 
 }
