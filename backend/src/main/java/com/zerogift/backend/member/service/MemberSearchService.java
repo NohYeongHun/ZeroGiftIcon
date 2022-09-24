@@ -2,6 +2,7 @@ package com.zerogift.backend.member.service;
 
 import com.zerogift.backend.common.dto.MyPageableDto;
 import com.zerogift.backend.giftBox.dto.GiftBoxDetail;
+import com.zerogift.backend.member.dto.MemberSearchDetail;
 import com.zerogift.backend.member.dto.MemberSearchOutputDto;
 import com.zerogift.backend.member.dto.MemberSearchOutputPageDto;
 import com.zerogift.backend.member.dto.SearchMember;
@@ -38,6 +39,11 @@ public class MemberSearchService {
                 .page(myPageableDto.getPage())
                 .size(pageSize)
                 .build();
+    }
+
+    @Transactional
+    public MemberSearchDetail searchMemberDetail(Long memberId) {
+        return memberSearchRepository.searchMemberDetail(memberId);
     }
 
 }

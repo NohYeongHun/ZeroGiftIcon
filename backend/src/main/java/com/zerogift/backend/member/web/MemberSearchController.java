@@ -45,5 +45,24 @@ public class MemberSearchController {
         );
     }
 
+    @Operation(
+            summary = "로그인 회원 상세 조회", description = "회원 리스트 조회입니다.",
+            tags = {"MemberSearch"}
+    )
+    @GetMapping("/member")
+    public ResponseEntity<Result<?>> getMemberDetail(
+            @AuthenticationPrincipal LoginInfo loginInfo) {
+
+        return ResponseEntity.ok().body(
+                Result.builder()
+                        .status(200)
+                        .success(true)
+                        .data(
+                                memberSearchService
+                                        .searchMemberDetail(loginInfo.getId()))
+                        .build()
+        );
+    }
+
 
 }
