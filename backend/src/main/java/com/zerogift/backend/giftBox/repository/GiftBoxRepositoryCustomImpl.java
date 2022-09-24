@@ -32,10 +32,16 @@ public class GiftBoxRepositoryCustomImpl implements GiftBoxRepositoryCustom {
                 product.name,
                 product.mainImageUrl,
                 product.description,
-                giftBox.isUse
+                giftBox.isUse,
+                member.id,
+                member.nickname,
+                product.id,
+                giftBox.answer,
+                giftBox.review
             ))
             .from(giftBox)
             .innerJoin(giftBox.product, product)
+            .innerJoin(giftBox.sendMember, member)
             .where(
                 eqRecipientMember(loginMember))
             .orderBy(giftBox.createdDate.asc())

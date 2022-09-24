@@ -92,7 +92,7 @@ class GiftBoxAcceptanceTest extends AcceptanceTest {
         GiftBoxDto extract = response.jsonPath().getObject("data[0]", GiftBoxDto.class);
 
         assertThat(extract).isEqualTo(
-            new GiftBoxDto(1L, "test", "https://test.com", "test 설명", false));
+            new GiftBoxDto(1L, "test", "https://test.com", "test 설명", false, 회원.getId(), 회원.getNickname(), 상품_아이디, false, false));
     }
 
 
