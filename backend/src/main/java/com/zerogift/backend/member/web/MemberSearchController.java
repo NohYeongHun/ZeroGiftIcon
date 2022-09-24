@@ -2,9 +2,11 @@ package com.zerogift.backend.member.web;
 
 import com.zerogift.backend.common.dto.MyPageableDto;
 import com.zerogift.backend.common.dto.Result;
+import com.zerogift.backend.config.authorization.AuthenticationPrincipal;
 import com.zerogift.backend.member.dto.SearchMember;
 import com.zerogift.backend.member.entity.Member;
 import com.zerogift.backend.member.service.MemberSearchService;
+import com.zerogift.backend.security.dto.LoginInfo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +31,7 @@ public class MemberSearchController {
             summary = "회원 리스트 조회", description = "회원 리스트 조회입니다.",
             tags = {"MemberSearch"}
     )
-    @GetMapping("/members")
+    @GetMapping("/member-list")
     public ResponseEntity<Result<?>> getMemberList(
             SearchMember searchMember,
             MyPageableDto myPageableDto ) {
@@ -42,4 +44,25 @@ public class MemberSearchController {
                         .build()
         );
     }
+
+    @Operation(
+            summary = "로그인 회원 상세 조회", description = "회원 리스트 조회입니다.",
+            tags = {"MemberSearch"}
+    )
+    @GetMapping("/member")
+    public ResponseEntity<Result<?>> getMemberDetail(
+            @AuthenticationPrincipal LoginInfo loginInfo) {
+
+        return ResponseEntity.ok().body(
+                Result.builder()
+                        .status(200)
+                        .success(true)
+                        .data(
+                                memberSearchService
+                                        .searchMemberDetail(loginInfo.getId()))
+                        .build()
+        );
+    }
+
+
 }

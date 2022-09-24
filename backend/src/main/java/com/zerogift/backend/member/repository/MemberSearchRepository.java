@@ -4,6 +4,7 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.zerogift.backend.common.dto.MyPageableDto;
+import com.zerogift.backend.member.dto.MemberSearchDetail;
 import com.zerogift.backend.member.dto.MemberSearchOutputDto;
 import com.zerogift.backend.member.repository.condition.MemberSearchCondition;
 import com.zerogift.backend.member.type.MemberStatus;
@@ -21,7 +22,7 @@ import static org.springframework.util.StringUtils.hasText;
 public class MemberSearchRepository {
 
     private final JPAQueryFactory queryFactory;
-    public List<MemberSearchOutputDto> searchByWhere(MemberSearchCondition condition, MyPageableDto myPageableDto){
+    public List<MemberSearchOutputDto> searchMemberList(MemberSearchCondition condition, MyPageableDto myPageableDto){
 
         return queryFactory
                 .select(Projections.constructor(MemberSearchOutputDto.class, member.id,
@@ -70,5 +71,21 @@ public class MemberSearchRepository {
 
     private BooleanExpression memberStatusPermitted(){
         return hasText(MemberStatus.PERMITTED.name()) ? member.status.eq(MemberStatus.PERMITTED) : null;
+    }
+
+    public MemberSearchDetail searchMemberDetail(Long memberId){
+
+        return queryFactory
+                .select(Projections.constructor(MemberSearchDetail.class,
+                        member.id,
+                        member.nickname,
+                        member.email,
+                        member.point
+                ))
+                .from(member)
+                .where(
+                        member.id.eq(memberId)
+                )
+                .fetchOne();
     }
 }
