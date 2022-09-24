@@ -15,6 +15,8 @@ import static org.mockito.Mockito.when;
 
 import com.zerogift.backend.acceptance.AcceptanceTest;
 import com.zerogift.backend.giftBox.repository.GiftBoxRepository;
+import com.zerogift.backend.giftMessage.dto.GiftMessageDto;
+import com.zerogift.backend.giftMessage.dto.GiftMessageForm;
 import com.zerogift.backend.giftMessage.entity.GiftMessage;
 import com.zerogift.backend.giftMessage.repository.GiftMessageRepository;
 import com.zerogift.backend.member.entity.Member;
@@ -95,8 +97,9 @@ class GiftMessageAcceptanceTest extends AcceptanceTest {
     void getGiftMessageFormTest() {
         ExtractableResponse<Response> response = 감사메시지_폼_조회(토큰, 상품_아이디);
 
-        assertThat(response.jsonPath().getString("sendMemberName")).isEqualTo("test");
-        assertThat(response.jsonPath().getString("productImage")).isEqualTo("https://test.com");
+        GiftMessageForm extract = response.jsonPath().getObject("data", GiftMessageForm.class);
+
+        assertThat(extract).isEqualTo(new GiftMessageForm("test", "https://test.com"));
     }
 
     @DisplayName("감사 메시지 보내기 테스트")
@@ -116,7 +119,9 @@ class GiftMessageAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> response = 감사메시지_상세내용_조회(토큰,  giftMessageRepository.findAll().get(0).getId());
 
-        assertThat(response.jsonPath().getString("message")).isEqualTo("생일 축하");
+        GiftMessageDto giftMessageDto = response.jsonPath().getObject("data", GiftMessageDto.class);
+
+        assertThat(giftMessageDto).isEqualTo(new GiftMessageDto("https://test.com", "test", "생일 축하"));
     }
 
 }

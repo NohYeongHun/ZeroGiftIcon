@@ -8,6 +8,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import com.zerogift.backend.acceptance.AcceptanceTest;
+import com.zerogift.backend.email.repository.EmailAuthRepository;
 import com.zerogift.backend.giftBox.repository.GiftBoxRepository;
 import com.zerogift.backend.member.entity.Member;
 import com.zerogift.backend.member.repository.MemberRepository;
@@ -28,7 +29,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.web.multipart.MultipartFile;
 import com.zerogift.backend.util.FileUtil;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -76,7 +76,7 @@ class PayServiceTest extends AcceptanceTest {
         payService.pay(createPayHisotryRequest(), member.getEmail());
 
         assertThat(giftBoxRepository.findAll()).hasSize(1);
-        assertThat(giftBoxRepository.findAll()).hasSize(1);
+        assertThat(payHistoryRepository.findAll()).hasSize(1);
     }
 
     private PayHisoryRequest createPayHisotryRequest() {

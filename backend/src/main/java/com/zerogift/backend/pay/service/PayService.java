@@ -5,11 +5,13 @@ import com.zerogift.backend.common.exception.code.PayErrorCode;
 import com.zerogift.backend.common.exception.code.ProductErrorCode;
 import com.zerogift.backend.common.exception.member.MemberException;
 import com.zerogift.backend.common.exception.pay.NotEnoughPointException;
+import com.zerogift.backend.common.exception.pay.NotEnoughProductCountException;
 import com.zerogift.backend.common.exception.product.ProductException;
 import com.zerogift.backend.giftBox.entity.GiftBox;
 import com.zerogift.backend.giftBox.repository.GiftBoxRepository;
 import com.zerogift.backend.member.entity.Member;
 import com.zerogift.backend.member.repository.MemberRepository;
+import com.zerogift.backend.pay.aop.PayLock;
 import com.zerogift.backend.pay.dto.PayHisoryRequest;
 import com.zerogift.backend.pay.entity.PayHistory;
 import com.zerogift.backend.pay.repository.PayHistoryRepository;
@@ -33,15 +35,17 @@ public class PayService {
 
     private final BarcodeUtils barcodeUtils;
 
+    @PayLock
     public void pay(PayHisoryRequest payHisoryRequest, String email) {
         Member member = memberRepository.findByEmail(email)
             .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
-        checkPoint(member, payHisoryRequest.getUsePoint());
+        enoughUsePoint(member, payHisoryRequest.getUsePoint());
 
         Member sendMember = memberRepository.findById(payHisoryRequest.getSendId())
             .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
         Product product = productRepository.findById(payHisoryRequest.getProductId())
             .orElseThrow(() -> new ProductException(ProductErrorCode.PRODUCT_NOT_FOUND));
+        enoughProductCount(product);
 
         PayHistory payHistory = savePayHistoryAndUsePoint(payHisoryRequest, product, sendMember,
             member);
@@ -49,9 +53,22 @@ public class PayService {
         saveGiftBox(sendMember, member, payHistory, product);
     }
 
+    private void enoughUsePoint(Member member, int point) {
+        if(member.getPoint() < point) {
+            throw new NotEnoughPointException(PayErrorCode.NOT_ENOUGH_POINT);
+        }
+        member.usePoint(point);
+    }
+
+    private void enoughProductCount(Product product) {
+        if(product.getCount() <= 0) {
+            throw new NotEnoughProductCountException(PayErrorCode.NOT_ENOUGH_PRODUCT_COUNT);
+        }
+        product.payProduct();
+    }
+
     private PayHistory savePayHistoryAndUsePoint(PayHisoryRequest payHisoryRequest, Product product,
         Member sendMember, Member member) {
-        member.usePoint(payHisoryRequest.getUsePoint());
 
         return payHistoryRepository.save(PayHistory.builder()
             .impUid(payHisoryRequest.getImpUid())
@@ -77,12 +94,6 @@ public class PayService {
             .payHistory(payHistory)
             .build());
         giftBox.addBarcodeUrl(barcodeUtils.barcodeSave(giftBox.getId(), giftBox.getCode()));
-    }
-
-    private void checkPoint(Member member, Integer point) {
-        if (member.getPoint() - point < 0) {
-            throw new NotEnoughPointException(PayErrorCode.NOT_ENOUGH_POINT);
-        }
     }
 
 }
