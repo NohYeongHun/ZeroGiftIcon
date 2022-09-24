@@ -106,7 +106,7 @@ ext {
 	set('snippetsDir', file("build/generated-snippets"))
 }
 
-tasks.named('test') {
+test {
 	outputs.dir snippetsDir
 	useJUnitPlatform()
 	finalizedBy 'asciidoctor'
@@ -150,8 +150,16 @@ task moveDocument(type: Copy) {
 	into file("build/resources/main/static/docs")
 }
 
+build {
+	dependsOn moveDocument
+}
+
 bootJar {
 	dependsOn moveDocument
+	copy {
+		from "${asciidoctor.outputDir}"
+		into 'BOOT-INF/classes/static/docs'
+	}
 }
 
 
