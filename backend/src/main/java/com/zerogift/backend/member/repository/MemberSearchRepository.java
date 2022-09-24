@@ -21,7 +21,7 @@ import static org.springframework.util.StringUtils.hasText;
 public class MemberSearchRepository {
 
     private final JPAQueryFactory queryFactory;
-    public List<MemberSearchOutputDto> searchByWhere(MemberSearchCondition condition, MyPageableDto myPageableDto){
+    public List<MemberSearchOutputDto> searchMemberList(MemberSearchCondition condition, MyPageableDto myPageableDto){
 
         return queryFactory
                 .select(Projections.constructor(MemberSearchOutputDto.class, member.id,

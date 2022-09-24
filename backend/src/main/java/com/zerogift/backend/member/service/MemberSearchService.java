@@ -1,6 +1,7 @@
 package com.zerogift.backend.member.service;
 
 import com.zerogift.backend.common.dto.MyPageableDto;
+import com.zerogift.backend.giftBox.dto.GiftBoxDetail;
 import com.zerogift.backend.member.dto.MemberSearchOutputDto;
 import com.zerogift.backend.member.dto.MemberSearchOutputPageDto;
 import com.zerogift.backend.member.dto.SearchMember;
@@ -25,7 +26,7 @@ public class MemberSearchService {
             MyPageableDto myPageableDto) {
 
         List<MemberSearchOutputDto> memberSearchOutputDtoList = memberSearchRepository
-                .searchByWhere(searchMember.toCondition(), myPageableDto);
+                .searchMemberList(searchMember.toCondition(), myPageableDto);
         Long totalCount = memberSearchRepository.getTotalCount(searchMember.toCondition());
         Integer pageSize = myPageableDto.getSize();
         Integer totalPage = Double.valueOf(Math.ceil(Double.valueOf(totalCount) / myPageableDto.getSize())).intValue();
