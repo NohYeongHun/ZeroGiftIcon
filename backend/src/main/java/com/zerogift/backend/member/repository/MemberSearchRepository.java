@@ -39,6 +39,19 @@ public class MemberSearchRepository {
                 .fetch();
     }
 
+    public Long getTotalCount(MemberSearchCondition condition){
+        Long count = queryFactory.select(member.count())
+                .from(member)
+                .where(
+                        memberEmailContains(condition.getEmail()),
+                        memberNicknameContains(condition.getNickname()),
+                        memberStatusPermitted()
+                )
+                .fetchOne();
+
+        return count == null ? 0 : count;
+    }
+
     private long currentOffset(MyPageableDto myPageableDto) {
         return (long) myPageableDto.getPage() * myPageableDto.getSize();
     }
@@ -58,5 +71,4 @@ public class MemberSearchRepository {
     private BooleanExpression memberStatusPermitted(){
         return hasText(MemberStatus.PERMITTED.name()) ? member.status.eq(MemberStatus.PERMITTED) : null;
     }
-    
 }
