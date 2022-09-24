@@ -23,19 +23,21 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class ReviewServiceImpl implements ReviewService{
 
     private final ReviewRepository reviewRepository;
     private final ProductRepository productRepository;
     private final MemberRepository memberRepository;
     private final GiftBoxRepository giftBoxRepository;
+
 
     @Override
     public ReviewResponse addReview(LoginInfo loginInfo, Long productId, ReviewInput reviewInput) {
@@ -54,6 +56,7 @@ public class ReviewServiceImpl implements ReviewService{
             throw new ReviewException(ReviewErrorCode.ADD_REVIEW_AFTER_USE);
         }
 
+        giftBox.review();
         // 리뷰 내용 저장
         Review review = Review.builder()
                 .rank(reviewInput.getRank())
@@ -68,7 +71,6 @@ public class ReviewServiceImpl implements ReviewService{
         return ReviewResponse.of(review);
     }
 
-    @Transactional
     @Override
     public ReviewResponse modifyReview(LoginInfo loginInfo, Long reviewId, ReviewInput reviewInput) {
         // 회원 정보 가져오기
@@ -99,6 +101,7 @@ public class ReviewServiceImpl implements ReviewService{
         reviewRepository.delete(review);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<ReviewResponse> userReviewList(LoginInfo loginInfo) {
         // 회원 정보 가져오기
@@ -111,6 +114,7 @@ public class ReviewServiceImpl implements ReviewService{
         return reviewResponseList;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<ReviewResponse> productReviewList(Long productId) {
         // 상품 정보 가져오기

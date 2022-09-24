@@ -41,6 +41,9 @@ public class GiftBox extends BaseTimeEntity {
     @Column(nullable = false)
     private Boolean answer;  // 답변을 하였는지
 
+    @Column(nullable = false)
+    private boolean review;
+
     @ManyToOne
     @JoinColumn(name = "send_member_id")
     private Member sendMember;  // 보낸 사람
@@ -67,6 +70,7 @@ public class GiftBox extends BaseTimeEntity {
         this.recipientMember = recipientMember;
         this.product = product;
         this.payHistory = payHistory;
+        this.review = false;
         this.isUse = false;
         this.answer = false;
         this.expireDate = LocalDate.now().plusMonths(1);
@@ -82,6 +86,10 @@ public class GiftBox extends BaseTimeEntity {
 
     public void use() {
         this.isUse = true;
+    }
+
+    public void review() {
+        this.review = true;
     }
 
 }
