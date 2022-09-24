@@ -39,7 +39,9 @@ public class LockService {
     }
 
     public void unlock(RLock lock) {
-        lock.unlock();
+        if (lock.isLocked() && lock.isHeldByCurrentThread()) {
+            lock.unlock();
+        }
     }
 
 }
