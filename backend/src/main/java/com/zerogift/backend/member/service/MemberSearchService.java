@@ -2,6 +2,7 @@ package com.zerogift.backend.member.service;
 
 import com.zerogift.backend.common.dto.MyPageableDto;
 import com.zerogift.backend.member.dto.MemberSearchOutputDto;
+import com.zerogift.backend.member.dto.MemberSearchOutputPageDto;
 import com.zerogift.backend.member.dto.SearchMember;
 import com.zerogift.backend.member.repository.MemberSearchRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,12 +20,23 @@ public class MemberSearchService {
 
 
     @Transactional
-    public List<MemberSearchOutputDto> searchMemberList(
+    public MemberSearchOutputPageDto searchMemberList(
             SearchMember searchMember,
             MyPageableDto myPageableDto) {
 
-        return memberSearchRepository.searchByWhere(
-                searchMember.toCondition(), myPageableDto);
+        List<MemberSearchOutputDto> memberSearchOutputDtoList = memberSearchRepository
+                .searchByWhere(searchMember.toCondition(), myPageableDto);
+        Long totalCount = memberSearchRepository.getTotalCount(searchMember.toCondition());
+        Integer pageSize = myPageableDto.getSize();
+        Integer totalPage = Double.valueOf(Math.ceil(Double.valueOf(totalCount) / myPageableDto.getSize())).intValue();
+
+        return MemberSearchOutputPageDto
+                .builder()
+                .memberSearchOutputDtoList(memberSearchOutputDtoList)
+                .totalPage(totalPage)
+                .page(myPageableDto.getPage())
+                .size(pageSize)
+                .build();
     }
 
 }
