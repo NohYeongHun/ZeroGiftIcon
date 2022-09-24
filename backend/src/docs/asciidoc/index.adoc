@@ -12,5 +12,5 @@ zerogift(부제)
 operation::giftBox[snippets='http-request,path-parameters,http-response,response-fields']
 
 [[gitBoxDetail-API]]
-=== 선물함 상세보기 API
+== 선물함 상세보기 API
 operation::giftBoxDetail[snippets='http-request,path-parameters,http-response,response-fields']
