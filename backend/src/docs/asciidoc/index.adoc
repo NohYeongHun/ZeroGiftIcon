@@ -9,7 +9,7 @@ zerogift(부제)
 
 [[giftBox-API]]
 == 선물함 리스트 API
-operation::giftBox[snippets='http-request,path-parameters,http-response,response-fields']
+operation::giftBox[snippets='http-request,http-response,response-fields']
 
 [[gitBoxDetail-API]]
 == 선물함 상세보기 API
