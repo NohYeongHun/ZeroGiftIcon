@@ -16,7 +16,7 @@ import org.springframework.restdocs.payload.ResponseFieldsSnippet;
 import org.springframework.restdocs.request.PathParametersSnippet;
 import org.springframework.restdocs.restassured3.RestDocumentationFilter;
 
-public class getGiftMessageStep {
+public class GetGiftMessageStep {
 
     public static GiftMessageDto 감사_메시지_조회_응답_생성() {
         return new GiftMessageDto(
@@ -26,7 +26,7 @@ public class getGiftMessageStep {
     }
 
     public static RestDocumentationFilter 감사_메시지_조회_문서화() {
-        return document("giftBoxDetail",
+        return document("giftMessage",
             preprocessRequest(modifyUris()
                     .scheme("https")
                     .host("zerogift.p-e.kr")
