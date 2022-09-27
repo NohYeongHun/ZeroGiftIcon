@@ -1,7 +1,7 @@
 package com.zerogift.backend.documentaion;
 
-import static com.zerogift.backend.documentaion.giftMessage.getGiftMessageStep.감사_메시지_조회_문서화;
-import static com.zerogift.backend.documentaion.giftMessage.getGiftMessageStep.감사_메시지_조회_응답_생성;
+import static com.zerogift.backend.documentaion.giftMessage.GetGiftMessageStep.감사_메시지_조회_문서화;
+import static com.zerogift.backend.documentaion.giftMessage.GetGiftMessageStep.감사_메시지_조회_응답_생성;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
