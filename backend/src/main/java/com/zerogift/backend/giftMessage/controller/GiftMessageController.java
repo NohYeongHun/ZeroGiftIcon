@@ -38,7 +38,7 @@ public class GiftMessageController {
     }
 
     @Operation(
-        summary = "감사메시지 조회", description = "감사 메시지 전송",
+        summary = "감사 메시지 전송", description = "감사 메시지 전송",
         security = {@SecurityRequirement(name = "Authorization")},
         tags = {"Gift Message"}
     )
