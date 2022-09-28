@@ -41,12 +41,12 @@ public class PayDocumentation extends Documentation {
         params.put("message", "생일 축하");
 
         RestAssured
-            .given(specification).log().all()
-            .filter(결졔_요청_문서화())
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(params)
-            .when().post("/pay")
-            .then().log().all().extract();
+                .given(specification).log().all()
+                .filter(결졔_요청_문서화())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/pay")
+                .then().log().all().extract();
     }
 
 }
