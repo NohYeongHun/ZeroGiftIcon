@@ -14,3 +14,8 @@ operation::memberRegister[snippets='http-request,request-fields,http-response,re
 [[member-auth-API]]
 == 회원 로그인 API
 operation::memberLogin[snippets='http-request,request-fields,http-response,response-fields']
+
+
+[[member-search-API]]
+== 회원리스트 조회 API
+operation::memberListSearch[snippets='http-request,request-fields,http-response,response-fields']
