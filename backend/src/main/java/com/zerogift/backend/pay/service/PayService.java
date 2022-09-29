@@ -37,20 +37,20 @@ public class PayService {
 
     @PayLock
     public void pay(PayHisoryRequest payHisoryRequest, String email) {
-        Member member = memberRepository.findByEmail(email)
+        Member sendMember = memberRepository.findByEmail(email)
             .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
-        enoughUsePoint(member, payHisoryRequest.getUsePoint());
+        enoughUsePoint(sendMember, payHisoryRequest.getUsePoint());
 
-        Member sendMember = memberRepository.findById(payHisoryRequest.getSendId())
+        Member toMember = memberRepository.findById(payHisoryRequest.getSendId())
             .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
         Product product = productRepository.findById(payHisoryRequest.getProductId())
             .orElseThrow(() -> new ProductException(ProductErrorCode.PRODUCT_NOT_FOUND));
         enoughProductCount(product);
 
-        PayHistory payHistory = savePayHistoryAndUsePoint(payHisoryRequest, product, sendMember,
-            member);
+        PayHistory payHistory = savePayHistoryAndUsePoint(payHisoryRequest, product, toMember,
+            sendMember);
 
-        saveGiftBox(sendMember, member, payHistory, product);
+        saveGiftBox(sendMember, toMember, payHistory, product);
     }
 
     private void enoughUsePoint(Member member, int point) {
@@ -68,7 +68,7 @@ public class PayService {
     }
 
     private PayHistory savePayHistoryAndUsePoint(PayHisoryRequest payHisoryRequest, Product product,
-        Member sendMember, Member member) {
+        Member toMember, Member sendMember) {
 
         return payHistoryRepository.save(PayHistory.builder()
             .impUid(payHisoryRequest.getImpUid())
@@ -80,16 +80,16 @@ public class PayService {
             .usePoint(payHisoryRequest.getUsePoint())
             .product(product)
             .fromMember(sendMember)
-            .toMember(member)
+            .toMember(toMember)
             .build());
     }
 
-    private void saveGiftBox(Member sendMember, Member member, PayHistory payHistory,
+    private void saveGiftBox(Member sendMember, Member toMember, PayHistory payHistory,
         Product product) {
         GiftBox giftBox = giftBoxRepository.save(GiftBox.builder()
             .code(UUID.randomUUID().toString())
             .sendMember(sendMember)
-            .recipientMember(member)
+            .recipientMember(toMember)
             .product(product)
             .payHistory(payHistory)
             .build());
