@@ -79,8 +79,8 @@ public class PayService {
             .pgTid(payHisoryRequest.getPgTid())
             .usePoint(payHisoryRequest.getUsePoint())
             .product(product)
-            .fromMember(member)
-            .toMember(sendMember)
+            .fromMember(sendMember)
+            .toMember(member)
             .build());
     }
 
