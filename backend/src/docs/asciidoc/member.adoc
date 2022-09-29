@@ -18,4 +18,4 @@ operation::memberLogin[snippets='http-request,request-fields,http-response,respo
 
 [[member-search-API]]
 == 회원리스트 조회 API
-operation::memberListSearch[snippets='http-request,request-fields,http-response,response-fields']
+operation::memberListSearch[snippets='http-request,request-parameters,http-response,response-fields']
