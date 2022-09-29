@@ -14,7 +14,7 @@ import com.zerogift.backend.view.repository.ViewHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import javax.transaction.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -24,6 +24,7 @@ public class ViewHistoryServiceImpl implements ViewHistoryService {
     private final ProductRepository productRepository;
     private final MemberRepository memberRepository;
 
+    @Transactional
     @Override
     public void addViewHistory(LoginInfo loginInfo, Long productId) {
         // 회원 정보 가져오기
@@ -46,7 +47,6 @@ public class ViewHistoryServiceImpl implements ViewHistoryService {
 
                 // 'Product Entity' viewCount 에 +1
                 product.plusViewCount();
-                productRepository.save(product);
             }
         }
     }
