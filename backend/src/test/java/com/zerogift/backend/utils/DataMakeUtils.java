@@ -26,6 +26,17 @@ public class DataMakeUtils {
             .build();
     }
 
+    public static Member 회원_생성(String email, String nickname, String authId) {
+        return Member.builder()
+                .email(email)
+                .nickname(nickname)
+                .status(MemberStatus.PERMITTED)
+                .authType(AuthType.KAKAO)
+                .profileImageUrl("https://test.com")
+                .role(Role.ROLE_ADMIN)
+                .build();
+    }
+
     public static ProductImage 상품_이미지_생성(String url) {
         return ProductImage.builder()
             .url(url)
