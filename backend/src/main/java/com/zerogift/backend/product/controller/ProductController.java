@@ -71,7 +71,6 @@ public class ProductController {
     @GetMapping("product/detail/{productId}")
     public ResponseEntity<Result<?>> getDetail(@PathVariable Long productId,
                                                @AuthenticationPrincipal LoginInfo loginInfo) {
-        viewHistoryService.addViewHistory(loginInfo, productId);
         return productService.getDetail(productId);
     }
 }
