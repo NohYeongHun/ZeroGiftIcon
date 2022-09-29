@@ -2,8 +2,6 @@ package com.zerogift.backend.giftMessage.controller;
 
 import com.zerogift.backend.common.dto.Result;
 import com.zerogift.backend.config.authorization.AuthenticationPrincipal;
-import com.zerogift.backend.giftMessage.dto.GiftMessageDto;
-import com.zerogift.backend.giftMessage.dto.GiftMessageForm;
 import com.zerogift.backend.giftMessage.dto.GiftMessageRequest;
 import com.zerogift.backend.giftMessage.service.GiftMessageService;
 import com.zerogift.backend.security.dto.LoginInfo;
@@ -17,7 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "Gift Message",description = "감사메시지 관련 API")
@@ -32,13 +29,16 @@ public class GiftMessageController {
         tags = {"Gift Message"}
     )
     @GetMapping("/giftMessage/form/{giftBoxId}")
-    public ResponseEntity<GiftMessageForm> getGiftMessageForm(@PathVariable Long giftBoxId,
+    public ResponseEntity<Result<?>> getGiftMessageForm(@PathVariable Long giftBoxId,
         @AuthenticationPrincipal LoginInfo loginInfo) {
-        return ResponseEntity.ok(giftMessageService.getGiftMessageForm(giftBoxId, loginInfo));
+        return ResponseEntity.ok(Result.builder()
+                .data(giftMessageService.getGiftMessageForm(giftBoxId, loginInfo))
+                .build()
+        );
     }
 
     @Operation(
-        summary = "감사메시지 조회", description = "감사 메시지 전송",
+        summary = "감사 메시지 전송", description = "감사 메시지 전송",
         security = {@SecurityRequirement(name = "Authorization")},
         tags = {"Gift Message"}
     )
@@ -58,9 +58,12 @@ public class GiftMessageController {
         tags = {"Gift Message"}
     )
     @GetMapping("/giftMessage/{giftMessageId}")
-    public ResponseEntity<GiftMessageDto> getGiftMessage(@PathVariable Long giftMessageId,
+    public ResponseEntity<Result> getGiftMessage(@PathVariable Long giftMessageId,
         @AuthenticationPrincipal LoginInfo loginInfo) {
-        return ResponseEntity.ok(giftMessageService.getGiftMessage(giftMessageId, loginInfo));
+        return ResponseEntity.ok(Result.builder()
+                .data(giftMessageService.getGiftMessage(giftMessageId, loginInfo))
+                .build()
+        );
     }
 
 }

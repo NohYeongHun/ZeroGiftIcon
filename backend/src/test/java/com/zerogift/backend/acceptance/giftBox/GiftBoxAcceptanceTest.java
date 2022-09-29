@@ -14,12 +14,12 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import com.zerogift.backend.acceptance.AcceptanceTest;
+import com.zerogift.backend.giftBox.dto.GiftBoxDetail;
+import com.zerogift.backend.giftBox.dto.GiftBoxDto;
 import com.zerogift.backend.giftBox.entity.GiftBox;
 import com.zerogift.backend.giftBox.repository.GiftBoxRepository;
 import com.zerogift.backend.member.entity.Member;
 import com.zerogift.backend.member.repository.MemberRepository;
-import com.zerogift.backend.pay.repository.PayHistoryRepository;
-import com.zerogift.backend.product.entity.Product;
 import com.zerogift.backend.product.repository.ProductRepository;
 import com.zerogift.backend.security.dto.MemberInfo;
 import com.zerogift.backend.security.repository.RefreshTokenRepository;
@@ -50,14 +50,11 @@ class GiftBoxAcceptanceTest extends AcceptanceTest {
     private TokenService tokenService;
 
     @Autowired
-    private PayHistoryRepository payHistoryRepository;
-
-    @Autowired
     private GiftBoxRepository giftBoxRepository;
 
     @Autowired
     private ProductRepository productRepository;
-    
+
     @MockBean
     private FileUtil fileUtil;
 
@@ -92,17 +89,22 @@ class GiftBoxAcceptanceTest extends AcceptanceTest {
     void findByGiftBoxList() {
         ExtractableResponse<Response> response = 선물함_조회_요청(토큰);
 
-        assertThat(response.jsonPath().getList("content")).hasSize(1);
+        GiftBoxDto extract = response.jsonPath().getObject("data[0]", GiftBoxDto.class);
+
+        assertThat(extract).isEqualTo(
+            new GiftBoxDto(1L, "test", "https://test.com", "test 설명", false, 회원.getId(), 회원.getNickname(), 상품_아이디, false, false));
     }
+
 
     @DisplayName("선물함 상세 페이지 조회 테스트")
     @Test
     void findByGiftBoxDetail() {
         ExtractableResponse<Response> response = 선물한_상세페이지_조회(토큰, 선물함_아이디);
 
-        Product product = productRepository.findById(상품_아이디).get();
-        
-        assertThat(response.jsonPath().getString("name")).isEqualTo(product.getName());
+        GiftBoxDetail giftBoxDetail = response.jsonPath().getObject("data", GiftBoxDetail.class);
+
+        assertThat(giftBoxDetail).isEqualTo(
+            new GiftBoxDetail("test", "https://test.com", null, false));
     }
 
     @DisplayName("기프트콘 사용을 테스트 합니다.")

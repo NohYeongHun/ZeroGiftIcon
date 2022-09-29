@@ -40,6 +40,7 @@ public class DataMakeUtils {
             .category(Category.BIRTHDAY)
             .status(Status.PUBLIC)
             .member(member)
+            .count(10)
             .build();
     }
 
