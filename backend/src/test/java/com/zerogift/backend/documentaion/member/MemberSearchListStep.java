@@ -1,10 +1,10 @@
 package com.zerogift.backend.documentaion.member;
 
+import com.zerogift.backend.member.dto.MemberSearchDetail;
 import com.zerogift.backend.member.dto.MemberSearchOutputDto;
 import com.zerogift.backend.member.dto.MemberSearchOutputPageDto;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.restdocs.payload.ResponseFieldsSnippet;
-import org.springframework.restdocs.request.PathParametersSnippet;
 import org.springframework.restdocs.request.RequestParametersSnippet;
 import org.springframework.restdocs.restassured3.RestDocumentationFilter;
 
@@ -18,7 +18,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
-public class MemberSearchStep {
+public class MemberSearchListStep {
     public static MemberSearchOutputPageDto member_list_search_response_create(){
 
         List<MemberSearchOutputDto> memberSearchOutputDtoList = new ArrayList<>();
