@@ -15,5 +15,5 @@ public interface ProductRepository extends PagingAndSortingRepository<Product, L
     Page<Product> findByCategory(Category category, Pageable pageable);
     Page<Product> findByStatusAndCategoryIn(Status status, List<Category> category, Pageable pageable);
     Page<Product> findByMember(Member member, Pageable pageable);
-    Page<Product> findByStatusAndNameContainingOrDescriptionContaining(Status status, String title, String description, Pageable pageable);
+    Page<Product> findByStatusAndNameContainsOrStatusAndDescriptionContains(Status status1, String name, Status status2, String description, Pageable pageable);
 }
