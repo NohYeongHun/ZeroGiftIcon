@@ -2,6 +2,10 @@ package com.zerogift.backend.notice.entity;
 
 import com.zerogift.backend.common.entity.BaseTimeEntity;
 import com.zerogift.backend.member.entity.Member;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -9,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Notice extends BaseTimeEntity {
 
@@ -28,4 +33,15 @@ public class Notice extends BaseTimeEntity {
     @JoinColumn(name = "from_member_id")
     private Member fromMember;
 
+    @Builder
+    public Notice(Member fromMember, Member toMember, String message) {
+        this.message = message;
+        this.isView = false;
+        this.toMember = toMember;
+        this.fromMember = fromMember;
+    }
+
+    public void checkView() {
+        this.isView = true;
+    }
 }

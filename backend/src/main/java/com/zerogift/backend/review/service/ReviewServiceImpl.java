@@ -12,6 +12,7 @@ import com.zerogift.backend.giftBox.entity.GiftBox;
 import com.zerogift.backend.giftBox.repository.GiftBoxRepository;
 import com.zerogift.backend.member.entity.Member;
 import com.zerogift.backend.member.repository.MemberRepository;
+import com.zerogift.backend.notice.service.NoticeService;
 import com.zerogift.backend.product.entity.Product;
 import com.zerogift.backend.product.repository.ProductRepository;
 import com.zerogift.backend.review.entity.Review;
@@ -39,6 +40,8 @@ public class ReviewServiceImpl implements ReviewService{
     private final GiftBoxRepository giftBoxRepository;
 
 
+    private final NoticeService noticeService;
+
     @Override
     public ReviewResponse addReview(LoginInfo loginInfo, Long productId, ReviewInput reviewInput) {
         // 회원 정보 가져오기
@@ -57,6 +60,7 @@ public class ReviewServiceImpl implements ReviewService{
         }
 
         giftBox.review();
+
         // 리뷰 내용 저장
         Review review = Review.builder()
                 .rank(reviewInput.getRank())
@@ -66,6 +70,9 @@ public class ReviewServiceImpl implements ReviewService{
                 .createDate(LocalDateTime.now())
                 .build();
         reviewRepository.save(review);
+
+        // Server sent event 전송
+        noticeService.addReviewEvent(review);
 
         // member 와 product 내용 편집해서 출력
         return ReviewResponse.of(review);
