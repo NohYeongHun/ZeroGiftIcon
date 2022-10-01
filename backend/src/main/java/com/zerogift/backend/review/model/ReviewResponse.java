@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Getter
 public class ReviewResponse {
 
-    private long reviewId;
+    private Long reviewId;
     private Integer rank;
     private String description;
     private MemberReviewResponse member;

@@ -12,6 +12,7 @@ import com.zerogift.backend.giftBox.repository.GiftBoxRepository;
 import com.zerogift.backend.member.entity.Member;
 import com.zerogift.backend.member.repository.MemberRepository;
 import com.zerogift.backend.notice.service.NoticeService;
+import com.zerogift.backend.notice.type.NoticeType;
 import com.zerogift.backend.product.entity.Product;
 import com.zerogift.backend.product.repository.ProductRepository;
 import com.zerogift.backend.review.entity.Review;
@@ -22,7 +23,6 @@ import com.zerogift.backend.security.dto.LoginInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,16 +60,17 @@ public class ReviewServiceImpl implements ReviewService{
         giftBox.review();
 
         // 리뷰 내용 저장
-        Review review = Review.builder()
+        Review review = reviewRepository.save(Review.builder()
                 .rank(reviewInput.getRank())
                 .description(reviewInput.getDescription())
                 .member(member)
                 .product(product)
-                .build();
-        reviewRepository.save(review);
+                .build()
+        );
 
         // Server sent event 전송
-        noticeService.sendReviewEvent(review);
+        noticeService.sendEvent(review.getMember(), review.getProduct().getMember(),
+                NoticeType.review, review.getId());
 
         // member 와 product 내용 편집해서 출력
         return ReviewResponse.from(review);
@@ -123,7 +124,7 @@ public class ReviewServiceImpl implements ReviewService{
     public List<ReviewResponse> productReviewList(Long productId) {
         // 상품 정보 가져오기
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ProductException(ProductErrorCode.PRODUCT_NOT_FOUND));;
+                .orElseThrow(() -> new ProductException(ProductErrorCode.PRODUCT_NOT_FOUND));
 
         // review 에 들어가있는 member 와 product 정보 편집
         List<ReviewResponse> reviewResponseList = reviewRepository.findByProduct(product).stream().map(

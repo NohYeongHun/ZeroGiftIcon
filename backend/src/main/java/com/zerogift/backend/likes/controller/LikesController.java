@@ -1,5 +1,6 @@
 package com.zerogift.backend.likes.controller;
 
+import com.zerogift.backend.common.dto.Result;
 import com.zerogift.backend.config.authorization.AuthenticationPrincipal;
 import com.zerogift.backend.likes.service.LikesService;
 import com.zerogift.backend.security.dto.LoginInfo;
@@ -31,6 +32,9 @@ public class LikesController {
     )
     @GetMapping("/user/likes/list")
     public ResponseEntity<?> likeList(@AuthenticationPrincipal LoginInfo loginInfo) {
-        return likesService.likeList(loginInfo);
+        return ResponseEntity.ok(Result.builder()
+                .data(likesService.likeList(loginInfo))
+                .build()
+        );
     }
 }
