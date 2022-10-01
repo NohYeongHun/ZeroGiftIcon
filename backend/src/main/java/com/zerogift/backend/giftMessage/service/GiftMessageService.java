@@ -9,6 +9,7 @@ import com.zerogift.backend.giftMessage.entity.GiftMessage;
 import com.zerogift.backend.giftMessage.repository.GiftMessageRepository;
 import com.zerogift.backend.member.entity.Member;
 import com.zerogift.backend.member.repository.MemberRepository;
+import com.zerogift.backend.notice.service.NoticeService;
 import com.zerogift.backend.product.entity.Product;
 import com.zerogift.backend.product.repository.ProductRepository;
 import com.zerogift.backend.security.dto.LoginInfo;
@@ -24,6 +25,7 @@ public class GiftMessageService {
     private final GiftBoxRepository giftBoxRepository;
     private final MemberRepository memberRepository;
     private final ProductRepository productRepository;
+    private final NoticeService noticeService;
 
     @Transactional(readOnly = true)
     public GiftMessageForm getGiftMessageForm(Long giftBoxId, LoginInfo loginInfo) {
@@ -36,13 +38,18 @@ public class GiftMessageService {
         GiftBox giftBox = giftBoxRepository.findGiftBoxById(giftMessageRequest.getGiftBoxId())
             .orElseThrow(() -> new RuntimeException("선물함에 없는 상품입니다."));
 
-        giftMessageRepository.save(GiftMessage.builder()
+        GiftMessage message = GiftMessage.builder()
                 .message(giftMessageRequest.getMessage())
                 .toMember(giftBox.getSendMember())
                 .fromMember(fromMember)
                 .product(giftBox.getProduct())
                 .giftBox(giftBox)
-                .build());
+                .build();
+        giftMessageRepository.save(message);
+
+        // sse 전송
+        noticeService.sendMessageEvent(message);
+
         giftBox.answer();
     }
 

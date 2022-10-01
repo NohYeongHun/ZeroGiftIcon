@@ -1,18 +1,18 @@
 package com.zerogift.backend.review.service;
 
 import com.zerogift.backend.acceptance.AcceptanceTest;
-import com.zerogift.backend.common.exception.code.ReviewErrorCode;
-import com.zerogift.backend.common.exception.review.ReviewException;
 import com.zerogift.backend.giftBox.entity.GiftBox;
 import com.zerogift.backend.giftBox.repository.GiftBoxRepository;
 import com.zerogift.backend.giftBox.service.GiftBoxService;
 import com.zerogift.backend.member.entity.Member;
 import com.zerogift.backend.member.repository.MemberRepository;
+import com.zerogift.backend.notice.service.NoticeService;
 import com.zerogift.backend.pay.entity.PayHistory;
 import com.zerogift.backend.pay.repository.PayHistoryRepository;
 import com.zerogift.backend.product.entity.Product;
 import com.zerogift.backend.product.repository.ProductImageRepository;
 import com.zerogift.backend.product.repository.ProductRepository;
+import com.zerogift.backend.product.service.ProductService;
 import com.zerogift.backend.review.entity.Review;
 import com.zerogift.backend.review.model.ReviewInput;
 import com.zerogift.backend.review.model.ReviewResponse;
@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.io.IOException;
 import java.util.List;
@@ -31,6 +32,8 @@ import java.util.Optional;
 
 import static com.zerogift.backend.utils.DataMakeUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class ReviewServiceTest extends AcceptanceTest {
@@ -58,6 +61,12 @@ class ReviewServiceTest extends AcceptanceTest {
 
     @Autowired
     private ReviewService reviewService;
+
+    @Autowired
+    private ProductService productService;
+
+    @MockBean
+    private NoticeService noticeService;
 
     Member member;
     Member member1;
@@ -127,6 +136,9 @@ class ReviewServiceTest extends AcceptanceTest {
         giftBoxService.useGiftCon(giftBox2.getId(), giftBox2.getCode());
         giftBoxService.useGiftCon(giftBox3.getId(), giftBox3.getCode());
         giftBoxService.useGiftCon(giftBox4.getId(), giftBox4.getCode());
+
+        // sse 기능 정지
+        doNothing().when(noticeService).sendReviewEvent(any());
     }
 
     @DisplayName("리뷰 작성 ")
@@ -148,6 +160,9 @@ class ReviewServiceTest extends AcceptanceTest {
         assertThat(review.getDescription()).isEqualTo(reviewInput.getDescription());
         assertThat(review.getMember().getId()).isEqualTo(member.getId());
         assertThat(review.getProduct().getId()).isEqualTo(product.getId());
+
+        GiftBox giftBox = giftBoxRepository.findAll().get(0);
+        assertThat(giftBox.isReview()).isTrue();
     }
 
     @DisplayName("리뷰 수정")
@@ -202,18 +217,21 @@ class ReviewServiceTest extends AcceptanceTest {
     @DisplayName("멤버의 리뷰 리스트")
     @Test
     void userReviewListTest() {
+        // 상품 리뷰 추가
         ReviewInput reviewInput = ReviewInput.builder()
                 .rank(10)
                 .description("리뷰 작성 테스트 중입니다.리뷰 작성 테스트 중입니다.")
                 .build();
         reviewService.addReview(adminInfo, product.getId(), reviewInput);
 
+        // 상품1 리뷰 추가
         reviewInput = ReviewInput.builder()
                 .rank(5)
                 .description("리뷰 작성 테스트 중입니다2.리뷰 작성 테스트 중입니다2.")
                 .build();
         reviewService.addReview(adminInfo, product1.getId(), reviewInput);
 
+        // 상품2 리뷰 추가
         reviewInput = ReviewInput.builder()
                 .rank(8)
                 .description("리뷰 작성 테스트 중입니다3.리뷰 작성 테스트 중입니다3.")
@@ -234,18 +252,22 @@ class ReviewServiceTest extends AcceptanceTest {
     @DisplayName("상품의 리뷰 리스트")
     @Test
     void productReviewListTest() {
+
+        // 사용자가 작성한 상품 리뷰 추가
         ReviewInput reviewInput = ReviewInput.builder()
                 .rank(10)
                 .description("리뷰 작성 테스트 중입니다.리뷰 작성 테스트 중입니다.")
                 .build();
         reviewService.addReview(adminInfo, product.getId(), reviewInput);
 
+        // 사용자1이 작성한 상품 리뷰 추가
         reviewInput = ReviewInput.builder()
                 .rank(10)
                 .description("리뷰 작성 테스트 중입니다1.리뷰 작성 테스트 중입니다1.")
                 .build();
         reviewService.addReview(adminInfo1, product.getId(), reviewInput);
 
+        // 사용자2가 작성한 상품2 리뷰 추가
         reviewInput = ReviewInput.builder()
                 .rank(10)
                 .description("리뷰 작성 테스트 중입니다2.리뷰 작성 테스트 중입니다2.")

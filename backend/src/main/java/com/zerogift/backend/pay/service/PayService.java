@@ -11,6 +11,7 @@ import com.zerogift.backend.giftBox.entity.GiftBox;
 import com.zerogift.backend.giftBox.repository.GiftBoxRepository;
 import com.zerogift.backend.member.entity.Member;
 import com.zerogift.backend.member.repository.MemberRepository;
+import com.zerogift.backend.notice.service.NoticeService;
 import com.zerogift.backend.pay.aop.PayLock;
 import com.zerogift.backend.pay.dto.PayHisoryRequest;
 import com.zerogift.backend.pay.entity.PayHistory;
@@ -32,6 +33,8 @@ public class PayService {
     private final PayHistoryRepository payHistoryRepository;
     private final ProductRepository productRepository;
     private final GiftBoxRepository giftBoxRepository;
+
+    private final NoticeService noticeService;
 
     private final BarcodeUtils barcodeUtils;
 
@@ -94,6 +97,9 @@ public class PayService {
             .payHistory(payHistory)
             .build());
         giftBox.addBarcodeUrl(barcodeUtils.barcodeSave(giftBox.getId(), giftBox.getCode()));
+
+        //sse 전송
+        noticeService.sendGiftEvent(giftBox);
     }
 
 }

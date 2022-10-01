@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -41,58 +42,38 @@ public class LikesServiceImpl implements LikesService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductException(ProductErrorCode.PRODUCT_NOT_FOUND));
 
-        // 자기자신의 물건은 좋아요 할수 없음
-        if (member.getId() == product.getMember().getId()) {
-            throw new ProductException(ProductErrorCode.SELF_VOTE_FORBIDDEN);
+        // 좋아요 했는지 체크
+        Optional<Likes> optionalLikes = likesRepository.findByMemberAndProduct(member, product);
+        if (!optionalLikes.isPresent()) {
+            // 'Likes Entity' 에 좋아요 기록 저장
+            Likes likes = Likes.builder()
+                    .product(product)
+                    .member(member)
+                    .regDate(LocalDateTime.now())
+                    .build();
+            likesRepository.save(likes);
+
+            saveLikesCount(product);
+
+            return ResponseEntity.ok(Result.builder().data("좋아요를 눌렀습니다.").build());
+        } else {
+            Likes likes = optionalLikes.get();
+            // 좋아요 누른적이 있으면 좋아요 취소
+            likesRepository.delete(likes);
+
+            saveLikesCount(product);
+
+            return ResponseEntity.ok(Result.builder().data("좋아요를 취소하였습니다.").build());
         }
 
-        // 이미 좋아요를 눌렀을 경우 다시 좋아요 누를 수 없음
-        if (likesRepository.existsByMemberAndProduct(member, product)) {
-            throw new ProductException(ProductErrorCode.DUPLICATE_VOTING_FORBIDDEN);
-        }
+    }
 
-        // 'Likes Entity' 에 좋아요 기록 저장
-        Likes likes = Likes.builder()
-                .product(product)
-                .member(member)
-                .regDate(LocalDateTime.now())
-                .build();
-        likesRepository.save(likes);
-
+    private void saveLikesCount(Product product) {
         // 'Product Entity' 에 해당 상품의 총 좋아요 수 저장
         long likesCount = likesRepository.countByProduct(product);
         product.setLikeCount(likesCount);
-
-        // Response 할 정보 편집
-        LikesModel likesModel = LikesModel.of(likes);
-        return ResponseEntity.ok().body(Result.builder().data(likesModel).build());
     }
 
-    @Override
-    @Transactional
-    public ResponseEntity<Result<?>> likeCancel(LoginInfo loginInfo, Long productId) {
-        // 회원 정보 가져오기
-        Member member = memberRepository.findByEmail(loginInfo.getEmail())
-                .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
-
-        // 상품 정보 가져오기
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ProductException(ProductErrorCode.PRODUCT_NOT_FOUND));
-
-        // 좋아요를 누른적이 없을 경우
-        Likes likes = likesRepository.findByMemberAndProduct(member, product)
-                .orElseThrow(() -> new ProductException(ProductErrorCode.NEVER_PRESS_LIKE));
-
-
-        // 'Likes Entity' 에서 좋아요 기록 삭제
-        likesRepository.delete(likes);
-
-        // 'Product Entity' 에 해당 상품의 총 좋아요 수 저장
-        long likesCount = likesRepository.countByProduct(product);
-        product.setLikeCount(likesCount);
-
-        return ResponseEntity.ok().build();
-    }
 
     @Override
     public ResponseEntity<Result<?>> likeList(LoginInfo loginInfo) {
