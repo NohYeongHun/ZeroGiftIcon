@@ -3,6 +3,8 @@ package com.zerogift.backend.likes.service;
 import com.zerogift.backend.acceptance.AcceptanceTest;
 import com.zerogift.backend.common.exception.code.ProductErrorCode;
 import com.zerogift.backend.common.exception.product.ProductException;
+import com.zerogift.backend.likes.entity.Likes;
+import com.zerogift.backend.likes.model.LikesModel;
 import com.zerogift.backend.member.entity.Member;
 import com.zerogift.backend.member.repository.MemberRepository;
 import com.zerogift.backend.product.entity.Product;
@@ -16,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
+import java.util.List;
 
 import static com.zerogift.backend.utils.DataMakeUtils.상품_생성;
 import static com.zerogift.backend.utils.DataMakeUtils.회원_생성;
@@ -107,5 +110,21 @@ class LikesServiceImplTest extends AcceptanceTest {
         product = productRepository.findById(product.getId())
                 .orElseThrow(() -> new ProductException(ProductErrorCode.PRODUCT_NOT_FOUND));
         assertThat(product.getLikeCount()).isEqualTo(0);
+    }
+
+    @DisplayName(" 좋아요 리스트 ")
+    @Test
+    void likeListTest() {
+        likesService.pressLike(adminInfo, product.getId());
+        likesService.pressLike(adminInfo, product1.getId());
+        likesService.pressLike(adminInfo, product2.getId());
+
+        List<LikesModel> likesList = likesService.likeList(adminInfo);
+        assertThat(likesList.get(0).getMemberLikeResponse().getId()).isEqualTo(member.getId());
+        assertThat(likesList.get(1).getMemberLikeResponse().getId()).isEqualTo(member.getId());
+        assertThat(likesList.get(2).getMemberLikeResponse().getId()).isEqualTo(member.getId());
+        assertThat(likesList.get(0).getProductLikeResponse().getId()).isEqualTo(product.getId());
+        assertThat(likesList.get(1).getProductLikeResponse().getId()).isEqualTo(product1.getId());
+        assertThat(likesList.get(2).getProductLikeResponse().getId()).isEqualTo(product2.getId());
     }
 }

@@ -74,16 +74,14 @@ public class LikesServiceImpl implements LikesService {
         product.setLikeCount(likesCount);
     }
 
-
     @Override
-    public ResponseEntity<Result<?>> likeList(LoginInfo loginInfo) {
+    public List<LikesModel> likeList(LoginInfo loginInfo) {
         // 회원 정보 가져오기
         Member member = memberRepository.findByEmail(loginInfo.getEmail())
                 .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 
         // List 형식으로 회원이 좋아요한 상품들 가져오기
         List<LikesModel> likesList = likesRepository.findByMember(member);
-        return ResponseEntity.ok().body(Result.builder().data(likesList).build());
+        return likesList;
     }
-
 }
