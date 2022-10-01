@@ -16,22 +16,14 @@ public class LikesController {
     private final LikesService likesService;
 
     @Operation(
-            summary = "좋아요 누르기", description = "상품에 좋아요 누르기",
+            summary = "좋아요", description = "상품에 좋아요 누르기,이미 좋아요 한 상품은 취소하기",
             tags = {"Likes"}
     )
-    @PutMapping("/user/{productId}/likes")
+    @PostMapping("/user/{productId}/likes")
     public ResponseEntity<?> pressLike(@PathVariable Long productId, @AuthenticationPrincipal LoginInfo loginInfo) {
         return likesService.pressLike(loginInfo, productId);
     }
 
-    @Operation(
-            summary = "좋아요 취소하기", description = "상품에 좋아요 취소하기",
-            tags = {"Likes"}
-    )
-    @DeleteMapping("/user/{productId}/likes")
-    public ResponseEntity<?> likeCancel(@PathVariable Long productId, @AuthenticationPrincipal LoginInfo loginInfo) {
-        return likesService.likeCancel(loginInfo, productId);
-    }
 
     @Operation(
             summary = "회원의 좋아요 리스트", description = "회원이 좋아요 눌렀던 상품들 리스트 호출",
