@@ -1,5 +1,17 @@
 package com.zerogift.backend.notice.type;
 
+import lombok.Getter;
+
 public enum NoticeType {
-    review, gift, message;
+    review("리뷰를 등록하였습니다."),
+    gift("선물하였습니다."),
+    message("감사메세지를 작성하였습니다.");
+
+    @Getter
+    private final String description;
+
+    NoticeType( String description) {
+        this.description = description;
+    }
+
 }
