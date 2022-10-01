@@ -17,6 +17,7 @@ import com.zerogift.backend.notice.repository.NoticeRepository;
 import com.zerogift.backend.notice.type.NoticeType;
 import com.zerogift.backend.review.entity.Review;
 import com.zerogift.backend.security.dto.LoginInfo;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -53,19 +54,21 @@ public class NoticeService {
                 .build();
         noticeRepository.save(notice);
 
-        try {
-            sseEmitter.send(SseEmitter
+        if(!Objects.isNull(sseEmitter)) {
+            try {
+                sseEmitter.send(SseEmitter
                     .event()
                     .name("알림이 생성되었습니다.")
                     .data(ReviewNoticeResponse.builder()
-                            .reviewId(notice.getNoticeTypeId())
-                            .message(notice.getMessage())
-                            .toMemberId(notice.getToMember().getId())
-                            .fromMemberId(notice.getFromMember().getId())
+                        .reviewId(notice.getNoticeTypeId())
+                        .message(notice.getMessage())
+                        .toMemberId(notice.getToMember().getId())
+                        .fromMemberId(notice.getFromMember().getId())
                     )
-            );
-        } catch (IOException e) {
-            sseEmitters.remove(userId);
+                );
+            } catch (IOException e) {
+                sseEmitters.remove(userId);
+            }
         }
     }
 
@@ -86,19 +89,21 @@ public class NoticeService {
                 .build();
         noticeRepository.save(notice);
 
-        try {
-            sseEmitter.send(SseEmitter
+        if(!Objects.isNull(sseEmitter)) {
+            try {
+                sseEmitter.send(SseEmitter
                     .event()
                     .name("알림이 생성되었습니다.")
                     .data(GiftNoticeResponse.builder()
-                            .giftBoxId(notice.getNoticeTypeId())
-                            .message(notice.getMessage())
-                            .toMemberId(notice.getToMember().getId())
-                            .fromMemberId(notice.getFromMember().getId())
+                        .giftBoxId(notice.getNoticeTypeId())
+                        .message(notice.getMessage())
+                        .toMemberId(notice.getToMember().getId())
+                        .fromMemberId(notice.getFromMember().getId())
                     )
-            );
-        } catch (IOException e) {
-            sseEmitters.remove(userId);
+                );
+            } catch (IOException e) {
+                sseEmitters.remove(userId);
+            }
         }
     }
 
@@ -119,19 +124,21 @@ public class NoticeService {
                 .build();
         noticeRepository.save(notice);
 
-        try {
-            sseEmitter.send(SseEmitter
+        if(!Objects.isNull(sseEmitter)) {
+            try {
+                sseEmitter.send(SseEmitter
                     .event()
                     .name("알림이 생성되었습니다.")
                     .data(GiftMessageNoticeResponse.builder()
-                            .giftMessageId(notice.getNoticeTypeId())
-                            .message(notice.getMessage())
-                            .toMemberId(notice.getToMember().getId())
-                            .fromMemberId(notice.getFromMember().getId())
+                        .giftMessageId(notice.getNoticeTypeId())
+                        .message(notice.getMessage())
+                        .toMemberId(notice.getToMember().getId())
+                        .fromMemberId(notice.getFromMember().getId())
                     )
-            );
-        } catch (IOException e) {
-            sseEmitters.remove(userId);
+                );
+            } catch (IOException e) {
+                sseEmitters.remove(userId);
+            }
         }
     }
 

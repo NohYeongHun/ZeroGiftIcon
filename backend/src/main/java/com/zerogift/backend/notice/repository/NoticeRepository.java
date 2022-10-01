@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface NoticeRepository extends JpaRepository<Notice, Long> {
-    List<Notice> findByMember(Member member);
+    List<Notice> findByToMember(Member member);
 
-    List<Notice> findByMemberAndIsView(Member member, Boolean isView);
+    List<Notice> findByToMemberAndIsView(Member member, Boolean isView);
 }
