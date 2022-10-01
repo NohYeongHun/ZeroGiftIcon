@@ -115,7 +115,8 @@ public class ProductService {
         Member member = memberRepository.findByEmail(TokenUtil.getAdminOrMemberEmail())
                 .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
         Pageable pageable = PageRequest.of(idx, size, Sort.by("updatedAt").descending());
-        Page<Product> page = productRepository.findByStatusAndNameContainingOrDescriptionContaining(Status.PUBLIC, q, q, pageable);
+        Page<Product> page = productRepository.findByStatusAndNameContainsOrStatusAndDescriptionContains(
+                Status.PUBLIC, q, Status.PUBLIC, q, pageable);
         return ok(page.getContent().stream().map(
                     product -> ProductDto.builder()
                         .id(product.getId())
@@ -158,6 +159,12 @@ public class ProductService {
     public ResponseEntity<Result<?>> getDetail(Long productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductException(ProductErrorCode.PRODUCT_NOT_FOUND));
+        if (product.getStatus().equals(Status.PRIVATE)) {
+            Member member = memberRepository.findByEmail(TokenUtil.getAdminOrMemberEmail())
+                    .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
+            if (!product.getMember().equals(member))
+                throw new ProductException(ProductErrorCode.PRIVATE_PRODUCT);
+        }
         List<ProductImage> images = productImageRepository.findAllByProduct(product);
         return ok(ProductDetailDto.builder()
                     .id(product.getId())
