@@ -467,7 +467,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#member-search-API">회원리스트 조회 API</a>
 <ul class="sectlevel2">
 <li><a href="#member-search-API_http_request">HTTP request</a></li>
-<li><a href="#member-search-API_request_fields">Request fields</a></li>
+<li><a href="#member-search-API_request_parameters">Request parameters</a></li>
 <li><a href="#member-search-API_http_response">HTTP response</a></li>
 <li><a href="#member-search-API_response_fields">Response fields</a></li>
 </ul>
@@ -729,16 +729,34 @@ Content-Length: 174
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /member-search/member-list?nickname=nickname&amp;email=email HTTP/1.1
 Accept: application/json
-Content-Type: application/json; charset=UTF-8
 Host: zerogift.p-e.kr</code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="member-search-API_request_fields"><a class="link" href="#member-search-API_request_fields">Request fields</a></h3>
-<div class="paragraph">
-<p>Snippet request-fields not found for operation::memberListSearch</p>
-</div>
+<h3 id="member-search-API_request_parameters"><a class="link" href="#member-search-API_request_parameters">Request parameters</a></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>email</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">email</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>nickname</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">nickname</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect2">
 <h3 id="member-search-API_http_response"><a class="link" href="#member-search-API_http_response">HTTP response</a></h3>
@@ -755,7 +773,7 @@ Pragma: no-cache
 Expires: 0
 Content-Type: application/json
 Transfer-Encoding: chunked
-Date: Wed, 28 Sep 2022 21:59:05 GMT
+Date: Fri, 30 Sep 2022 09:27:50 GMT
 Keep-Alive: timeout=60
 Connection: keep-alive
 Content-Length: 262
@@ -842,7 +860,7 @@ Content-Length: 262
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2022-09-29 06:55:59 +0900
+Last updated 2022-09-30 17:37:27 +0900
 </div>
 </div>
 </body>
