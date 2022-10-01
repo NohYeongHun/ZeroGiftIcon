@@ -1,16 +1,23 @@
 package com.zerogift.backend.notice.service;
 
+import com.zerogift.backend.common.exception.code.MemberErrorCode;
 import com.zerogift.backend.common.exception.code.NoticeErrorCode;
+import com.zerogift.backend.common.exception.member.MemberException;
 import com.zerogift.backend.common.exception.notice.NoticeException;
 import com.zerogift.backend.giftBox.entity.GiftBox;
 import com.zerogift.backend.giftMessage.entity.GiftMessage;
+import com.zerogift.backend.member.entity.Member;
+import com.zerogift.backend.member.repository.MemberRepository;
 import com.zerogift.backend.notice.entity.Notice;
 import com.zerogift.backend.notice.model.GiftNoticeResponse;
 import com.zerogift.backend.notice.model.GiftMessageNoticeResponse;
+import com.zerogift.backend.notice.model.NoticeResponse;
 import com.zerogift.backend.notice.model.ReviewNoticeResponse;
 import com.zerogift.backend.notice.repository.NoticeRepository;
 import com.zerogift.backend.notice.type.NoticeType;
 import com.zerogift.backend.review.entity.Review;
+import com.zerogift.backend.review.model.ReviewResponse;
+import com.zerogift.backend.security.dto.LoginInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -18,6 +25,8 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.zerogift.backend.notice.controller.NoticeController.sseEmitters;
 
@@ -26,6 +35,7 @@ import static com.zerogift.backend.notice.controller.NoticeController.sseEmitter
 public class NoticeService {
 
     private final NoticeRepository noticeRepository;
+    private final MemberRepository memberRepository;
 
     @Async
     public void sendReviewEvent(Review review) {
@@ -131,5 +141,20 @@ public class NoticeService {
         Notice notice = noticeRepository.findById(noticeId)
                 .orElseThrow(() -> new NoticeException(NoticeErrorCode.NOTICE_NOT_FOUND));
         notice.checkView();
+    }
+
+    public List<NoticeResponse> noticeList(LoginInfo loginInfo) {
+        Member member = memberRepository.findByEmail(loginInfo.getEmail()).
+                orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
+
+        return noticeRepository.findByMember(member)
+                .stream().map(x -> NoticeResponse.of(x)).collect(Collectors.toList());
+    }
+
+    public List<NoticeResponse> uncheckedNoticeList(LoginInfo loginInfo) {
+        Member member = memberRepository.findByEmail(loginInfo.getEmail()).
+                orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
+        return noticeRepository.findByMemberAndIsView(member, false)
+                .stream().map(x -> NoticeResponse.of(x)).collect(Collectors.toList());
     }
 }

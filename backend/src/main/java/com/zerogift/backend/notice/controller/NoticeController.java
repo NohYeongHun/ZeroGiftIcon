@@ -28,14 +28,16 @@ public class NoticeController {
 
     public static Map<Long, SseEmitter> sseEmitters = new ConcurrentHashMap<>();
 
+    private static final Long TIMEOUT = 60 * 60 * 1000L;
+
     @CrossOrigin
-    @GetMapping(value = "/notice", consumes = MediaType.ALL_VALUE)
+    @GetMapping(value = "/notice", consumes = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public SseEmitter Notice(@AuthenticationPrincipal LoginInfo loginInfo) {
 
         Long memberId = memberRepository.findByEmail(loginInfo.getEmail())
                 .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND)).getId();
 
-        SseEmitter sseEmitter = new SseEmitter(Long.MAX_VALUE);
+        SseEmitter sseEmitter = new SseEmitter(TIMEOUT);
         try {
             sseEmitter.send(SseEmitter.event().name("connect"));
         } catch (IOException e) {
@@ -56,6 +58,24 @@ public class NoticeController {
         noticeService.checkNotice(noticeId);
         return ResponseEntity.ok(Result.builder()
                 .data("리뷰 확인")
+                .build()
+        );
+    }
+
+    @GetMapping("/notice/list")
+    public ResponseEntity<?> noticeList(@AuthenticationPrincipal LoginInfo loginInfo) {
+
+        return ResponseEntity.ok(Result.builder()
+                .data(noticeService.noticeList(loginInfo))
+                .build()
+        );
+    }
+
+    @GetMapping("/notice/list/uncheck")
+    public ResponseEntity<?> uncheckedNoticeList(@AuthenticationPrincipal LoginInfo loginInfo) {
+
+        return ResponseEntity.ok(Result.builder()
+                .data(noticeService.uncheckedNoticeList(loginInfo))
                 .build()
         );
     }
