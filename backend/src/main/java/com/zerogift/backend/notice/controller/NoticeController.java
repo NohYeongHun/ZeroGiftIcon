@@ -29,7 +29,7 @@ public class NoticeController {
     public static Map<Long, SseEmitter> sseEmitters = new ConcurrentHashMap<>();
 
     @CrossOrigin
-    @GetMapping(value = "/review", consumes = MediaType.ALL_VALUE)
+    @GetMapping(value = "/notice", consumes = MediaType.ALL_VALUE)
     public SseEmitter Notice(@AuthenticationPrincipal LoginInfo loginInfo) {
 
         Long memberId = memberRepository.findByEmail(loginInfo.getEmail())
