@@ -16,7 +16,6 @@ import com.zerogift.backend.notice.model.ReviewNoticeResponse;
 import com.zerogift.backend.notice.repository.NoticeRepository;
 import com.zerogift.backend.notice.type.NoticeType;
 import com.zerogift.backend.review.entity.Review;
-import com.zerogift.backend.review.model.ReviewResponse;
 import com.zerogift.backend.security.dto.LoginInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
@@ -147,14 +146,14 @@ public class NoticeService {
         Member member = memberRepository.findByEmail(loginInfo.getEmail()).
                 orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 
-        return noticeRepository.findByMember(member)
-                .stream().map(x -> NoticeResponse.of(x)).collect(Collectors.toList());
+        return noticeRepository.findByToMember(member)
+                .stream().map(x -> NoticeResponse.from(x)).collect(Collectors.toList());
     }
 
     public List<NoticeResponse> uncheckedNoticeList(LoginInfo loginInfo) {
         Member member = memberRepository.findByEmail(loginInfo.getEmail()).
                 orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
-        return noticeRepository.findByMemberAndIsView(member, false)
-                .stream().map(x -> NoticeResponse.of(x)).collect(Collectors.toList());
+        return noticeRepository.findByToMemberAndIsView(member, false)
+                .stream().map(x -> NoticeResponse.from(x)).collect(Collectors.toList());
     }
 }

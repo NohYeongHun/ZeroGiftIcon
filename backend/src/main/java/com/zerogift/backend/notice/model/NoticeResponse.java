@@ -2,9 +2,7 @@ package com.zerogift.backend.notice.model;
 
 import com.zerogift.backend.notice.entity.Notice;
 import com.zerogift.backend.notice.type.NoticeType;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -32,7 +30,7 @@ public class NoticeResponse {
         this.createdDate = createdDate;
     }
 
-    public static NoticeResponse of(Notice notice) {
+    public static NoticeResponse from(Notice notice) {
         return NoticeResponse.builder()
                     .noticeType(notice.getNoticeType())
                     .noticeTypeId(notice.getNoticeTypeId())
