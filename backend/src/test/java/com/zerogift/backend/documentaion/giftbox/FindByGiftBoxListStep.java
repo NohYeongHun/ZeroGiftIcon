@@ -22,9 +22,9 @@ public class FindByGiftBoxListStep {
     public static List<GiftBoxDto> 선물함_리스트_응답_생성() {
         return List.of(
             new GiftBoxDto(1L, "아이스 아메리카노", "https://img.danawa.com/prod_img/500000/609/014/img/3014609_1.jpg?shrink=330:330&_v=20220524144914",
-                "더운날에는 아이스 아메리카노 어떠세요?", false, 1L, "제로베이스", 1L, false, false),
+                "더운날에는 아이스 아메리카노 어떠세요?", false, 1L, "제로베이스", 1L, false, false, 1L),
             new GiftBoxDto(2L, "두번쨰 아이스 아메리카노", "https://img.danawa.com/prod_img/500000/609/014/img/3014609_1.jpg?shrink=330:330&_v=20220524144914",
-                "조금 싼 아이스 아메리카노", false, 2L, "패스트캠퍼스", 2L, false, false)
+                "조금 싼 아이스 아메리카노", false, 2L, "패스트캠퍼스", 2L, false, false, 1L)
         );
     }
 
@@ -62,7 +62,8 @@ public class FindByGiftBoxListStep {
             fieldWithPath("data[].sendNickname").type(JsonFieldType.STRING).description("선물한 사람 닉네임"),
             fieldWithPath("data[].productId").type(JsonFieldType.NUMBER).description("상품 아이디"),
             fieldWithPath("data[].answer").type(JsonFieldType.BOOLEAN).description("감사 메시지 여부"),
-            fieldWithPath("data[].review").type(JsonFieldType.BOOLEAN).description("리뷰 여부")
+            fieldWithPath("data[].review").type(JsonFieldType.BOOLEAN).description("리뷰 여부"),
+            fieldWithPath("data[].giftMessageId").type(JsonFieldType.NUMBER).description("감사 메시지 아이디")
         );
     }
 

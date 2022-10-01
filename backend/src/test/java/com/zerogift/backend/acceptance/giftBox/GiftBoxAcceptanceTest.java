@@ -92,9 +92,8 @@ class GiftBoxAcceptanceTest extends AcceptanceTest {
         GiftBoxDto extract = response.jsonPath().getObject("data[0]", GiftBoxDto.class);
 
         assertThat(extract).isEqualTo(
-            new GiftBoxDto(1L, "test", "https://test.com", "test 설명", false, 회원.getId(), 회원.getNickname(), 상품_아이디, false, false));
+            new GiftBoxDto(1L, "test", "https://test.com", "test 설명", false, 회원.getId(), 회원.getNickname(), 상품_아이디, false, false, null));
     }
-
 
     @DisplayName("선물함 상세 페이지 조회 테스트")
     @Test
@@ -104,7 +103,7 @@ class GiftBoxAcceptanceTest extends AcceptanceTest {
         GiftBoxDetail giftBoxDetail = response.jsonPath().getObject("data", GiftBoxDetail.class);
 
         assertThat(giftBoxDetail).isEqualTo(
-            new GiftBoxDetail("test", "https://test.com", null, false));
+            new GiftBoxDetail("test", "https://test.com", null, false, null));
     }
 
     @DisplayName("기프트콘 사용을 테스트 합니다.")

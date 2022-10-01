@@ -1,5 +1,6 @@
 package com.zerogift.backend.giftBox.dto;
 
+import java.util.Objects;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,9 +20,10 @@ public class GiftBoxDto {
     private Long productId;
     private boolean answer;
     private boolean review;
+    private Long giftMessageId;
 
     public GiftBoxDto(Long id, String name, String imageUrl, String description, boolean use,
-        Long sendId, String sendNickname, Long productId, boolean answer, boolean review) {
+        Long sendId, String sendNickname, Long productId, boolean answer, boolean review, Long giftMessageId) {
         this.id = id;
         this.name = name;
         this.imageUrl = imageUrl;
@@ -32,5 +34,9 @@ public class GiftBoxDto {
         this.productId = productId;
         this.answer = answer;
         this.review = review;
+        this.giftMessageId = Objects.isNull(giftMessageId) ? null : giftMessageId;
     }
 }
+
+// gfitForm
+//

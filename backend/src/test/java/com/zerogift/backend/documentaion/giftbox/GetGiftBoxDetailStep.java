@@ -21,7 +21,7 @@ public class GetGiftBoxDetailStep {
     public static GiftBoxDetail 선물함_상세보기_응답_생성() {
         return new GiftBoxDetail("아이스 아메리카노",
             "https://img.danawa.com/prod_img/500000/609/014/img/3014609_1.jpg?shrink=330:330&_v=20220524144914"
-            , "https://test-barcode.com", true);
+            , "https://test-barcode.com", true, 1L);
     }
 
     public static RestDocumentationFilter 선물함_상세보기_조회_문서화() {
@@ -51,7 +51,8 @@ public class GetGiftBoxDetailStep {
             fieldWithPath("data.name").type(JsonFieldType.STRING).description("선물함 아이디"),
             fieldWithPath("data.imageUrl").type(JsonFieldType.STRING).description("상품 이름"),
             fieldWithPath("data.barcodUrl").type(JsonFieldType.STRING).description("상품 설명"),
-            fieldWithPath("data.answer").type(JsonFieldType.BOOLEAN).description("사용 여부")
+            fieldWithPath("data.answer").type(JsonFieldType.BOOLEAN).description("사용 여부"),
+            fieldWithPath("data.giftMessageId").type(JsonFieldType.NUMBER).description("감사 메시지 아이디")
         );
     }
 
