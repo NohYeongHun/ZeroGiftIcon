@@ -1,18 +1,22 @@
 package com.zerogift.backend.giftBox.repository;
 
 import static com.zerogift.backend.giftBox.entity.QGiftBox.giftBox;
+import static com.zerogift.backend.giftMessage.entity.QGiftMessage.giftMessage;
 import static com.zerogift.backend.member.entity.QMember.member;
 import static com.zerogift.backend.product.entity.QProduct.product;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.zerogift.backend.common.dto.MyPageableDto;
 import com.zerogift.backend.giftBox.dto.GiftBoxDetail;
 import com.zerogift.backend.giftBox.dto.GiftBoxDto;
 import com.zerogift.backend.giftBox.entity.GiftBox;
+import com.zerogift.backend.giftMessage.entity.QGiftMessage;
 import com.zerogift.backend.member.entity.Member;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -37,11 +41,15 @@ public class GiftBoxRepositoryCustomImpl implements GiftBoxRepositoryCustom {
                 member.nickname,
                 product.id,
                 giftBox.answer,
-                giftBox.review
+                giftBox.review,
+                giftMessage.id
             ))
             .from(giftBox)
             .innerJoin(giftBox.product, product)
             .innerJoin(giftBox.sendMember, member)
+            .leftJoin(giftMessage)
+                .on(giftMessage.giftBox.eq(giftBox))
+                .fetchJoin()
             .where(
                 eqRecipientMember(loginMember))
             .orderBy(giftBox.createdDate.asc())
@@ -69,10 +77,14 @@ public class GiftBoxRepositoryCustomImpl implements GiftBoxRepositoryCustom {
                 product.name,
                 product.mainImageUrl,
                 giftBox.barcodeUrl,
-                giftBox.answer
+                giftBox.answer,
+                giftMessage.id
             ))
             .from(giftBox)
             .innerJoin(giftBox.product, product)
+            .leftJoin(giftMessage)
+                .on(giftMessage.giftBox.eq(giftBox))
+            .fetchJoin()
             .where(giftBox.id.eq(giftBoxId)
                 .and(giftBox.recipientMember.eq(member)))
             .fetchOne();

@@ -1,0 +1,21 @@
+= Zero gift REST Docs (글의 제목)
+zerogift(부제)
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs // 문서에 표기되는 코드들의 하이라이팅을 highlightjs를 사용
+:toc: left // toc (Table Of Contents)를 문서의 좌측에 두기
+:toclevels: 2
+:sectlinks:
+
+[[member-auth-API]]
+== 회원 가입 API
+operation::memberRegister[snippets='http-request,request-fields,http-response,response-fields']
+
+[[member-auth-API]]
+== 회원 로그인 API
+operation::memberLogin[snippets='http-request,request-fields,http-response,response-fields']
+
+
+[[member-search-API]]
+== 회원리스트 조회 API
+operation::memberListSearch[snippets='http-request,request-parameters,http-response,response-fields']
