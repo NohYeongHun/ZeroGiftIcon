@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 @Getter
 public class ReviewResponse {
 
+    private long reviewId;
     private Integer rank;
     private String description;
     private MemberReviewResponse member;
@@ -24,14 +25,15 @@ public class ReviewResponse {
     private LocalDateTime createDate;
     private LocalDateTime updateDate;
 
-    public static ReviewResponse of(Review review) {
+    public static ReviewResponse from(Review review) {
         return ReviewResponse.builder()
+                .reviewId(review.getId())
                 .rank(review.getRank())
                 .description(review.getDescription())
                 .member(MemberReviewResponse.of(review.getMember()))
                 .product(ProductReviewResponse.of(review.getProduct()))
-                .createDate(review.getCreateDate())
-                .updateDate(review.getUpdateDate())
+                .createDate(review.getCreatedDate())
+                .updateDate(review.getLastModifiedDate())
                 .build();
     }
 }

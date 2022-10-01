@@ -65,7 +65,6 @@ public class ReviewServiceImpl implements ReviewService{
                 .description(reviewInput.getDescription())
                 .member(member)
                 .product(product)
-                .createDate(LocalDateTime.now())
                 .build();
         reviewRepository.save(review);
 
@@ -73,7 +72,7 @@ public class ReviewServiceImpl implements ReviewService{
         noticeService.sendReviewEvent(review);
 
         // member 와 product 내용 편집해서 출력
-        return ReviewResponse.of(review);
+        return ReviewResponse.from(review);
     }
 
     @Override
@@ -89,7 +88,7 @@ public class ReviewServiceImpl implements ReviewService{
         // 리뷰 별점과 내용 수정
         review.modify(reviewInput.getRank(), reviewInput.getDescription());
 
-        return ReviewResponse.of(review);
+        return ReviewResponse.from(review);
     }
 
     @Override
@@ -115,7 +114,7 @@ public class ReviewServiceImpl implements ReviewService{
 
         // review 에 들어가있는 member 와 product 정보 편집
         List<ReviewResponse> reviewResponseList = reviewRepository.findByMember(member).stream().map(
-                x -> ReviewResponse.of(x)).collect(Collectors.toList());
+                x -> ReviewResponse.from(x)).collect(Collectors.toList());
         return reviewResponseList;
     }
 
@@ -124,13 +123,11 @@ public class ReviewServiceImpl implements ReviewService{
     public List<ReviewResponse> productReviewList(Long productId) {
         // 상품 정보 가져오기
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ProductException(ProductErrorCode.PRODUCT_NOT_FOUND));
-
-        List<Review> reviewList = reviewRepository.findByProduct(product);
+                .orElseThrow(() -> new ProductException(ProductErrorCode.PRODUCT_NOT_FOUND));;
 
         // review 에 들어가있는 member 와 product 정보 편집
         List<ReviewResponse> reviewResponseList = reviewRepository.findByProduct(product).stream().map(
-                x -> ReviewResponse.of(x)).collect(Collectors.toList());
+                x -> ReviewResponse.from(x)).collect(Collectors.toList());
         return reviewResponseList;
     }
 }
