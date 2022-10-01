@@ -44,7 +44,7 @@ public class MemberSearchDocumentation extends Documentation{
                 AdminInfo.builder()
                         .id(1L)
                         .build());
-        when(memberSearchService.searchMemberDetail(anyLong())).thenReturn(member_detail_search_response_create());
+        when(memberSearchService.searchMemberDetail(any())).thenReturn(member_detail_search_response_create());
 
         RestAssured
                 .given(specification).log().all()
