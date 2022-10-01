@@ -7,9 +7,11 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Getter
-public class ReviewNoticeResponse {
+public class NoticeTypeResponse {
 
-    private Long reviewId;
+    private Long noticeTypeId;
+
+    private NoticeType noticeType;
 
     private String message;
 
@@ -17,16 +19,14 @@ public class ReviewNoticeResponse {
 
     private Long fromMemberId;
 
-    private NoticeType noticeType;
-
     @Builder
-    public ReviewNoticeResponse(Long reviewId, Long toMemberId,
-                                Long fromMemberId, String message) {
-        this.reviewId = reviewId;
+    public NoticeTypeResponse(Long noticeTypeId, NoticeType noticeType, String message,
+                              Long toMemberId, Long fromMemberId) {
+        this.noticeTypeId = noticeTypeId;
+        this.noticeType = noticeType;
         this.message = message;
         this.toMemberId = toMemberId;
         this.fromMemberId = fromMemberId;
-        this.noticeType = NoticeType.review;
     }
 
 }
