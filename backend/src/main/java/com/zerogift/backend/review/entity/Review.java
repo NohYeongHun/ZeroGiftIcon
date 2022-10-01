@@ -34,16 +34,9 @@ public class Review extends BaseTimeEntity {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    @Column
-    private LocalDateTime createDate;
-
-    @Column
-    private LocalDateTime updateDate;
-
     public void modify(Integer rank, String description) {
         this.rank = rank;
         this.description = description;
-        this.updateDate = LocalDateTime.now();
     }
 
 }
