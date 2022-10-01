@@ -1,22 +1,17 @@
 package com.zerogift.backend.notice.service;
 
-import com.nimbusds.oauth2.sdk.util.MapUtils;
 import com.zerogift.backend.common.exception.code.MemberErrorCode;
 import com.zerogift.backend.common.exception.code.NoticeErrorCode;
 import com.zerogift.backend.common.exception.member.MemberException;
 import com.zerogift.backend.common.exception.notice.NoticeException;
-import com.zerogift.backend.giftBox.entity.GiftBox;
-import com.zerogift.backend.giftMessage.entity.GiftMessage;
 import com.zerogift.backend.member.entity.Member;
 import com.zerogift.backend.member.repository.MemberRepository;
 import com.zerogift.backend.notice.entity.Notice;
-import com.zerogift.backend.notice.model.*;
+import com.zerogift.backend.notice.model.NoticeResponse;
+import com.zerogift.backend.notice.model.NoticeTypeResponse;
 import com.zerogift.backend.notice.repository.NoticeRepository;
 import com.zerogift.backend.notice.type.NoticeType;
-import com.zerogift.backend.product.entity.Product;
-import com.zerogift.backend.review.entity.Review;
 import com.zerogift.backend.security.dto.LoginInfo;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -25,6 +20,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.zerogift.backend.notice.controller.NoticeController.sseEmitters;
@@ -73,8 +69,11 @@ public class NoticeService {
 
 
     @Transactional
-    public void checkNotice(Long noticeId) {
-        Notice notice = noticeRepository.findById(noticeId)
+    public void checkNotice(LoginInfo loginInfo, Long noticeId) {
+        Member member = memberRepository.findByEmail(loginInfo.getEmail()).
+                orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
+
+        Notice notice = noticeRepository.findByIdAndToMember(noticeId, member)
                 .orElseThrow(() -> new NoticeException(NoticeErrorCode.NOTICE_NOT_FOUND));
         notice.checkView();
     }
