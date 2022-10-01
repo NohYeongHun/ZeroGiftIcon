@@ -85,7 +85,7 @@ class GiftBoxServiceTest extends AcceptanceTest {
         List<GiftBoxDto> giftBoxDtoPages = giftBoxService.findByGiftBoxList(adminInfo, new MyPageableDto(0, 10));
 
         GiftBoxDto extract = new GiftBoxDto(giftBox.getId(), product.getName(), null, product.getDescription(), false,
-            member.getId(), member.getNickname(), product.getId(), false, false);
+            member.getId(), member.getNickname(), product.getId(), false, false, null);
 
         assertThat(giftBoxDtoPages).containsExactly(extract);
     }
@@ -96,7 +96,7 @@ class GiftBoxServiceTest extends AcceptanceTest {
     void findByGiftBoxDeatilaTest() {
         GiftBoxDetail giftBoxDetail = giftBoxService.getGiftBoxDetail(adminInfo, giftBox.getId());
 
-        GiftBoxDetail extract = new GiftBoxDetail(product.getName(), null, giftBox.getBarcodeUrl(), false);
+        GiftBoxDetail extract = new GiftBoxDetail(product.getName(), null, giftBox.getBarcodeUrl(), false, null);
 
         assertThat(giftBoxDetail).isEqualTo(extract);
     }

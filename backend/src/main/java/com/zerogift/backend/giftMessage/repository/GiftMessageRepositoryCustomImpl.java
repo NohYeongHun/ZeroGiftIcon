@@ -28,7 +28,7 @@ public class GiftMessageRepositoryCustomImpl implements GiftMessageRepositoryCus
             ))
             .from(giftBox)
             .innerJoin(giftBox.product, product)
-            .innerJoin(giftBox.sendMember, member)
+            .innerJoin(giftBox.recipientMember, member)
             .where(eqGiftBoxId(giftBoxId)
                 , eqMemberId(memberId))
             .fetchOne();
