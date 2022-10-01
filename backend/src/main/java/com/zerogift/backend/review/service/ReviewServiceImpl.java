@@ -1,6 +1,5 @@
 package com.zerogift.backend.review.service;
 
-import com.zerogift.backend.common.dto.Result;
 import com.zerogift.backend.common.exception.code.MemberErrorCode;
 import com.zerogift.backend.common.exception.code.ProductErrorCode;
 import com.zerogift.backend.common.exception.code.ReviewErrorCode;
@@ -21,7 +20,6 @@ import com.zerogift.backend.review.model.ReviewResponse;
 import com.zerogift.backend.review.repository.ReviewRepository;
 import com.zerogift.backend.security.dto.LoginInfo;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -72,7 +70,7 @@ public class ReviewServiceImpl implements ReviewService{
         reviewRepository.save(review);
 
         // Server sent event 전송
-        noticeService.addReviewEvent(review);
+        noticeService.sendReviewEvent(review);
 
         // member 와 product 내용 편집해서 출력
         return ReviewResponse.of(review);
