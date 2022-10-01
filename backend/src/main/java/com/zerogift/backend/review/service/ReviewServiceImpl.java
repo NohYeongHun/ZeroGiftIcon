@@ -50,13 +50,13 @@ public class ReviewServiceImpl implements ReviewService{
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductException(ProductErrorCode.PRODUCT_NOT_FOUND));
 
-        GiftBox giftBox = giftBoxRepository.findByRecipientMemberAndProduct(member,product)
-                .orElseThrow(() -> new NotFoundGiftBoxException("존재하지 않는 선물 입니다."));
-
-        if (!giftBox.getIsUse()) {
-            throw new ReviewException(ReviewErrorCode.ADD_REVIEW_AFTER_USE);
+        List<GiftBox> giftBoxList = giftBoxRepository.findByRecipientMemberAndProductAndReview(member, product, false);
+        if (giftBoxList.isEmpty()) {
+            throw new NotFoundGiftBoxException("존재하지 않는 선물 입니다.");
         }
+        GiftBox giftBox = giftBoxList.get(0);
 
+        // 리뷰 불린 값 true 변경
         giftBox.review();
 
         // 리뷰 내용 저장
