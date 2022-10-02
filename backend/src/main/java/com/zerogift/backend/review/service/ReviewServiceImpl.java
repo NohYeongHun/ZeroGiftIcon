@@ -1,5 +1,6 @@
 package com.zerogift.backend.review.service;
 
+import com.zerogift.backend.common.exception.code.GiftBoxErrorCode;
 import com.zerogift.backend.common.exception.code.MemberErrorCode;
 import com.zerogift.backend.common.exception.code.ProductErrorCode;
 import com.zerogift.backend.common.exception.code.ReviewErrorCode;
@@ -40,6 +41,8 @@ public class ReviewServiceImpl implements ReviewService{
 
     private final NoticeService noticeService;
 
+    private static final double Mileage_Accumulation_Rate = 0.05;
+
     @Override
     public ReviewResponse addReview(LoginInfo loginInfo, Long productId, ReviewInput reviewInput) {
         // 회원 정보 가져오기
@@ -52,7 +55,7 @@ public class ReviewServiceImpl implements ReviewService{
 
         List<GiftBox> giftBoxList = giftBoxRepository.findByRecipientMemberAndProductAndReview(member, product, false);
         if (giftBoxList.isEmpty()) {
-            throw new NotFoundGiftBoxException("존재하지 않는 선물 입니다.");
+            throw new NotFoundGiftBoxException(GiftBoxErrorCode.GIFT_BOX_NOT_FOUND);
         }
         GiftBox giftBox = giftBoxList.get(0);
 
@@ -67,6 +70,10 @@ public class ReviewServiceImpl implements ReviewService{
                 .product(product)
                 .build()
         );
+
+        // 포인트 적립
+        int point = (int) (giftBox.getPayHistory().getPrice() * Mileage_Accumulation_Rate);
+        member.mileagePoints((point < 1000 ? point : 1000));
 
         // Server sent event 전송
         noticeService.sendEvent(review.getMember(), review.getProduct().getMember(),
