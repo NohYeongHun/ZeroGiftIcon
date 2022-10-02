@@ -1,0 +1,5 @@
+rootProject.name = 'zerogift'
+include 'module-common'
+include 'module-api'
+include 'module-batch'
+

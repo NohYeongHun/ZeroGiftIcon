@@ -40,3 +40,17 @@ out/
 ### VS Code ###
 .vscode/
 
+### application.yml 막기
+module-api/src/main/resources/application.yml
+module-batch/src/main/resources/application.yml
+module-common/src/main/resources/application.yml
+
+module-api/build/*
+module-api/out/*
+
+module-batch/build/*
+module-batch/out/*
+
+module-common/build/*
+module-common/out/*
+module-common/src/querydsl/*
