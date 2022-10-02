@@ -65,6 +65,10 @@ public class Member extends BaseTimeEntity {
         this.point -= point;
     }
 
+    public void mileagePoints(Integer point) {
+        this.point += point;
+    }
+
     public void addPassword(String password){
         this.password = password;
     }

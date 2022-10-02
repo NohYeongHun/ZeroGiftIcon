@@ -141,7 +141,7 @@ class ReviewServiceTest extends AcceptanceTest {
         doNothing().when(noticeService).sendEvent(any(), any(), any(), any());
     }
 
-    @DisplayName("리뷰 작성 ")
+    @DisplayName("리뷰 작성 & 포인트 적립")
     @Test
     void addReviewTest() {
         ReviewInput reviewInput = ReviewInput.builder()
@@ -161,8 +161,14 @@ class ReviewServiceTest extends AcceptanceTest {
         assertThat(review.getMember().getId()).isEqualTo(member.getId());
         assertThat(review.getProduct().getId()).isEqualTo(product.getId());
 
+        // 선물받은 상품에 리뷰 유무 화긴
         GiftBox giftBox = giftBoxRepository.findAll().get(0);
         assertThat(giftBox.isReview()).isTrue();
+
+        // 포인트 적립 확인
+        Optional<Member> optionalMember = memberRepository.findByEmail(adminInfo.getEmail());
+        Member member = optionalMember.get();
+        assertThat(member.getPoint()).isEqualTo(50);
     }
 
     @DisplayName("리뷰 수정")

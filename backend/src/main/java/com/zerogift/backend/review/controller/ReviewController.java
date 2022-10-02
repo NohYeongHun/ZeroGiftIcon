@@ -6,10 +6,12 @@ import com.zerogift.backend.review.model.ReviewInput;
 import com.zerogift.backend.review.service.ReviewService;
 import com.zerogift.backend.security.dto.LoginInfo;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "Review", description = "리뷰 관련 API")
 @RequiredArgsConstructor
 @RestController
 public class ReviewController {

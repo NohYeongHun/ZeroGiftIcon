@@ -8,6 +8,7 @@ import com.zerogift.backend.member.repository.MemberRepository;
 import com.zerogift.backend.notice.service.NoticeService;
 import com.zerogift.backend.security.dto.LoginInfo;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Tag(name = "Notice", description = "알림 관련 API")
 @RestController
 @RequiredArgsConstructor
 public class NoticeController {

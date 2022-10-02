@@ -6,10 +6,12 @@ import com.zerogift.backend.likes.service.LikesService;
 import com.zerogift.backend.security.dto.LoginInfo;
 import com.zerogift.backend.util.TokenUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "Likes",description = "좋아요 관련 API")
 @RequiredArgsConstructor
 @RestController
 public class LikesController {

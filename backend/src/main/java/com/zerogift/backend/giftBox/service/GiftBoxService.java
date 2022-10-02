@@ -1,8 +1,11 @@
 package com.zerogift.backend.giftBox.service;
 
 import com.zerogift.backend.common.dto.MyPageableDto;
+import com.zerogift.backend.common.exception.code.GiftBoxErrorCode;
+import com.zerogift.backend.common.exception.code.MemberErrorCode;
 import com.zerogift.backend.common.exception.gift.NotEqualsNotBarcodeException;
 import com.zerogift.backend.common.exception.gift.NotFoundGiftBoxException;
+import com.zerogift.backend.common.exception.member.MemberException;
 import com.zerogift.backend.giftBox.dto.GiftBoxDetail;
 import com.zerogift.backend.giftBox.dto.GiftBoxDto;
 import com.zerogift.backend.giftBox.entity.GiftBox;
@@ -26,14 +29,14 @@ public class GiftBoxService {
 
     public List<GiftBoxDto> findByGiftBoxList(LoginInfo loginInfo, MyPageableDto myPageableDto) {
         Member member = memberRepository.findByEmail(loginInfo.getEmail())
-            .orElseThrow(() -> new RuntimeException("회원이 존재하지 않습니다."));
+                .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 
         return giftBoxRepository.findByIsUseEqFalse(member, myPageableDto);
     }
 
     public GiftBoxDetail getGiftBoxDetail(LoginInfo loginInfo, Long giftBoxId) {
         Member member = memberRepository.findByEmail(loginInfo.getEmail())
-            .orElseThrow(() -> new RuntimeException("회원이 존재하지 않습니다."));
+                .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 
         return giftBoxRepository.findByGiftBoxId(giftBoxId, member);
     }
@@ -41,7 +44,7 @@ public class GiftBoxService {
     @Transactional
     public void useGiftCon(Long giftBoxId, String code) {
         GiftBox giftBox = giftBoxRepository.findById(giftBoxId)
-            .orElseThrow(() -> new NotFoundGiftBoxException("선물함에 존재하지 않습니다."));
+            .orElseThrow(() -> new NotFoundGiftBoxException(GiftBoxErrorCode.GIFT_BOX_NOT_FOUND));
 
         checkBarcodeCode(giftBox, code);
         giftBox.use();
@@ -49,7 +52,7 @@ public class GiftBoxService {
 
     private void checkBarcodeCode(GiftBox giftBox, String code) {
         if(!code.equals(giftBox.getCode())) {
-            throw new NotEqualsNotBarcodeException("코드가 일치 하지 않습니다.");
+            throw new NotEqualsNotBarcodeException(GiftBoxErrorCode.CODE_NOT_MATCH);
         }
     }
 
