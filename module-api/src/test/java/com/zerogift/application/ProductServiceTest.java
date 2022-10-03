@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.zerogift.acceptance.AcceptanceTest;
 import com.zerogift.global.error.code.MemberErrorCode;
 import com.zerogift.global.error.code.ProductErrorCode;
 import com.zerogift.global.error.exception.MemberException;
@@ -40,11 +41,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class ProductServiceTest {
+@Transactional
+public class ProductServiceTest extends AcceptanceTest {
+
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
@@ -74,7 +78,7 @@ public class ProductServiceTest {
             Arrays.asList(Category.FOOD, Category.BIRTHDAY), 0, 10);
         assertEquals(200, Objects.requireNonNull(response.getBody()).getStatus());
         List<ProductDto> data = (List<ProductDto>) response.getBody().getData();
-        assertEquals(3, data.size());
+        assertEquals(2, data.size());
     }
 
     @Test
@@ -82,7 +86,7 @@ public class ProductServiceTest {
         setSignedInMember(adminOne);
         ResponseEntity<Result<?>> response = productService.listProduct(
             Arrays.asList(Category.COSMETIC, Category.BIRTHDAY), 0, 10);
-        assertEquals(1, ((List<ProductDto>) response.getBody().getData()).size());
+        assertEquals(0, ((List<ProductDto>) response.getBody().getData()).size());
     }
 
     @Test
@@ -113,7 +117,7 @@ public class ProductServiceTest {
         setSignedInMember(adminOne);
         ResponseEntity<Result<?>> response = productService.searchProduct(
             "est", 0, 10);
-        assertEquals(3, ((List<ProductDto>) response.getBody().getData()).size());
+        assertEquals(2, ((List<ProductDto>) response.getBody().getData()).size());
     }
 
     @Test
