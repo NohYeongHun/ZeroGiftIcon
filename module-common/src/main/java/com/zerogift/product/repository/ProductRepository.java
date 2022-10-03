@@ -12,6 +12,6 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 public interface ProductRepository extends PagingAndSortingRepository<Product, Long> {
     Page<Product> findByCategory(Category category, Pageable pageable);
     Page<Product> findByStatusAndCategoryIn(Status status, List<Category> category, Pageable pageable);
-    Page<Product> findByMember(Member member, Pageable pageable);
+    Page<Product> findByMemberAndStatusNot(Member member, Status status, Pageable pageable);
     Page<Product> findByStatusAndNameContainsOrStatusAndDescriptionContains(Status status1, String name, Status status2, String description, Pageable pageable);
 }

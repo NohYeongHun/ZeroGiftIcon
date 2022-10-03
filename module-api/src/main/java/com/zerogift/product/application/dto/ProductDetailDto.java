@@ -18,5 +18,6 @@ public class ProductDetailDto {
     private Integer price;
     private Category category;
     private Long viewCount;
+    private Long likeCount;
     List<ProductImageDto> images;
 }
