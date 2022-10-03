@@ -15,7 +15,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Getter
 public class MemberInfo implements LoginInfo {
 
     private Long id;
@@ -24,6 +23,29 @@ public class MemberInfo implements LoginInfo {
     private String nickname;
     private String status;
     private String email;
+
+    @Override
+    public Long getId() {
+        return id;
+    }
+
+    @Override
+    public String getRole() {
+        return role;
+    }
+
+    @Override
+    public String getEmail() {
+        return email;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public String getStatus() {
+        return status;
+    }
 
     @Builder
     public MemberInfo(Long id, String role, String nickname, String status, String email) {

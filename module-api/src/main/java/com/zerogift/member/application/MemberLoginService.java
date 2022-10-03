@@ -44,6 +44,7 @@ public class MemberLoginService {
         return tokenService.issueAllToken(
             MemberInfo.of(
                 MemberInfo.builder()
+                    .id(member.getId())
                     .email(member.getEmail())
                     .role(member.getRole().name())
                     .build().toClaims()
