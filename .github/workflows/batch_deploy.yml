@@ -5,12 +5,12 @@ on:
     branches:
       - develop
       - develop-feat/**
-    paths: 'batch/**'
+    paths: 'module-batch/**'
   pull_request:
     branches:
       - develop
       - develop-feat/**
-    paths: 'batch/**'
+    paths: 'module-batch/**'
 
 defaults:
   run:

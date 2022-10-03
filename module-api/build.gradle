@@ -1,5 +1,4 @@
 plugins {
-    id 'war'
     id 'org.asciidoctor.jvm.convert' version "3.3.2"
     id 'jacoco'
 }
