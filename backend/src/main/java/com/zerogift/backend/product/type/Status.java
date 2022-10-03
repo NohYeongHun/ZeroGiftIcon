@@ -1,5 +1,5 @@
 package com.zerogift.backend.product.type;
 
 public enum Status {
-    PUBLIC, PRIVATE, SOLDOUT
+    PUBLIC, PRIVATE, SOLDOUT, DELETED
 }

@@ -86,7 +86,7 @@ public class ProductService {
         for (ProductImage image : productImageRepository.findAllByProduct(product)) {
             productImageRepository.delete(image);
         }
-        productRepository.delete(product);
+        product.setStatus(Status.DELETED);
         return ok("successfully deleted");
     }
 
@@ -96,7 +96,7 @@ public class ProductService {
         if (!member.getRole().equals(Role.ROLE_ADMIN))
             throw new ProductException(ProductErrorCode.INSUFFICIENT_AUTHORITY);
         Pageable pageable = PageRequest.of(idx, size, Sort.by("updatedAt").descending());
-        Page<Product> page = productRepository.findByMember(member, pageable);
+        Page<Product> page = productRepository.findByMemberAndStatusNot(member, Status.DELETED, pageable);
         return ok(page.getContent().stream().map(
                     product -> MyProductDto.builder()
                         .id(product.getId())
@@ -173,6 +173,7 @@ public class ProductService {
                     .price(product.getPrice())
                     .category(product.getCategory())
                     .viewCount(product.getViewCount())
+                    .likeCount(product.getLikeCount())
                     .images(images.stream()
                             .map(i -> ProductImageDto.builder()
                                     .productImageId(i.getId())
