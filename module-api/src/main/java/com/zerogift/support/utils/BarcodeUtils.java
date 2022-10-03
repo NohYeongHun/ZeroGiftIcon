@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 public class BarcodeUtils {
     private final FileUtil fileUtil;
 
-    private static final String URL = "https://zerogift.p-e.kr/giftBox/giftcon";
+    private static final String URL = "https://zerogift.p-e.kr/barcode";
 
     public String barcodeSave(Long giftBoxId, String code) {
         try {
