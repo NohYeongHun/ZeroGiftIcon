@@ -1,6 +1,0 @@
-[submodule "backend/src/main/resources/security"]
-	path = backend/src/main/resources/security
-	url = https://github.com/NohYeongHun/security-spring.git
-[submodule "batch/src/main/resources/security"]
-	path = batch/src/main/resources/security
-	url = https://github.com/NohYeongHun/security-spring.git

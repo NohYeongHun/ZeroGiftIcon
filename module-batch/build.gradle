@@ -1,0 +1,88 @@
+buildscript {
+    ext {
+        queryDslVersion = "5.0.0"
+    }
+}
+
+plugins {
+    id 'com.ewerk.gradle.plugins.querydsl' version '1.0.10'
+    id 'jacoco'
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    querydsl.extendsFrom compileClasspath
+}
+
+repositories {
+    mavenCentral()
+    maven { url "https://jitpack.io"  }
+}
+
+ext {
+    set('springCloudVersion', "2021.0.4")
+}
+
+dependencies {
+    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+    implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
+    implementation 'org.springframework.boot:spring-boot-starter-batch'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'com.github.jojoldu.spring-batch-querydsl:spring-batch-querydsl-reader:2.4.8'
+
+    compileOnly 'com.github.jojoldu.spring-batch-querydsl:spring-batch-querydsl-reader:2.4.8'
+
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    testImplementation 'org.springframework.batch:spring-batch-test'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+ext {
+    snippetsDir = file('build/generated-snippets')
+}
+
+test {
+    outputs.dir snippetsDir
+    useJUnitPlatform()
+    finalizedBy 'jacocoTestReport'
+}
+
+def querydslDir = "$buildDir/generated/querydsl" // (3)
+
+querydsl { // (4)
+    jpa = true
+    querydslSourcesDir = querydslDir
+}
+
+sourceSets { // (5)
+    main.java.srcDir querydslDir
+}
+
+configurations { // (6)
+    querydsl.extendsFrom compileClasspath
+}
+
+compileQuerydsl { // (7)
+    options.annotationProcessorPath = configurations.querydsl
+}
+
+jacoco {
+    toolVersion = '0.8.8'
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+    }
+}
