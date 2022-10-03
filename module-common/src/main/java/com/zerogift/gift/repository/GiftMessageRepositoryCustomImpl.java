@@ -53,8 +53,7 @@ public class GiftMessageRepositoryCustomImpl implements GiftMessageRepositoryCus
             .from(giftMessage)
             .innerJoin(giftMessage.product, product)
             .innerJoin(giftMessage.fromMember, member)
-            .where(giftMessage.id.eq(giftMessageId)
-                .and(member.id.eq(memberId)))
+            .where(giftMessage.id.eq(giftMessageId))
             .fetchOne());
     }
 }
