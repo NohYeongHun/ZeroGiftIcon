@@ -1,17 +1,11 @@
 package com.zerogift.notice.presentation;
 
-import com.zerogift.global.error.code.MemberErrorCode;
-import com.zerogift.global.error.exception.MemberException;
-import com.zerogift.member.repository.MemberRepository;
 import com.zerogift.notice.application.NoticeService;
 import com.zerogift.support.auth.authorization.AuthenticationPrincipal;
 import com.zerogift.support.auth.userdetails.LoginInfo;
 import com.zerogift.support.dto.Result;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.io.IOException;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,35 +20,14 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @RequiredArgsConstructor
 public class NoticeController {
 
-    private final MemberRepository memberRepository;
     private final NoticeService noticeService;
 
-    public static Map<Long, SseEmitter> sseEmitters = new ConcurrentHashMap<>();
-
     private static final String CHECK_NOTICE = "알림 확인";
-    private static final Long TIMEOUT = 60 * 60 * 1000L;
 
     @CrossOrigin
-    @GetMapping(value = "/notice", consumes = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @GetMapping(value = "/notice", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter Notice(@AuthenticationPrincipal LoginInfo loginInfo) {
-
-        Long memberId = memberRepository.findByEmail(loginInfo.getEmail())
-            .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND)).getId();
-
-        SseEmitter sseEmitter = new SseEmitter(TIMEOUT);
-        try {
-            sseEmitter.send(SseEmitter.event().name("connect"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        sseEmitters.put(memberId, sseEmitter);
-
-        sseEmitter.onCompletion(() -> sseEmitters.remove(memberId));
-        sseEmitter.onTimeout(() -> sseEmitters.remove(memberId));
-        sseEmitter.onError((e) -> sseEmitters.remove(memberId));
-
-        return sseEmitter;
+        return noticeService.createSseEmitter(loginInfo);
     }
 
     @Operation(

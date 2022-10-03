@@ -141,7 +141,7 @@ class ReviewServiceTest extends AcceptanceTest {
         giftBoxService.useGiftCon(giftBox4.getId(), giftBox4.getCode());
 
         // sse 기능 정지
-        doNothing().when(noticeService).sendEvent(any(), any(), any(), any());
+        doNothing().when(noticeService).sendEvent(any());
     }
 
     @DisplayName("리뷰 작성 & 포인트 적립")

@@ -13,6 +13,7 @@ import com.zerogift.global.error.exception.ReviewException;
 import com.zerogift.member.domain.Member;
 import com.zerogift.member.repository.MemberRepository;
 import com.zerogift.notice.application.NoticeService;
+import com.zerogift.notice.application.dto.EventInfo;
 import com.zerogift.notice.domain.NoticeType;
 import com.zerogift.product.application.dto.ReviewInput;
 import com.zerogift.product.application.dto.ReviewResponse;
@@ -24,6 +25,7 @@ import com.zerogift.support.auth.userdetails.LoginInfo;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,7 +40,7 @@ public class ReviewServiceImpl implements ReviewService{
     private final ProductRepository productRepository;
     private final MemberRepository memberRepository;
     private final GiftBoxRepository giftBoxRepository;
-    private final NoticeService noticeService;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Override
     public ReviewResponse addReview(LoginInfo loginInfo, Long productId, ReviewInput reviewInput) {
@@ -70,9 +72,8 @@ public class ReviewServiceImpl implements ReviewService{
         int point = (int) (giftBox.getPayHistory().getPrice() * MILEAGE_ACCUMULATION_RATE);
         member.mileagePoints((point < 1000 ? point : 1000));
 
-        // Server sent event 전송
-        noticeService.sendEvent(review.getMember(), review.getProduct().getMember(),
-            NoticeType.review, review.getId());
+        applicationEventPublisher.publishEvent(new EventInfo( review.getMember(), review.getProduct().getMember(),
+            NoticeType.review, review.getId() ));
 
         // member 와 product 내용 편집해서 출력
         return ReviewResponse.from(review);

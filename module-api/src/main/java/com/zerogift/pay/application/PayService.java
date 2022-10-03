@@ -12,6 +12,7 @@ import com.zerogift.global.error.exception.ProductException;
 import com.zerogift.member.domain.Member;
 import com.zerogift.member.repository.MemberRepository;
 import com.zerogift.notice.application.NoticeService;
+import com.zerogift.notice.application.dto.EventInfo;
 import com.zerogift.notice.domain.NoticeType;
 import com.zerogift.pay.application.dto.PayHisoryRequest;
 import com.zerogift.pay.domain.PayHistory;
@@ -21,6 +22,7 @@ import com.zerogift.product.repository.ProductRepository;
 import com.zerogift.support.utils.BarcodeUtils;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,9 +36,9 @@ public class PayService {
     private final ProductRepository productRepository;
     private final GiftBoxRepository giftBoxRepository;
 
-    private final NoticeService noticeService;
-
     private final BarcodeUtils barcodeUtils;
+
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @PayLock
     public void pay(PayHisoryRequest payHisoryRequest, String email) {
@@ -98,9 +100,9 @@ public class PayService {
             .build());
         giftBox.addBarcodeUrl(barcodeUtils.barcodeSave(giftBox.getId(), giftBox.getCode()));
 
-        //sse 전송
-        noticeService.sendEvent(giftBox.getSendMember(), giftBox.getRecipientMember(),
-            NoticeType.gift, giftBox.getId());
+        applicationEventPublisher.publishEvent(
+            new EventInfo(giftBox.getSendMember(), giftBox.getRecipientMember(),
+                            NoticeType.gift, giftBox.getId()));
     }
 
 }
