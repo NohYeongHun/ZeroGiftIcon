@@ -12,12 +12,26 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Getter
 public class AdminInfo implements LoginInfo {
 
     private Long id;
     private String email;
     private String role;
+
+    @Override
+    public Long getId() {
+        return id;
+    }
+
+    @Override
+    public String getRole() {
+        return role;
+    }
+
+    @Override
+    public String getEmail() {
+        return email;
+    }
 
     @Builder
     public AdminInfo(Long id, String email, String role) {
