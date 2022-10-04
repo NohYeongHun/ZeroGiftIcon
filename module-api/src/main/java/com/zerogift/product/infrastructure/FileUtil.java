@@ -1,4 +1,4 @@
-package com.zerogift.product.infrastructure.s3;
+package com.zerogift.product.infrastructure;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
