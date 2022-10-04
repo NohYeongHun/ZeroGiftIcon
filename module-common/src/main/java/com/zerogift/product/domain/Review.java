@@ -1,5 +1,6 @@
 package com.zerogift.product.domain;
 
+import com.zerogift.gift.domain.GiftBox;
 import com.zerogift.support.domain.BaseTimeEntity;
 import com.zerogift.member.domain.Member;
 import java.time.LocalDateTime;
@@ -42,6 +43,10 @@ public class Review extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
+
+    @ManyToOne
+    @JoinColumn(name = "giftBox_id")
+    private GiftBox giftBox;
 
     public void modify(Integer rank, String description) {
         this.rank = rank;

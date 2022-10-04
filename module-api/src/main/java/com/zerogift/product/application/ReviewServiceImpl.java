@@ -12,7 +12,6 @@ import com.zerogift.global.error.exception.ProductException;
 import com.zerogift.global.error.exception.ReviewException;
 import com.zerogift.member.domain.Member;
 import com.zerogift.member.repository.MemberRepository;
-import com.zerogift.notice.application.NoticeService;
 import com.zerogift.notice.application.dto.EventInfo;
 import com.zerogift.notice.domain.NoticeType;
 import com.zerogift.product.application.dto.ReviewInput;
@@ -22,8 +21,10 @@ import com.zerogift.product.domain.Review;
 import com.zerogift.product.repository.ProductRepository;
 import com.zerogift.product.repository.ReviewRepository;
 import com.zerogift.support.auth.userdetails.LoginInfo;
+
 import java.util.List;
 import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Service
 @Transactional
-public class ReviewServiceImpl implements ReviewService{
+public class ReviewServiceImpl implements ReviewService {
 
     private static final double MILEAGE_ACCUMULATION_RATE = 0.05;
 
@@ -46,12 +47,13 @@ public class ReviewServiceImpl implements ReviewService{
     public ReviewResponse addReview(LoginInfo loginInfo, Long productId, ReviewInput reviewInput) {
         // 회원 정보 가져오기
         Member member = memberRepository.findByEmail(loginInfo.getEmail())
-            .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 
         // 상품 정보 가져오기
         Product product = productRepository.findById(productId)
-            .orElseThrow(() -> new ProductException(ProductErrorCode.PRODUCT_NOT_FOUND));
+                .orElseThrow(() -> new ProductException(ProductErrorCode.PRODUCT_NOT_FOUND));
 
+        // 같은 상품을 여러개 받았을경우 첫번째 상품 사용
         List<GiftBox> giftBoxList = giftBoxRepository.findByRecipientMemberAndProductAndReview(member, product, false);
         if (giftBoxList.isEmpty()) {
             throw new NotFoundGiftBoxException(GiftBoxErrorCode.GIFT_BOX_NOT_FOUND);
@@ -62,18 +64,19 @@ public class ReviewServiceImpl implements ReviewService{
 
         // 리뷰 내용 저장
         Review review = reviewRepository.save(Review.builder()
-            .rank(reviewInput.getRank())
-            .description(reviewInput.getDescription())
-            .member(member)
-            .product(product)
-            .build()
+                .rank(reviewInput.getRank())
+                .description(reviewInput.getDescription())
+                .member(member)
+                .product(product)
+                .giftBox(giftBox)
+                .build()
         );
 
         int point = (int) (giftBox.getPayHistory().getPrice() * MILEAGE_ACCUMULATION_RATE);
         member.mileagePoints((point < 1000 ? point : 1000));
 
-        applicationEventPublisher.publishEvent(new EventInfo( review.getMember(), review.getProduct().getMember(),
-            NoticeType.review, review.getId() ));
+        applicationEventPublisher.publishEvent(new EventInfo(review.getMember(),
+                review.getProduct().getMember(), NoticeType.review, review.getId()));
 
         // member 와 product 내용 편집해서 출력
         return ReviewResponse.from(review);
@@ -83,11 +86,11 @@ public class ReviewServiceImpl implements ReviewService{
     public ReviewResponse modifyReview(LoginInfo loginInfo, Long reviewId, ReviewInput reviewInput) {
         // 회원 정보 가져오기
         Member member = memberRepository.findByEmail(loginInfo.getEmail())
-            .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 
         // 수정할 리뷰 가져오기
         Review review = reviewRepository.findByMemberAndId(member, reviewId)
-            .orElseThrow(() -> new ReviewException(ReviewErrorCode.REVIEW_NOT_FOUND));
+                .orElseThrow(() -> new ReviewException(ReviewErrorCode.REVIEW_NOT_FOUND));
 
         // 리뷰 별점과 내용 수정
         review.modify(reviewInput.getRank(), reviewInput.getDescription());
@@ -99,11 +102,16 @@ public class ReviewServiceImpl implements ReviewService{
     public void removeReview(LoginInfo loginInfo, Long reviewId) {
         // 회원 정보 가져오기
         Member member = memberRepository.findByEmail(loginInfo.getEmail())
-            .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 
         // 수정할 리뷰 가져오기
         Review review = reviewRepository.findByMemberAndId(member, reviewId)
-            .orElseThrow(() -> new ReviewException(ReviewErrorCode.REVIEW_NOT_FOUND));
+                .orElseThrow(() -> new ReviewException(ReviewErrorCode.REVIEW_NOT_FOUND));
+
+        // 리뷰 삭제 된 선물의 review 유무 체크 해제
+        GiftBox giftBox = giftBoxRepository.findById(review.getGiftBox().getId())
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 선물입니다."));
+        giftBox.review();
 
         // 해당 리뷰 삭제
         reviewRepository.delete(review);
@@ -112,26 +120,18 @@ public class ReviewServiceImpl implements ReviewService{
     @Transactional(readOnly = true)
     @Override
     public List<ReviewResponse> userReviewList(LoginInfo loginInfo) {
-        // 회원 정보 가져오기
-        Member member = memberRepository.findByEmail(loginInfo.getEmail())
-            .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
-
-        // review 에 들어가있는 member 와 product 정보 편집
-        List<ReviewResponse> reviewResponseList = reviewRepository.findByMember(member).stream().map(
-            x -> ReviewResponse.from(x)).collect(Collectors.toList());
+        // 회원 email 로 review 리스트 가져오기
+        List<ReviewResponse> reviewResponseList = reviewRepository.findReviewListByMember(loginInfo.getEmail())
+                .stream().map(x -> ReviewResponse.listFrom(x)).collect(Collectors.toList());
         return reviewResponseList;
     }
 
     @Transactional(readOnly = true)
     @Override
     public List<ReviewResponse> productReviewList(Long productId) {
-        // 상품 정보 가져오기
-        Product product = productRepository.findById(productId)
-            .orElseThrow(() -> new ProductException(ProductErrorCode.PRODUCT_NOT_FOUND));
-
-        // review 에 들어가있는 member 와 product 정보 편집
-        List<ReviewResponse> reviewResponseList = reviewRepository.findByProduct(product).stream().map(
-            x -> ReviewResponse.from(x)).collect(Collectors.toList());
+        // 상품 ID 로 review 리스트 가져오기
+        List<ReviewResponse> reviewResponseList = reviewRepository.findReviewListByProduct(productId)
+                .stream().map(x -> ReviewResponse.listFrom(x)).collect(Collectors.toList());
         return reviewResponseList;
     }
 }

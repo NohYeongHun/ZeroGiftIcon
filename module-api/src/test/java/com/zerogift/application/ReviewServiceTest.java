@@ -219,6 +219,8 @@ class ReviewServiceTest extends AcceptanceTest {
 
         optionalReview = reviewRepository.findByMemberAndProduct(member, product);
 
+        assertThat(giftBox.isReview()).isFalse();
+
         assertThat(optionalReview).isEmpty();
     }
 
