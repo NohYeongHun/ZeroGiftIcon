@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Getter
 public class ReviewInput {
 
-    @Max(value = 10, message = "별점은 0 ~ 10점 까지의 정수만 입력 가능합니다.")
+    @Max(value = 5, message = "별점은 0 ~ 5점 까지의 정수만 입력 가능합니다.")
     @PositiveOrZero
     @NotBlank
     private Integer rank;  // 별점 점수
