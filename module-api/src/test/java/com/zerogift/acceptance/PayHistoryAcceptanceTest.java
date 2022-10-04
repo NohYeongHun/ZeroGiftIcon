@@ -14,7 +14,7 @@ import com.zerogift.gift.repository.GiftBoxRepository;
 import com.zerogift.member.domain.Member;
 import com.zerogift.member.repository.MemberRepository;
 import com.zerogift.pay.repository.PayHistoryRepository;
-import com.zerogift.product.infrastructure.s3.FileUtil;
+import com.zerogift.product.infrastructure.FileUtil;
 import com.zerogift.support.auth.oauth.application.TokenService;
 import com.zerogift.support.auth.oauth.infrastructure.RefreshTokenRepository;
 import com.zerogift.support.auth.userdetails.MemberInfo;

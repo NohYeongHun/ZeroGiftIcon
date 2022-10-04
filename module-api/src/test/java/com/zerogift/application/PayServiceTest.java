@@ -16,7 +16,7 @@ import com.zerogift.pay.application.dto.PayHisoryRequest;
 import com.zerogift.pay.repository.PayHistoryRepository;
 import com.zerogift.product.domain.Product;
 import com.zerogift.product.domain.ProductImage;
-import com.zerogift.product.infrastructure.s3.FileUtil;
+import com.zerogift.product.infrastructure.FileUtil;
 import com.zerogift.product.repository.ProductImageRepository;
 import com.zerogift.product.repository.ProductRepository;
 import java.awt.image.BufferedImage;

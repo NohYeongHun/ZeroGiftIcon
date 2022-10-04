@@ -1,6 +1,6 @@
 package com.zerogift.support.utils;
 
-import com.zerogift.product.infrastructure.s3.FileUtil;
+import com.zerogift.product.infrastructure.FileUtil;
 import java.awt.image.BufferedImage;
 import lombok.RequiredArgsConstructor;
 import net.sourceforge.barbecue.Barcode;
