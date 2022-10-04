@@ -33,4 +33,16 @@ public class ReviewResponse {
             .updateDate(review.getLastModifiedDate())
             .build();
     }
+
+    public static ReviewResponse listFrom(ReviewQueryModel review) {
+        return ReviewResponse.builder()
+            .reviewId(review.getReviewId())
+            .rank(review.getRank())
+            .description(review.getDescription())
+            .member(MemberReviewResponse.of(review.getMember()))
+            .product(ProductReviewResponse.of(review.getProduct()))
+            .createDate(review.getCreatedDate())
+            .updateDate(review.getLastModifiedDate())
+            .build();
+    }
 }
