@@ -1,6 +1,6 @@
 package com.zerogift.support.utils;
 
-import com.zerogift.product.infrastructure.s3.FileUtil;
+import com.zerogift.product.infrastructure.FileUtil;
 import java.awt.image.BufferedImage;
 import lombok.RequiredArgsConstructor;
 import net.sourceforge.barbecue.Barcode;
@@ -20,7 +20,7 @@ public class BarcodeUtils {
         try {
             Barcode barcode = BarcodeFactory.createCode128B(makeUrl(giftBoxId, code));
             barcode.setDrawingText(false);
-            barcode.setBarHeight(100);
+            barcode.setBarHeight(60);
 
             BufferedImage bufferedImage = BarcodeImageHandler.getImage(barcode);
             return fileUtil.update(bufferedImage);
@@ -32,7 +32,7 @@ public class BarcodeUtils {
 
     private String makeUrl(Long giftBoxId, String code) {
         HttpUrl.Builder url = HttpUrl.parse(URL).newBuilder();
-        url.addPathSegment(giftBoxId+"")
+        url.addQueryParameter("giftBoxId",  giftBoxId + "")
             .addQueryParameter("code", code);
 
         return url.toString();

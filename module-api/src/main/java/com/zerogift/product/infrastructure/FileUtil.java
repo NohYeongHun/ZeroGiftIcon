@@ -1,4 +1,4 @@
-package com.zerogift.product.infrastructure.s3;
+package com.zerogift.product.infrastructure;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
@@ -37,15 +37,15 @@ public class FileUtil {
 
     public String update(BufferedImage bufferedImage) throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        ImageIO.write(bufferedImage, "jpeg", os);
+        ImageIO.write(bufferedImage, "png", os);
         InputStream inputStream = new ByteArrayInputStream(os.toByteArray());
 
-        String fileName = UUID.randomUUID().toString() + System.currentTimeMillis() + ".jpeg";
+        String fileName = UUID.randomUUID().toString() + System.currentTimeMillis() + ".png";
 
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentLength(inputStream.available());
 
-        PutObjectResult putObjectResult = amazonS3.putObject(s3Bucket, fileName, inputStream, objectMetadata);
+        amazonS3.putObject(s3Bucket, fileName, inputStream, objectMetadata);
 
         return amazonS3.getUrl(s3Bucket, fileName).toString();
     }

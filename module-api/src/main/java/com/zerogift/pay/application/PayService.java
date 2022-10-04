@@ -92,7 +92,7 @@ public class PayService {
     private void saveGiftBox(Member sendMember, Member toMember, PayHistory payHistory,
         Product product) {
         GiftBox giftBox = giftBoxRepository.save(GiftBox.builder()
-            .code(UUID.randomUUID().toString())
+            .code(UUID.randomUUID().toString().substring(0, 6))
             .sendMember(sendMember)
             .recipientMember(toMember)
             .product(product)
