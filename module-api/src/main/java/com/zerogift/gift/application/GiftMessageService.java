@@ -62,7 +62,7 @@ public class GiftMessageService {
         Member member = memberRepository.findByEmail(loginInfo.getEmail())
                 .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 
-        List<GiftMessageListResponse> giftMessageListResponses = giftMessageRepository.findByMember(member)
+        List<GiftMessageListResponse> giftMessageListResponses = giftMessageRepository.findByToMember(member)
                 .stream().map(x -> GiftMessageListResponse.from(x)).collect(Collectors.toList());
         return giftMessageListResponses;
 
