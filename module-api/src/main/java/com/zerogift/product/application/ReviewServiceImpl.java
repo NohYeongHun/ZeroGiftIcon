@@ -60,7 +60,7 @@ public class ReviewServiceImpl implements ReviewService {
         }
         GiftBox giftBox = giftBoxList.get(0);
 
-        giftBox.review();
+        giftBox.review(true);
 
         // 리뷰 내용 저장
         Review review = reviewRepository.save(Review.builder()
@@ -108,13 +108,13 @@ public class ReviewServiceImpl implements ReviewService {
         Review review = reviewRepository.findByMemberAndId(member, reviewId)
                 .orElseThrow(() -> new ReviewException(ReviewErrorCode.REVIEW_NOT_FOUND));
 
+        // 해당 리뷰 삭제
+        reviewRepository.delete(review);
+
         // 리뷰 삭제 된 선물의 review 유무 체크 해제
         GiftBox giftBox = giftBoxRepository.findById(review.getGiftBox().getId())
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 선물입니다."));
-        giftBox.review();
-
-        // 해당 리뷰 삭제
-        reviewRepository.delete(review);
+        giftBox.review(false);
     }
 
     @Transactional(readOnly = true)

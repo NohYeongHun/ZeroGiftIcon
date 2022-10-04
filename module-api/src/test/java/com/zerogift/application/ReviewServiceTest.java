@@ -212,6 +212,10 @@ class ReviewServiceTest extends AcceptanceTest {
             .build();
         reviewService.addReview(adminInfo, product.getId(), reviewInput);
 
+        Optional<GiftBox> optionalGiftBox = giftBoxRepository.findById(giftBox.getId());
+        GiftBox giftBox = optionalGiftBox.get();
+        assertThat(giftBox.isReview()).isTrue();
+
         Optional<Review> optionalReview = reviewRepository.findByMemberAndProduct(member, product);
         Review review = optionalReview.get();
 
@@ -219,6 +223,8 @@ class ReviewServiceTest extends AcceptanceTest {
 
         optionalReview = reviewRepository.findByMemberAndProduct(member, product);
 
+        optionalGiftBox = giftBoxRepository.findById(giftBox.getId());
+        giftBox = optionalGiftBox.get();
         assertThat(giftBox.isReview()).isFalse();
 
         assertThat(optionalReview).isEmpty();

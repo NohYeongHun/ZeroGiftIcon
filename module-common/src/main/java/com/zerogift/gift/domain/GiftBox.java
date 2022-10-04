@@ -88,12 +88,8 @@ public class GiftBox extends BaseTimeEntity {
         this.isUse = true;
     }
 
-    public void review() {
-        if (this.review == false) {
-            this.review = true;
-        } else {
-            this.review = false;
-        }
+    public void review(Boolean review) {
+        this.review = review;
     }
 
 }
