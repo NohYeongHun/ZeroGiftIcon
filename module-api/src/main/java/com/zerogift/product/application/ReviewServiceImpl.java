@@ -60,6 +60,10 @@ public class ReviewServiceImpl implements ReviewService {
         }
         GiftBox giftBox = giftBoxList.get(0);
 
+        if (giftBox.getIsUse() == false) {
+            throw new RuntimeException("사용 후 리뷰 작성해주세요.");
+        }
+
         giftBox.review(true);
 
         // 리뷰 내용 저장
