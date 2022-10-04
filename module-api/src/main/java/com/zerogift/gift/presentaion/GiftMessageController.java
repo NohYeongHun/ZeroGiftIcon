@@ -66,4 +66,17 @@ public class GiftMessageController {
         );
     }
 
+    @Operation(
+        summary = "받은 감사 메시지 리스트 조회", description = "받은 감사 메시지 리스트 조회",
+        security = {@SecurityRequirement(name = "Authorization")},
+        tags = {"Gift Message"}
+    )
+    @GetMapping("/giftMessage/list")
+    public ResponseEntity<Result> getGiftMessageList(@AuthenticationPrincipal LoginInfo loginInfo) {
+        return ResponseEntity.ok(Result.builder()
+            .data(giftMessageService.getGiftMessageList(loginInfo))
+            .build()
+        );
+    }
+
 }

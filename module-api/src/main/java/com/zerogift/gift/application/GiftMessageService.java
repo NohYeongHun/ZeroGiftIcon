@@ -2,11 +2,14 @@ package com.zerogift.gift.application;
 
 import com.zerogift.gift.application.dto.GiftMessageDto;
 import com.zerogift.gift.application.dto.GiftMessageForm;
+import com.zerogift.gift.application.dto.GiftMessageListResponse;
 import com.zerogift.gift.application.dto.GiftMessageRequest;
 import com.zerogift.gift.domain.GiftBox;
 import com.zerogift.gift.repository.GiftBoxRepository;
 import com.zerogift.gift.domain.GiftMessage;
 import com.zerogift.gift.repository.GiftMessageRepository;
+import com.zerogift.global.error.code.MemberErrorCode;
+import com.zerogift.global.error.exception.MemberException;
 import com.zerogift.member.domain.Member;
 import com.zerogift.member.repository.MemberRepository;
 import com.zerogift.product.repository.ProductRepository;
@@ -14,6 +17,9 @@ import com.zerogift.support.auth.userdetails.LoginInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -51,4 +57,14 @@ public class GiftMessageService {
             .orElseThrow(() -> new RuntimeException("감사 메시지가 존재하지 않습니다."));
     }
 
+    @Transactional(readOnly = true)
+    public Object getGiftMessageList(LoginInfo loginInfo) {
+        Member member = memberRepository.findByEmail(loginInfo.getEmail())
+                .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
+
+        List<GiftMessageListResponse> giftMessageListResponses = giftMessageRepository.findByMember(member)
+                .stream().map(x -> GiftMessageListResponse.from(x)).collect(Collectors.toList());
+        return giftMessageListResponses;
+
+    }
 }
