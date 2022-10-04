@@ -1,20 +1,20 @@
 package com.zerogift.acceptance;
 
+import static com.zerogift.step.PayHistoryStep.상품_결제_요청;
+import static com.zerogift.step.ProductStep.상품_생성_요청;
+import static com.zerogift.step.ProductStep.상품_이미지_생성_요청;
+import static com.zerogift.utils.DataMakeUtils.회원_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-import static com.zerogift.step.PayHistoryStep.상품_결제_요청;
-import static com.zerogift.step.ProductStep.상품_생성_요청;
-import static com.zerogift.step.ProductStep.상품_이미지_생성_요청;
-import static com.zerogift.utils.DataMakeUtils.회원_생성;
 
 import com.zerogift.gift.repository.GiftBoxRepository;
 import com.zerogift.member.domain.Member;
 import com.zerogift.member.repository.MemberRepository;
 import com.zerogift.pay.repository.PayHistoryRepository;
-import com.zerogift.product.infrastructure.s3.FileUtil;
+import com.zerogift.product.infrastructure.FileUtil;
 import com.zerogift.support.auth.oauth.application.TokenService;
 import com.zerogift.support.auth.oauth.infrastructure.RefreshTokenRepository;
 import com.zerogift.support.auth.userdetails.MemberInfo;

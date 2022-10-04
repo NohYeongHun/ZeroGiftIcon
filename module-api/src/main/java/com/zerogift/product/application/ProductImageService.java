@@ -2,7 +2,7 @@ package com.zerogift.product.application;
 
 import com.zerogift.product.application.dto.ImageUploadResponse;
 import com.zerogift.product.domain.ProductImage;
-import com.zerogift.product.infrastructure.s3.FileUtil;
+import com.zerogift.product.infrastructure.FileUtil;
 import com.zerogift.product.repository.ProductImageRepository;
 import java.io.IOException;
 import java.util.ArrayList;
