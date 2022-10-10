@@ -1,20 +1,10 @@
-name: 스프링 배치 테스트 자동화
+name: 제로기프트 테스트 자동화
 
 on:
-  push:
-    branches:
-      - develop
-      - develop-feat/**
-    paths: 'module-batch/**'
   pull_request:
     branches:
       - develop
       - develop-feat/**
-    paths: 'module-batch/**'
-
-defaults:
-  run:
-    working-directory: batch
 
 jobs:
   build:
@@ -26,13 +16,18 @@ jobs:
         with:
           token: ${{ secrets.GIT_TOKEN }}
           submodules: recursive
-    
+
+      - name: Start Redis
+          uses: supercharge/redis-github-action@1.4.0
+          with:
+            redis-version: '6'
+
       - name: JDK 11을 설치합니다.
         uses: actions/setup-java@v3
         with:
           java-version: '11'
           distribution: 'temurin'
-          
+
       - name: TimeZone을 Asia/Seoul로 설정합니다
         uses: zcong1993/setup-timezone@master
         with:
@@ -49,4 +44,3 @@ jobs:
         if: always()
         with:
           files: '**/build/test-results/test/TEST-*.xml'
-
