@@ -60,7 +60,7 @@ jobs:
  #       run: ./gradlew build
 
       - name: Build and analyze
-        run: ./gradlew build sonarqube
+        run: ./gradlew testCoverage sonarqube
           -Dsonar.projectKey=${{ env.SONARQUBE_ID }}
           -Dsonar.host.url=${{ env.SONARQUBE_URL }}
           -Dsonar.projectName=${{ env.SONARQUBE_ID }}-${{ env.PR_NUMBER }}
