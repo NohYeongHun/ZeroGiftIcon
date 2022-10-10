@@ -18,9 +18,9 @@ jobs:
           submodules: recursive
 
       - name: Start Redis
-          uses: supercharge/redis-github-action@1.4.0
-          with:
-            redis-version: '6'
+        uses: supercharge/redis-github-action@1.4.0
+        with:
+          redis-version: '6'
 
       - name: JDK 11을 설치합니다.
         uses: actions/setup-java@v3
