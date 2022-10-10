@@ -33,11 +33,32 @@ jobs:
         with:
           timezone: Asia/Seoul
 
+      - name: Cache SonarQube packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          restore-keys: ${{ runner.os }}-gradle
+
       - name: Gradle 명령 실행을 위한 권한을 부여합니다
         run: chmod +x gradlew
 
-      - name: Gradle build를 수행합니다
-        run: ./gradlew build
+ #     - name: Gradle build를 수행합니다
+ #       run: ./gradlew build
+
+      - name: Build and analyze
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            SONAR_TOKEN: 'sqp_e64996457bbd63beed2c5c9193534426c5d9d4a6'
+            SONAR_HOST_URL: 'http://15.164.189.231:9000'
+          run: ./gradlew build sonarqube --info
 
       - name: 테스트 결과를 PR에 코멘트로 등록합니다
         uses: EnricoMi/publish-unit-test-result-action@v1

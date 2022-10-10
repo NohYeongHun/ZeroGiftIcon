@@ -8,6 +8,7 @@ buildscript {
     dependencies {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
         classpath "io.spring.gradle:dependency-management-plugin:1.0.11.RELEASE"
+        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.0"
     }
 }
 
@@ -15,6 +16,7 @@ subprojects {
     apply plugin: 'java'
     apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'org.sonarqube'
 
     group 'com.zerogift'
     version = '1.0.0'
@@ -33,6 +35,12 @@ subprojects {
 
     repositories {
         mavenCentral()
+    }
+
+    sonarqube {
+        properties {
+            property "sonar.projectKey", "zero-giftcon"
+        }
     }
 
     dependencies {
