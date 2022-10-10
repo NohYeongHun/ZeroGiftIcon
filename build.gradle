@@ -17,6 +17,7 @@ subprojects {
     apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'org.sonarqube'
+    apply plugin: 'jacoco'
 
     group 'com.zerogift'
     version = '1.0.0'
@@ -37,10 +38,9 @@ subprojects {
         mavenCentral()
     }
 
+
     sonarqube {
         properties {
-            property 'sonar.host.url', 'http://15.164.189.231:9000'
-            property 'sonar.login', 'sqp_e64996457bbd63beed2c5c9193534426c5d9d4a6'
             property "sonar.projectKey", "zero-giftcon"
             property 'sonar.sources', 'src'
             property 'sonar.language', 'java'
@@ -63,6 +63,25 @@ subprojects {
 
     test {
         useJUnitPlatform()
+        finalizedBy 'jacocoTestReport'
+    }
+
+    jacoco {
+        toolVersion = "0.8.7"
+    }
+
+    jacocoTestReport {
+        reports {
+            xml.enabled true
+            csv.enabled false
+            html.enabled false
+        }
+    }
+}
+
+project(":module-common") {
+    sonarqube {
+        skipProject = true
     }
 }
 

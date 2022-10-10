@@ -6,7 +6,6 @@ buildscript {
 
 plugins {
     id 'com.ewerk.gradle.plugins.querydsl' version '1.0.10'
-    id 'jacoco'
 }
 
 configurations {
@@ -55,7 +54,6 @@ ext {
 test {
     outputs.dir snippetsDir
     useJUnitPlatform()
-    finalizedBy 'jacocoTestReport'
 }
 
 def querydslDir = "$buildDir/generated/querydsl" // (3)
@@ -75,14 +73,4 @@ configurations { // (6)
 
 compileQuerydsl { // (7)
     options.annotationProcessorPath = configurations.querydsl
-}
-
-jacoco {
-    toolVersion = '0.8.8'
-}
-
-jacocoTestReport {
-    reports {
-        xml.enabled true
-    }
 }
