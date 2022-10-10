@@ -37,11 +37,6 @@ out/
 ### VS Code ###
 .vscode/
 
-### application.yml 막기
-module-api/src/main/resources/application.yml
-module-batch/src/main/resources/application.yml
-module-common/src/main/resources/application.yml
-
 module-api/build/*
 module-api/out/*
 
