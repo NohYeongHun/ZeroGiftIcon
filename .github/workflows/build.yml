@@ -64,7 +64,7 @@ jobs:
           -Dsonar.projectKey=${{ env.SONARQUBE_ID }}
           -Dsonar.host.url=${{ env.SONARQUBE_URL }}
           -Dsonar.projectName=${{ env.SONARQUBE_ID }}-${{ env.PR_NUMBER }}
-          -Dsonar.login=${{ secrets.SONARQUBE_ACCESS_TOKEN }}
+          -Dsonar.login=${{ env.SONARQUBE_AUTH_URL }}
 
       - name: 소나큐브 결과
         id: sonarqube_results
