@@ -10,6 +10,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      SONARQUBE_ID: 'ZERO-GIFTCON'
+      SONARQUBE_URL: 'http://15.164.189.231:9000'
+      SONARQUBE_AUTH_URL: 'sqp_e64996457bbd63beed2c5c9193534426c5d9d4a6'
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+
     steps:
       - name: 프로젝트 체크아웃합니다.
         uses: actions/checkout@v2
@@ -54,11 +60,53 @@ jobs:
  #       run: ./gradlew build
 
       - name: Build and analyze
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: 'sqp_e64996457bbd63beed2c5c9193534426c5d9d4a6'
-          SONAR_HOST_URL: 'http://15.164.189.231:9000'
         run: ./gradlew build sonarqube
+          -Dsonar.projectKey=${{ env.SONARQUBE_ID }}
+          -Dsonar.host.url=${{ env.SONARQUBE_URL }}
+          -Dsonar.projectName=${{ env.SONARQUBE_ID }}-${{ env.PR_NUMBER }}
+          -Dsonar.login=${{ secrets.SONARQUBE_ACCESS_TOKEN }}
+
+      - name: 소나큐브 결과
+        id: sonarqube_results
+        run: |
+          RESPONSE=$(curl -X GET -G '${{ env.SONARQUBE_AUTH_URL }}/api/measures/search' \
+          -d projectKeys=${{ env.SONARQUBE_ID }} \
+          -d metricKeys=bugs,vulnerabilities,code_smells,coverage \
+          | jq '.measures')
+          echo "$RESPONSE" | jq -c '.[] | .' | while read -r data;
+          do
+            METRIC=$(echo $data | jq -r '.metric')
+            VALUE=$(echo $data | jq -r '.value')
+            BEST_VALUE=$(echo $data | jq -r '.bestValue')
+            echo "::set-output name=${METRIC}_value::${VALUE}"
+            if [ ${METRIC} == "coverage" ] && [ "$(echo "${VALUE} >= 80.0" | bc)" -eq 1 ]; then
+              echo "::set-output name=${METRIC}_best_value::✅"
+            elif [ $BEST_VALUE == true ] || [ $BEST_VALUE == null ]; then
+              echo "::set-output name=${METRIC}_best_value::✅"
+            else
+              echo "::set-output name=${METRIC}_best_value::❌"
+            fi
+          done  
+
+      - name: 소나큐브 코멘트 달기
+        uses: actions/github-script@v4
+        with:
+          script: |
+            const { SONARQUBE_ID, SONARQUBE_URL, PR_NUMBER } = process.env
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## 🏃‍♀️💨 Code Analysis Results By SonarQube
+            ### ${ SONARQUBE_ID }-${ PR_NUMBER }
+            
+            Bugs :    ${{ steps.sonarqube_results.outputs.bugs_value }}    ${{ steps.sonarqube_results.outputs.bugs_best_value }}
+            Vulnerabilities :    ${{ steps.sonarqube_results.outputs.vulnerabilities_value }}    ${{ steps.sonarqube_results.outputs.vulnerabilities_best_value }}
+            Code Smells :    ${{ steps.sonarqube_results.outputs.code_smells_value }}    ${{ steps.sonarqube_results.outputs.code_smells_best_value }} 
+            Coverage :    ${{ steps.sonarqube_results.outputs.coverage_value }}    ${{ steps.sonarqube_results.outputs.coverage_best_value }} 
+            
+            [리포트 확인하기](${SONARQUBE_URL})`
+            })
 
       - name: 테스트 결과를 PR에 코멘트로 등록합니다
         uses: EnricoMi/publish-unit-test-result-action@v1
