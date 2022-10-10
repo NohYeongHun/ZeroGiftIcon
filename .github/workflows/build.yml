@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      SONARQUBE_ID: 'ZERO-GIFTCON'
+      SONARQUBE_ID: 'zerogift'
       SONARQUBE_URL: 'http://15.164.189.231:9000'
       SONARQUBE_AUTH_URL: 'sqp_e64996457bbd63beed2c5c9193534426c5d9d4a6'
       PR_NUMBER: ${{ github.event.pull_request.number }}
