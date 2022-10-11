@@ -41,7 +41,6 @@ subprojects {
 
     sonarqube {
         properties {
-            property "sonar.projectKey", "zero-giftcon"
             property 'sonar.sources', 'src'
             property 'sonar.language', 'java'
             property 'sonar.projectVersion', '1.0.0-SNAPSHOT'
@@ -92,6 +91,10 @@ project(':module-api') {
 }
 
 project(':module-batch') {
+    sonarqube {
+        skipProject = true
+    }
+
     dependencies {
         implementation project(':module-common')
     }
