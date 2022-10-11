@@ -1,0 +1,6 @@
+[submodule "module-batch/src/main/resources/security"]
+	path = module-batch/src/main/resources/security
+	url = https://github.com/NohYeongHun/security-spring.git
+[submodule "module-api/src/main/resources/security"]
+	path = module-api/src/main/resources/security
+	url = https://github.com/NohYeongHun/security-spring.git
