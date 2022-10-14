@@ -8,6 +8,8 @@ import java.util.Optional;
 
 public interface ReviewRepositoryCustom{
 
+    Optional<Review> findReviewByMember(String email, Long reviewId);
+
     List<ReviewQueryModel> findReviewListByMember(String email);
 
     List<ReviewQueryModel> findReviewListByProduct(Long productId);
