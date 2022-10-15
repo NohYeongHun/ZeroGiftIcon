@@ -10,7 +10,7 @@
 
 ## 관련 링크
 
-[노션 링크 이동](https://www.notion.so/Zero-GIFT-59e3b5b3547a4652a48ae6ed59a26e5c, '노션링크')
+[노션 링크 이동](https://www.notion.so/Zero-GIFT-59e3b5b3547a4652a48ae6ed59a26e5c)
 
 [Backend Reposutory 이동](https://github.com/NohYeongHun/zero-gifticon)
 
@@ -27,8 +27,8 @@
     <img src="https://img.shields.io/badge/redis-7.0.5-red?logo=redis">
     <img src="https://img.shields.io/badge/jenkins-2.361.1-lightgrey?logo=jenkins">
     <img src="https://img.shields.io/badge/mariaDB-10.6.8-lightgrey?logo=mariadb">
-    <img src="https://img.shields.io/badge/EC2-orange?logo=Amazon EC2">
-    <img src="https://img.shields.io/badge/S3-orange?logo=Amazon S3">
+    <img src="https://img.shields.io/badge/EC2-gray?logo=Amazon EC2">
+    <img src="https://img.shields.io/badge/S3-gray?logo=Amazon S3">
 </div>
 
 
@@ -59,7 +59,6 @@
 | <img src="https://user-images.githubusercontent.com/24979159/195962206-4bf4c957-ecd0-4489-a1fe-e047127fdfe1.png"> | <img src=https://user-images.githubusercontent.com/24979159/195962303-6d6f87dc-d185-4eb3-b85d-a1a396ac33f0.png> |
 |                                                  <b>선물함 페이지</b>                                                   |                                               <b> 기프트콘 사용 페이지</b>                                               |
 |  <img src=https://user-images.githubusercontent.com/24979159/195962326-dd1fd011-b6f1-47d2-919c-f6982e038a39.png>  | <img src=https://user-images.githubusercontent.com/24979159/195962346-bfe5949c-261f-4cd4-b0c6-501c192777bd.png> |
-
 
 
 ## :office: Architecture
