@@ -1,0 +1,85 @@
+name: 제로기프트 테스트 자동화
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - develop-feat/**
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      SONARQUBE_ID: 'zero-giftcon'
+      SONARQUBE_URL: 'http://15.164.189.231:9000'
+      SONARQUBE_AUTH_URL: 'sqp_e64996457bbd63beed2c5c9193534426c5d9d4a6'
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+
+    steps:
+      - name: 프로젝트 체크아웃합니다.
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GIT_TOKEN }}
+          submodules: recursive
+
+      - name: Start Redis
+        uses: supercharge/redis-github-action@1.4.0
+        with:
+          redis-version: '6'
+
+      - name: JDK 11을 설치합니다.
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+
+      - name: TimeZone을 Asia/Seoul로 설정합니다
+        uses: zcong1993/setup-timezone@master
+        with:
+          timezone: Asia/Seoul
+
+      - name: Cache SonarQube packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          restore-keys: ${{ runner.os }}-gradle
+
+      - name: Gradle 명령 실행을 위한 권한을 부여합니다
+        run: chmod +x gradlew
+
+ #     - name: Gradle build를 수행합니다
+ #       run: ./gradlew build
+
+      - name: Build and analyze
+        run: ./gradlew build sonarqube
+          -Dsonar.projectKey=${{ env.SONARQUBE_ID }}
+          -Dsonar.host.url=${{ env.SONARQUBE_URL }}
+          -Dsonar.projectName=${{ env.SONARQUBE_ID }}-${{ env.PR_NUMBER }}
+          -Dsonar.login=${{ env.SONARQUBE_AUTH_URL }}
+
+      - name: 소나큐브 코멘트 달기
+        uses: actions/github-script@v4
+        with:
+          script: |
+            const { SONARQUBE_ID, SONARQUBE_URL, PR_NUMBER } = process.env
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `📊 ${ SONARQUBE_ID }-${ PR_NUMBER } 분석 결과 확인하기 [링크](${SONARQUBE_URL})`
+            })
+
+      - name: 테스트 결과를 PR에 코멘트로 등록합니다
+        uses: EnricoMi/publish-unit-test-result-action@v1
+        if: always()
+        with:
+          files: '**/build/test-results/test/TEST-*.xml'

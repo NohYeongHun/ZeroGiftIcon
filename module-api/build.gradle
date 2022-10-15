@@ -1,0 +1,104 @@
+plugins {
+    id 'org.asciidoctor.jvm.convert' version "3.3.2"
+}
+
+configurations {
+    asciidoctorExtensions
+}
+
+dependencies {
+    // spring-web
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    // flyway
+    implementation 'org.flywaydb:flyway-core:8.5.0'
+    implementation 'org.flywaydb:flyway-mysql:8.5.0'
+
+    // redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.redisson:redisson-spring-boot-starter:3.17.5'
+
+    // mail
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+    // api
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+    // jwt
+    implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+    // swagger
+    implementation 'io.springfox:springfox-boot-starter:3.0.0'
+    implementation 'io.springfox:springfox-swagger-ui:3.0.0'
+
+    // oauth2
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client:2.7.2'
+
+    // aws
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+    // barcode
+    implementation 'net.sourceforge.barbecue:barbecue:1.5-beta1'
+    implementation 'com.squareup.okhttp3:okhttp:4.10.0'
+
+    // test
+    implementation 'com.google.guava:guava:31.1-jre'
+
+    // test
+    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'io.rest-assured:rest-assured:4.2.0'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-restassured'
+    asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+}
+
+ext {
+    set('snippetsDir', file("build/generated-snippets"))
+}
+
+test {
+    outputs.dir snippetsDir
+    useJUnitPlatform()
+    finalizedBy 'asciidoctor'
+}
+
+asciidoctor.doFirst {
+    delete file('src/main/resources/static/docs')
+}
+
+asciidoctor {
+    inputs.dir snippetsDir
+    configurations 'asciidoctorExtensions'
+    dependsOn test
+}
+
+task createDocument(type: Copy) {
+    dependsOn asciidoctor
+
+    from file("build/docs/asciidoc")
+    into file("src/main/resources/static/docs")
+}
+
+task moveDocument(type: Copy) {
+    dependsOn createDocument
+
+    from file("build/docs/asciidoc")
+    into file("build/resources/main/static/docs")
+}
+
+build {
+    dependsOn moveDocument
+}
+
+bootJar {
+    dependsOn moveDocument
+    copy {
+        from "${asciidoctor.outputDir}"
+        into 'BOOT-INF/classes/static/docs'
+    }
+}
