@@ -20,7 +20,7 @@
 
 ### 백엔드
 
-<center>
+<div align="center">
     <img src="https://img.shields.io/badge/spring%20boot-2.7.3-green?logo=Spring Boot"/>
     <img src="https://img.shields.io/badge/nginx-1.20.1-green?logo=nginx"/>
     <img src="https://img.shields.io/badge/docker-20.10.17-blue?logo=docker">
@@ -29,17 +29,17 @@
     <img src="https://img.shields.io/badge/mariaDB-10.6.8-lightgrey?logo=mariadb">
     <img src="https://img.shields.io/badge/EC2-orange?logo=Amazon EC2">
     <img src="https://img.shields.io/badge/S3-orange?logo=Amazon S3">
-</center>
+</div>
 
 
 ### 프론트엔드
 
-<center>
+<div align="center">
     <img src="https://img.shields.io/badge/react-18.2.0-blue?logo=react">
     <img src="https://img.shields.io/badge/node.js-16.13.2-green?logo=node.js">
     <img src="https://img.shields.io/badge/axios-0.27.2-brightgreen?logo=Axios">
     <img src="https://img.shields.io/badge/eslint-8.5-blueviolet?logo=eslint">
-</center>
+</div>
 
 
 ## :runner: About us
