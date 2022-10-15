@@ -21,6 +21,16 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
+    public Optional<Review> findReviewByMember(String email, Long reviewId) {
+        return Optional.ofNullable(queryFactory
+                .selectFrom(review)
+                .innerJoin(review.member, member)
+                .where(member.email.eq(email)
+                        ,review.id.eq(reviewId))
+                .fetchOne());
+    }
+
+    @Override
     public List<ReviewQueryModel> findReviewListByMember(String email) {
         return queryFactory
                 .select(Projections.constructor(ReviewQueryModel.class,

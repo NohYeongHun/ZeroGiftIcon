@@ -300,4 +300,45 @@ class ReviewServiceTest extends AcceptanceTest {
         assertThat(reviewList.get(2).getMember().getId()).isEqualTo(member2.getId());
         assertThat(reviewList.get(2).getProduct().getId()).isEqualTo(product.getId());
     }
+
+    @DisplayName("리뷰 삭제 후 다시 작성 & 포인트 중복 적립 확인")
+    @Test
+    void NotMileagePointTest() {
+        // 리뷰 작성
+        ReviewInput reviewInput = ReviewInput.builder()
+                .rank(10)
+                .description("리뷰 작성 테스트 중입니다.리뷰 작성 테스트 중입니다.")
+                .build();
+        reviewService.addReview(adminInfo, product.getId(), reviewInput);
+
+        // 포인트 적립 확인
+        Optional<Member> optionalMember = memberRepository.findByEmail(adminInfo.getEmail());
+        Member member = optionalMember.get();
+        assertThat(member.getPoint()).isEqualTo(50);
+
+        // 리뷰 삭제
+        Optional<Review> optionalReview = reviewRepository.findByMemberAndProduct(member, product);
+        Review review = optionalReview.get();
+        reviewService.removeReview(adminInfo, review.getId());
+
+        optionalReview = reviewRepository.findByMemberAndProduct(member, product);
+        assertThat(optionalReview).isEmpty();
+
+        // 리뷰 다시 작성
+        reviewService.addReview(adminInfo, product.getId(), reviewInput);
+
+        optionalReview = reviewRepository.findByMemberAndProduct(member, product);
+        assertThat(optionalReview).isNotEmpty();
+
+        review = optionalReview.get();
+        assertThat(review.getRank()).isEqualTo(reviewInput.getRank());
+        assertThat(review.getDescription()).isEqualTo(reviewInput.getDescription());
+        assertThat(review.getMember().getId()).isEqualTo(member.getId());
+        assertThat(review.getProduct().getId()).isEqualTo(product.getId());
+
+        // 포인트 중복 적립 유무 확인
+        optionalMember = memberRepository.findByEmail(adminInfo.getEmail());
+        member = optionalMember.get();
+        assertThat(member.getPoint()).isEqualTo(50);
+    }
 }
