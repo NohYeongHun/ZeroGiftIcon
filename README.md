@@ -1,7 +1,25 @@
 ## Zero-GiftIcon : 마음을 전달하는 서비스
 
-<div align="center">
-    <img width="100%" alt="zero-gifticon" src="https://user-images.githubusercontent.com/68585648/193763228-00aaa047-599d-47ef-b105-c2244f9bb9fe.png">
+<center>
+    <img width="50%" alt="zero-gifticon" src="https://user-images.githubusercontent.com/24979159/195960889-8652b2d6-7759-4568-858e-66fe381f579f.png">
+</center>
+
+## :rocket: Introduction
+
+> zero-gifticon은 사용자간 기프티콘을 거래하는 서비스입니다.
+
+![노션](https://www.notion.so/Zero-GIFT-59e3b5b3547a4652a48ae6ed59a26e5c, '노션링크')
+
+## :memo: GitHub Repository
+[Backend Reposutory 이동](https://github.com/NohYeongHun/zero-gifticon)
+
+[Frontend Repository 이동](https://github.com/ooodddu/zeroGifticon)
+
+## 기술 스택
+
+### 백엔드
+
+<center>
     <img src="https://img.shields.io/badge/spring%20boot-2.7.3-green?logo=Spring Boot"/>
     <img src="https://img.shields.io/badge/nginx-1.20.1-green?logo=nginx"/>
     <img src="https://img.shields.io/badge/docker-20.10.17-blue?logo=docker">
@@ -10,16 +28,17 @@
     <img src="https://img.shields.io/badge/mariaDB-10.6.8-lightgrey?logo=mariadb">
     <img src="https://img.shields.io/badge/EC2-orange?logo=Amazon EC2">
     <img src="https://img.shields.io/badge/S3-orange?logo=Amazon S3">
+</center>
+
+
+### 프론트엔드
+
+<center>
     <img src="https://img.shields.io/badge/react-18.2.0-blue?logo=react">
     <img src="https://img.shields.io/badge/node.js-16.13.2-green?logo=node.js">
     <img src="https://img.shields.io/badge/axios-0.27.2-brightgreen?logo=Axios">
     <img src="https://img.shields.io/badge/eslint-8.5-blueviolet?logo=eslint">
-    
-</div>
-
-## :rocket: Introduction
-
-> zero-gifticon은 사용자간 기프티콘을 거래하는 서비스입니다.
+</center>
 
 
 ## :runner: About us
@@ -28,10 +47,18 @@
 |                                                           Back-End                                                            |                                                             Back-End                                                              |                                                               Back-End                                                                |                                                              Back-End                                                               |                                                             Front-End                                                             |                                                              Front-End                                                              |
 | 신성수 | 김한준 | 노영훈 | 양성준 | 우인우 | 최우주 |
 
-## :memo: GitHub Repository
-[Backend](https://github.com/NohYeongHun/zero-gifticon)
 
-[Frontend](https://github.com/ooodddu/zeroGifticon)
+## 화면 명세서
+
+
+|                                                      메인 페이지                                                       |                                                    상품 상세페이지                                                     | 
+|:-----------------------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------------------------:|
+|  <img src=https://user-images.githubusercontent.com/24979159/195961819-efd0a7d2-e397-48b7-a058-cd512743494e.png>  | <img src=https://user-images.githubusercontent.com/24979159/195962118-2f46625c-2934-45d4-8e1a-60321fc92169.png> |
+|                                                       친구목록                                                        |                                                     결제 페이지                                                      |
+| <img src="https://user-images.githubusercontent.com/24979159/195962206-4bf4c957-ecd0-4489-a1fe-e047127fdfe1.png"> | <img src=https://user-images.githubusercontent.com/24979159/195962303-6d6f87dc-d185-4eb3-b85d-a1a396ac33f0.png> |
+|                                                  <b>선물함 페이지</b>                                                   |                                               <b> 기프트콘 사용 페이지</b>                                               |
+|  <img src=https://user-images.githubusercontent.com/24979159/195962326-dd1fd011-b6f1-47d2-919c-f6982e038a39.png>  | <img src=https://user-images.githubusercontent.com/24979159/195962346-bfe5949c-261f-4cd4-b0c6-501c192777bd.png> |
+
 
 
 ## :office: Architecture
