@@ -8,9 +8,10 @@
 
 > zero-gifticon은 사용자간 기프티콘을 거래하는 서비스입니다.
 
+## 관련 링크
+
 [노션 링크 이동](https://www.notion.so/Zero-GIFT-59e3b5b3547a4652a48ae6ed59a26e5c, '노션링크')
 
-## :memo: GitHub Repository
 [Backend Reposutory 이동](https://github.com/NohYeongHun/zero-gifticon)
 
 [Frontend Repository 이동](https://github.com/ooodddu/zeroGifticon)
