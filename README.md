@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-# zero-gifticon
-s
-=======
 ## Zero-GiftIcon : 마음을 전달하는 서비스
 
 <div align="center">
@@ -75,4 +71,4 @@ s
 
 - 배치
 ![batch](https://user-images.githubusercontent.com/68585648/193785050-263b706b-de9e-4db0-b650-c3ae33149d12.png)
->>>>>>> origin/develop
+

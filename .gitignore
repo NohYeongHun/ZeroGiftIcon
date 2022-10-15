@@ -5,8 +5,6 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 .DS_Store
-application.yml
-
 
 ### STS ###
 .apt_generated
@@ -38,3 +36,13 @@ out/
 
 ### VS Code ###
 .vscode/
+
+module-api/build/*
+module-api/out/*
+
+module-batch/build/*
+module-batch/out/*
+
+module-common/build/*
+module-common/out/*
+module-common/src/querydsl/*

@@ -1,95 +1,101 @@
-// 1. queryDsl version 정보 추가
 buildscript {
 	ext {
-		queryDslVersion = "5.0.0"
+		springBootVersion = '2.7.3'
+	}
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+		classpath "io.spring.gradle:dependency-management-plugin:1.0.11.RELEASE"
+		classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.0"
 	}
 }
 
-plugins {
-	id 'org.springframework.boot' version '2.7.3'
-	id 'io.spring.dependency-management' version '1.0.13.RELEASE'
-	id 'java'
-	id 'war'
-	// queryDSL plugin
-	id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
-}
+subprojects {
+	apply plugin: 'java'
+	apply plugin: 'org.springframework.boot'
+	apply plugin: 'io.spring.dependency-management'
+	apply plugin: 'org.sonarqube'
+	apply plugin: 'jacoco'
 
-group = 'com.example'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
+	group 'com.zerogift'
+	version = '1.0.0'
+	sourceCompatibility = '11'
 
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
+	[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+	tasks.withType(JavaCompile){
+		options.encoding = 'UTF-8'
 	}
-}
 
-repositories {
-	mavenCentral()
-}
-
-ext {
-	set('springCloudVersion', "2021.0.3")
-}
-
-dependencies {
-	// queryDSL dependencies 추가
-	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
-	implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
-
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
-	implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
-	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
-	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
-	implementation 'io.springfox:springfox-swagger-ui:3.0.0'
-	compileOnly 'org.projectlombok:lombok'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	runtimeOnly 'com.h2database:h2'
-	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
-	annotationProcessor 'org.projectlombok:lombok'
-	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.security:spring-security-test'
-}
-
-
-
-dependencyManagement {
-	imports {
-		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	configurations {
+		compileOnly {
+			extendsFrom annotationProcessor
+		}
 	}
-}
 
-tasks.named('test') {
-	useJUnitPlatform()
-}
+	repositories {
+		mavenCentral()
+	}
 
-// queryDSL 사용할 경로 설정
-def querydslDir = "$buildDir/generated/querydsl"
-// JPA 사용 여부와 사용할 경로를 설정
-querydsl {
-	jpa = true
-	querydslSourcesDir = querydslDir
-}
-// build 시 사용할 sourceSet 추가
-sourceSets {
-	main {
-		java {
-			srcDirs = ['src/main/java', querydslDir]
+
+	sonarqube {
+		properties {
+			property 'sonar.sources', 'src'
+			property 'sonar.language', 'java'
+			property 'sonar.projectVersion', '1.0.0-SNAPSHOT'
+			property 'sonar.sourceEncoding', 'UTF-8'
+			property 'sonar.coverage.jacoco.xmlReportPaths', 'build/reports/jacoco/test/jacocoTestReport.xml'
+			property 'sonar.java.binaries', 'build/classes'
+			property 'sonar.test.inclusions', '**/*Test.java'
+			property 'sonar.exclusions', '**/test/**, **/Q*.java, **/*Doc*.java, **/resources/**'
+		}
+	}
+
+	dependencies {
+		implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+		testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+
+		compileOnly 'org.projectlombok:lombok'
+		annotationProcessor 'org.projectlombok:lombok'
+	}
+
+	test {
+		useJUnitPlatform()
+		finalizedBy 'jacocoTestReport'
+	}
+
+	jacoco {
+		toolVersion = "0.8.7"
+	}
+
+	jacocoTestReport {
+		reports {
+			xml.enabled true
+			csv.enabled false
+			html.enabled false
 		}
 	}
 }
-// querydsl 컴파일시 사용할 옵션 설정
-compileQuerydsl{
-	options.annotationProcessorPath = configurations.querydsl
-}
-// querydsl 이 compileClassPath 를 상속하도록 설정
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
+
+project(":module-common") {
+	sonarqube {
+		skipProject = true
 	}
-	querydsl.extendsFrom compileClasspath
+}
+
+project(':module-api') {
+	dependencies {
+		implementation project(':module-common')
+	}
+}
+
+project(':module-batch') {
+	sonarqube {
+		skipProject = true
+	}
+
+	dependencies {
+		implementation project(':module-common')
+	}
 }
