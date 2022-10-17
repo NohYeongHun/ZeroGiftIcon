@@ -15,6 +15,7 @@ import com.zerogift.global.error.exception.MemberException;
 import com.zerogift.member.application.MemberLoginService;
 import com.zerogift.member.application.dto.MemberLoginRequest;
 import com.zerogift.member.application.dto.MemberRegisterRequest;
+import com.zerogift.member.application.dto.MemberRegisterInfo;
 import com.zerogift.member.domain.AuthType;
 import com.zerogift.member.domain.Member;
 import com.zerogift.member.domain.MemberStatus;
@@ -90,15 +91,15 @@ class MemberLoginServiceTest {
         doNothing().when(emailService).sendEmail(anyString());
 
         //when
-        Member registerMember = memberLoginService.registerNewMember(request);
+        MemberRegisterInfo registerMemberInfo = memberLoginService.registerNewMember(request);
 
         //then
         assertTrue(encoder.matches(
             password,
-            registerMember.getPassword()
+                registerMemberInfo.getPassword()
         ));
-        assertEquals(member.getEmail(), registerMember.getEmail());
-        assertEquals(member.getNickname(), registerMember.getNickname());
+        assertEquals(member.getEmail(), registerMemberInfo.getEmail());
+        assertEquals(member.getNickname(), registerMemberInfo.getNickname());
     }
 
     @Test
