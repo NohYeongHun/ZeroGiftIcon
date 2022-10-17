@@ -11,7 +11,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.requestP
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 import com.zerogift.member.application.dto.MemberSearchOutputDto;
-import com.zerogift.member.application.dto.MemberSearchOutputPageDto;
+import com.zerogift.member.application.dto.MemberSearchInfo;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.restdocs.payload.JsonFieldType;
@@ -20,7 +20,7 @@ import org.springframework.restdocs.request.RequestParametersSnippet;
 import org.springframework.restdocs.restassured3.RestDocumentationFilter;
 
 public class MemberSearchListStep {
-    public static MemberSearchOutputPageDto member_list_search_response_create(){
+    public static MemberSearchInfo member_list_search_response_create(){
 
         List<MemberSearchOutputDto> memberSearchOutputDtoList = new ArrayList<>();
         memberSearchOutputDtoList.add(
@@ -31,7 +31,7 @@ public class MemberSearchListStep {
                 .build()
         );
 
-        return MemberSearchOutputPageDto.builder()
+        return MemberSearchInfo.builder()
             .memberSearchOutputDtoList(
                 memberSearchOutputDtoList
             )
