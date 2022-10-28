@@ -7,12 +7,12 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class SearchMember {
+public class MemberSearchRequest {
     private String email;
     private String nickname;
 
     @Builder
-    public SearchMember(
+    public MemberSearchRequest(
         String email,
         String nickname
     ){

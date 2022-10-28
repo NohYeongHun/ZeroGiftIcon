@@ -9,6 +9,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.requestF
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
+import com.zerogift.member.application.dto.MemberRegisterInfo;
 import com.zerogift.member.domain.AuthType;
 import com.zerogift.member.domain.Member;
 import com.zerogift.member.domain.MemberStatus;
@@ -21,16 +22,18 @@ import org.springframework.restdocs.restassured3.RestDocumentationFilter;
 
 public class MemberLoginStep {
 
-    public static Member member_register_response_create(){
-        return Member.builder()
-            .email("example@naver.com")
-            .nickname("nickname")
-            .status(MemberStatus.PERMITTED)
-            .authType(AuthType.GENERAL)
-            .authId("null")
-            .profileImageUrl("profileImageUrl")
-            .role(Role.ROLE_MEMBER)
-            .build();
+    public static MemberRegisterInfo member_register_response_create(){
+        return MemberRegisterInfo.from(
+                Member.builder()
+                    .email("example@naver.com")
+                    .nickname("nickname")
+                    .status(MemberStatus.PERMITTED)
+                    .authType(AuthType.GENERAL)
+                    .authId("null")
+                    .profileImageUrl("profileImageUrl")
+                    .role(Role.ROLE_MEMBER)
+                    .build()
+        );
     }
 
     public static RestDocumentationFilter member_register_documentation(){
@@ -61,7 +64,8 @@ public class MemberLoginStep {
         return responseFields(
             fieldWithPath("status").type(JsonFieldType.NUMBER).description("상태 코드"),
             fieldWithPath("success").type(JsonFieldType.BOOLEAN).description("성공 여부"),
-            fieldWithPath("data").type(JsonFieldType.STRING).description("멤버 이메일")
+            fieldWithPath("data.email").type(JsonFieldType.STRING).description("멤버 이메일"),
+            fieldWithPath("data.nickname").type(JsonFieldType.STRING).description("멤버 닉네임")
         );
     }
 

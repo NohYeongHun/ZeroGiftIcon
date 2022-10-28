@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class MemberSearchOutputPageDto {
+public class MemberSearchInfo {
 
     private List<MemberSearchOutputDto> memberSearchOutputDtoList;
     private Integer totalPage;
@@ -16,7 +16,7 @@ public class MemberSearchOutputPageDto {
     private Integer size;
 
     @Builder
-    public MemberSearchOutputPageDto(
+    public MemberSearchInfo(
         List<MemberSearchOutputDto> memberSearchOutputDtoList,
         Integer totalPage,
         Integer page,

@@ -2,8 +2,8 @@ package com.zerogift.member.application;
 
 import com.zerogift.member.application.dto.MemberSearchDetail;
 import com.zerogift.member.application.dto.MemberSearchOutputDto;
-import com.zerogift.member.application.dto.MemberSearchOutputPageDto;
-import com.zerogift.member.application.dto.SearchMember;
+import com.zerogift.member.application.dto.MemberSearchInfo;
+import com.zerogift.member.application.dto.MemberSearchRequest;
 import com.zerogift.support.dto.MyPageableDto;
 import com.zerogift.member.repository.MemberSearchRepository;
 import java.util.List;
@@ -18,8 +18,8 @@ public class MemberSearchService {
     private final MemberSearchRepository memberSearchRepository;
 
     @Transactional
-    public MemberSearchOutputPageDto searchMemberList(
-        SearchMember searchMember,
+    public MemberSearchInfo searchMemberList(
+        MemberSearchRequest searchMember,
         MyPageableDto myPageableDto) {
 
         List<MemberSearchOutputDto> memberSearchOutputDtoList = memberSearchRepository
@@ -28,7 +28,7 @@ public class MemberSearchService {
         Integer pageSize = myPageableDto.getSize();
         Integer totalPage = Double.valueOf(Math.ceil(Double.valueOf(totalCount) / myPageableDto.getSize())).intValue();
 
-        return MemberSearchOutputPageDto
+        return MemberSearchInfo
             .builder()
             .memberSearchOutputDtoList(memberSearchOutputDtoList)
             .totalPage(totalPage)

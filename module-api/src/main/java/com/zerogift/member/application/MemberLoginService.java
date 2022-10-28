@@ -9,6 +9,7 @@ import com.zerogift.global.error.exception.EmailAuthException;
 import com.zerogift.global.error.exception.MemberException;
 import com.zerogift.member.application.dto.MemberLoginRequest;
 import com.zerogift.member.application.dto.MemberRegisterRequest;
+import com.zerogift.member.application.dto.MemberRegisterInfo;
 import com.zerogift.member.domain.AuthType;
 import com.zerogift.member.domain.Member;
 import com.zerogift.member.domain.MemberStatus;
@@ -72,7 +73,7 @@ public class MemberLoginService {
     }
 
     @Transactional
-    public Member registerNewMember(MemberRegisterRequest request){
+    public MemberRegisterInfo registerNewMember(MemberRegisterRequest request){
 
         validateRegisterMember(request.getEmail(), request.getNickname());
 
@@ -83,12 +84,13 @@ public class MemberLoginService {
             .authType(AuthType.GENERAL)
             .role(Role.ROLE_MEMBER)
             .build();
+
         String test = passwordEncoder.encode(request.getPassword());
         member.addPassword(test);
         memberRepository.save(member);
         emailService.sendEmail(request.getEmail());
 
-        return member;
+        return MemberRegisterInfo.from(member);
 
 
     }

@@ -1,7 +1,8 @@
 package com.zerogift.member.presentation;
 
 import com.zerogift.member.application.MemberSearchService;
-import com.zerogift.member.application.dto.SearchMember;
+import com.zerogift.member.application.dto.MemberSearchRequest;
+import com.zerogift.member.application.dto.MemberSearchResponse;
 import com.zerogift.support.auth.authorization.AuthenticationPrincipal;
 import com.zerogift.support.auth.userdetails.LoginInfo;
 import com.zerogift.support.dto.MyPageableDto;
@@ -28,14 +29,15 @@ public class MemberSearchController {
     )
     @GetMapping("/member-list")
     public ResponseEntity<Result<?>> getMemberList(
-        SearchMember searchMember,
+        MemberSearchRequest searchMember,
         MyPageableDto myPageableDto ) {
 
         return ResponseEntity.ok().body(
             Result.builder()
                 .status(200)
                 .success(true)
-                .data(memberSearchService.searchMemberList(searchMember, myPageableDto))
+                .data(MemberSearchResponse.from(memberSearchService
+                        .searchMemberList(searchMember, myPageableDto)))
                 .build()
         );
     }

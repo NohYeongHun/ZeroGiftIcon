@@ -3,7 +3,8 @@ package com.zerogift.member.presentation;
 import com.zerogift.member.application.MemberLoginService;
 import com.zerogift.member.application.dto.MemberLoginRequest;
 import com.zerogift.member.application.dto.MemberRegisterRequest;
-import com.zerogift.member.domain.Member;
+import com.zerogift.member.application.dto.MemberRegisterResponse;
+import com.zerogift.member.application.dto.MemberRegisterInfo;
 import com.zerogift.support.auth.token.TokenDto;
 import com.zerogift.support.auth.userdetails.MemberInfo;
 import com.zerogift.support.dto.Result;
@@ -54,12 +55,12 @@ public class MemberLoginController {
         @RequestBody @Valid MemberRegisterRequest request
     ){
 
-        Member member = memberLoginService.registerNewMember(request);
+        MemberRegisterInfo memberInfo = memberLoginService.registerNewMember(request);
 
         return ResponseEntity.ok().body(Result.builder()
             .status(200)
             .success(true)
-            .data(member.getEmail())
+            .data(MemberRegisterResponse.from(memberInfo))
             .build());
     }
 
